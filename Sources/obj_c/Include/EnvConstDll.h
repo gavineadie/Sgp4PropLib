@@ -28,8 +28,6 @@
 // returns Returns zero indicating the EnvConst DLL has been initialized successfully. Other values indicate an error.
 typedef int (STDCALL *fnPtrEnvInit)(__int64 apPtr);
 
-int envInit(__int64);
-
 // Returns information about the EnvConst DLL.
 // The returned string provides information about the version number, build date, and the platform of the EnvConst DLL.
 // infoStr            A string to hold the information about EnvConst.dll. (out-Character[128])

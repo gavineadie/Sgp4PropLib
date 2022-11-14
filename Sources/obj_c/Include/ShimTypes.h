@@ -32,4 +32,7 @@ typedef struct {
     Real1D a, b;
 } Real2D;
 
+int objcSgp4PropDs50UTC(int64_t, double, double* __nonnull,
+                           Real1D* __nonnull, Real1D* __nonnull, Real1D* __nonnull);
+
 #endif /* ShimTypes_h */

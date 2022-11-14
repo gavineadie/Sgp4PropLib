@@ -78,8 +78,7 @@ public func GetLastInfoMsg() -> String {
     var info128 = Array(repeating: Int8(0), count: 128)
 
     typealias GetLastInfoMsgFunction = @convention(c) (UnsafeMutablePointer<Int8>) -> Void
-    let getLastInfoMsg = unsafeBitCast(getLastInfoMsgPointer,
-                                       to: GetLastInfoMsgFunction.self)
+    let getLastInfoMsg = unsafeBitCast(getLastInfoMsgPointer, to: GetLastInfoMsgFunction.self)
     getLastInfoMsg(&info128); info128[127] = 0
 
     return String(cString: info128).trimmingCharacters(in: .whitespaces)
@@ -92,8 +91,7 @@ public func OpenLogFile(fileName: String) -> Int64 {
 
     typealias OpenLogFileFunction = @convention(c) (UnsafePointer<UInt8>) -> Int64
 
-    let openLogFile = unsafeBitCast(openLogFilePointer,
-                                    to: OpenLogFileFunction.self)
+    let openLogFile = unsafeBitCast(openLogFilePointer, to: OpenLogFileFunction.self)
 
     return openLogFile(Array((fileName + "\0").utf8))
 }

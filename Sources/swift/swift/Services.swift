@@ -72,3 +72,14 @@ func c128_to_s(c: UnsafePointer<CUnsignedChar>) -> String {
 }
 
 // https://developer.apple.com/documentation/swift/string/init(cstring:)-2p84k
+
+
+func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
+    let count = str.utf8.count + 1
+    let result = UnsafeMutablePointer<Int8>.allocate(capacity: count)
+    str.withCString { (baseAddress) in
+        // func initialize(from: UnsafePointer<Pointee>, count: Int)
+        result.initialize(from: baseAddress, count: count)
+    }
+    return result
+}

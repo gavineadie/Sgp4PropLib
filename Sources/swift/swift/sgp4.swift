@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import obj_c
 
 fileprivate let libSgp4Handle = loadDll("libsgp4prop.dylib")
 
@@ -58,25 +59,19 @@ public func sgp4InitSat(_ satKey: Int64) -> Int32 {
 ///   - v2: Resulting ECI velocity vector (km/s) in True Equator and Mean Equinox of Epoch. (out-Double[3])
 ///   - v3: Resulting geodetic latitude (deg), longitude(deg), and height (km). (out-Double[3])
 /// - Returns: returns 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
-public func sgp4PropDs50UTC(satKey: Int64, time: Double, minutesSinceEpoch: inout Double,
-                            pos: inout Int, vel: inout Int, llh: inout Int) -> Int32 {
+public func sgp4PropDs50UTC(_ satKey: Int64, _ time: Double, _ minutesSinceEpoch: inout Double,
+                            _ pos: inout Real1D, _ vel: inout Real1D, _ llh: inout Real1D) -> Int32 {
 
-    guard let sgp4PropDs50UTCPointer = dlsym(libSgp4Handle, "Sgp4PropDs50UTC") else {
+    guard let _ = dlsym(libSgp4Handle, "Sgp4PropDs50UTC") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
     var epo = 0.0
-    var v0 = Array<Double>()
-    var v1 = Array<Double>()
-    var v2 = Array<Double>()
+    var pos = Real1D()
+    var vel = Real1D()
+    var llh = Real1D()
 
-    typealias Sgp4PropDs50UTCFunction = @convention(c) (Int64, Double, UnsafeMutablePointer<Double>,
-                                                        UnsafeMutableRawPointer,
-                                                        UnsafeMutableRawPointer,
-                                                        UnsafeMutableRawPointer) -> Int32
-    let sgp4PropDs50UTC = unsafeBitCast(sgp4PropDs50UTCPointer, to: Sgp4PropDs50UTCFunction.self)
-
-    return sgp4PropDs50UTC(satKey, time, &epo, &v0, &v1, &v2)
+    return objcSgp4PropDs50UTC(satKey, time, &epo, &pos, &vel, &llh)
 
 }
 

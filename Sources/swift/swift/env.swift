@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import obj_c
 
 fileprivate let libenvconstHandle = loadDll("libenvconst.dylib")
 
@@ -30,7 +31,7 @@ public func envInit(_ dllHandle: Int64) -> Int32 {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
-    typealias EnvInitFunction = @convention(c) (Int64) -> Int32
+    typealias EnvInitFunction = fnPtrEnvInit
     let envInit = unsafeBitCast(envInitPointer, to: EnvInitFunction.self)
     return envInit(dllHandle)
 
@@ -44,7 +45,7 @@ public func envGetInfo() -> String {
 
     var info128 = Array(repeating: Int8(0), count: 128)
 
-    typealias EnvGetInfoFunction = @convention(c) (UnsafeMutablePointer<Int8>) -> Void
+    typealias EnvGetInfoFunction = fnPtrEnvGetInfo
     let envGetInfo = unsafeBitCast(envGetInfoPointer, to: EnvGetInfoFunction.self)
     envGetInfo(&info128); info128[127] = 0
     return String(cString: info128).trimRight()
