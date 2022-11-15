@@ -10,13 +10,13 @@
 #import "Sgp4PropDll.h"
 #import "ShimTypes.h"
 
-int objcSgp4PropDs50UTC(int64_t satKey, double time, double* __nonnull epo,
-                        Real1D* __nonnull posInOut, Real1D* __nonnull velInOut, Real1D* __nonnull llhInOut) {
+int objcSgp4PropDs50UTC(int64_t satKey, double time, double* epoOut,
+                        Real1D* posOut, Real1D* velOut, Real1D* llhOut) {
 
     void * sgp4Handle = dlopen("/usr/local/lib/sgp4prop/libsgp4prop.dylib", RTLD_NOW);
-    fnPtrSgp4PropDs50UTC Sgp4PropDs50UTC = (fnPtrSgp4PropDs50UTC)dlsym(sgp4Handle, "Sgp4PropDs50UTC");
-
-    Sgp4PropDs50UTC(satKey, time, epo, (double*)posInOut, (double*)velInOut, (double*)llhInOut);
+    fnPtrSgp4PropDs50UTC dll_Sgp4PropDs50UTC = (fnPtrSgp4PropDs50UTC)dlsym(sgp4Handle, "Sgp4PropDs50UTC");
+    
+    int result = dll_Sgp4PropDs50UTC(satKey, time, epoOut, (double*)posOut, (double*)velOut, (double*)llhOut);
     
     return 0;
 }

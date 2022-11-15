@@ -16,9 +16,9 @@ public func sgp4Init(_ dllHandle: Int64) -> Int32 {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
-    typealias Sgp4InitFunction = @convention(c) (Int64) -> Int32
-    let sgp4Init = unsafeBitCast(sgp4InitPointer, to: Sgp4InitFunction.self)
-    return sgp4Init(dllHandle)
+    typealias Sgp4InitFunction = fnPtrSgp4Init
+    let dll_Sgp4Init = unsafeBitCast(sgp4InitPointer, to: Sgp4InitFunction.self)
+    return dll_Sgp4Init(dllHandle)
 
 }
 
@@ -30,9 +30,9 @@ public func sgp4GetInfo() -> String {
 
     var info128 = Array(repeating: Int8(0), count: 128)
 
-    typealias Sgp4GetInfoFunction = @convention(c) (UnsafeMutablePointer<Int8>) -> Void
-    let sgp4GetInfo = unsafeBitCast(sgp4GetInfoPointer, to: Sgp4GetInfoFunction.self)
-    sgp4GetInfo(&info128); info128[127] = 0
+    typealias Sgp4GetInfoFunction = fnPtrSgp4GetInfo
+    let dll_Sgp4GetInfo = unsafeBitCast(sgp4GetInfoPointer, to: Sgp4GetInfoFunction.self)
+    dll_Sgp4GetInfo(&info128); info128[127] = 0
     return String(cString: info128).trimRight()
 
 }
@@ -43,9 +43,9 @@ public func sgp4InitSat(_ satKey: Int64) -> Int32 {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
-    typealias Sgp4InitSatFunction = @convention(c) (Int64) -> Int32
-    let sgp4InitSat = unsafeBitCast(sgp4InitSatPointer, to: Sgp4InitSatFunction.self)
-    return sgp4InitSat(satKey)
+    typealias Sgp4InitSatFunction = fnPtrSgp4InitSat
+    let dll_Sgp4InitSat = unsafeBitCast(sgp4InitSatPointer, to: Sgp4InitSatFunction.self)
+    return dll_Sgp4InitSat(satKey)
 
 }
 
@@ -55,24 +55,14 @@ public func sgp4InitSat(_ satKey: Int64) -> Int32 {
 ///   - satkey: The unique key of the satellite to propagate. (in-Long)
 ///   - time: The time to propagate to, expressed in days since 1950, UTC. (in-Double)
 ///   - minutesSinceEpoch: Resulting time in minutes since the satellite's epoch time. (out-Double)
-///   - v1: Resulting ECI position vector (km) in True Equator and Mean Equinox of Epoch. (out-Double[3])
-///   - v2: Resulting ECI velocity vector (km/s) in True Equator and Mean Equinox of Epoch. (out-Double[3])
-///   - v3: Resulting geodetic latitude (deg), longitude(deg), and height (km). (out-Double[3])
+///   - pos: Resulting ECI position vector (km) in True Equator and Mean Equinox of Epoch. (out-Double[3])
+///   - vel: Resulting ECI velocity vector (km/s) in True Equator and Mean Equinox of Epoch. (out-Double[3])
+///   - llh: Resulting geodetic latitude (deg), longitude(deg), and height (km). (out-Double[3])
 /// - Returns: returns 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
-public func sgp4PropDs50UTC(_ satKey: Int64, _ time: Double, _ minutesSinceEpoch: inout Double,
+public func sgp4PropDs50UTC(_ satKey: Int64, _ time: Double, _ epo: inout Double,
                             _ pos: inout Real1D, _ vel: inout Real1D, _ llh: inout Real1D) -> Int32 {
 
-    guard let _ = dlsym(libSgp4Handle, "Sgp4PropDs50UTC") else {
-        fatalError("dlsym failure: \(String(cString: dlerror()))")
-    }
-
-    var epo = 0.0
-    var pos = Real1D()
-    var vel = Real1D()
-    var llh = Real1D()
-
     return objcSgp4PropDs50UTC(satKey, time, &epo, &pos, &vel, &llh)
-
 }
 
 

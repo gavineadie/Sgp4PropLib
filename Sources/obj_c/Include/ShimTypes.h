@@ -32,7 +32,10 @@ typedef struct {
     Real1D a, b;
 } Real2D;
 
-int objcSgp4PropDs50UTC(int64_t, double, double* __nonnull,
-                           Real1D* __nonnull, Real1D* __nonnull, Real1D* __nonnull);
+_Pragma("clang assume_nonnull begin")
+
+int objcSgp4PropDs50UTC(int64_t, double, double* , Real1D* , Real1D* , Real1D* );
+
+_Pragma("clang assume_nonnull end")
 
 #endif /* ShimTypes_h */
