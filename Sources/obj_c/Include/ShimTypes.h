@@ -34,7 +34,15 @@ typedef struct {
 
 _Pragma("clang assume_nonnull begin")
 
-int objcSgp4PropDs50UTC(int64_t, double, double* , Real1D* , Real1D* , Real1D* );
+int objcSgp4PropDs50UTC(void * , int64_t, double, double* , Real1D* , Real1D* , Real1D* );
+
+int objcSgp4PropMsePointer(void * , int64_t, double, double* , Real1D* , Real1D* , Real1D* );
+
+int objcSgp4PropDs50UtcPosVel(void * , int64_t, double, Real1D* , Real1D* );
+
+int objcSgp4PropDs50UtcPos(void * , int64_t, double, Real1D* );
+
+int objcSgp4PropDs50UtcLLH(void * , int64_t, double, Real1D* );
 
 _Pragma("clang assume_nonnull end")
 
