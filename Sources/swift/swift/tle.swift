@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import obj_c
 
 fileprivate let libtleHandle = loadDll("libtle.dylib")
 
@@ -17,12 +18,12 @@ fileprivate let libtleHandle = loadDll("libtle.dylib")
 /// `int TleInit((in-Long) apPtr)`
 
 public func tleInit(_ dllHandle: Int64) -> Int32 {
-
+ 
     guard let tleInitPointer = dlsym(libtleHandle, "TleInit") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
-    typealias TleInitFunction = @convention(c) (Int64) -> Int32
+    typealias TleInitFunction = fnPtrTleInit
     let tleInit = unsafeBitCast(tleInitPointer, to: TleInitFunction.self)
     return tleInit(dllHandle)
 
@@ -36,7 +37,7 @@ public func tleGetInfo() -> String {
 
     var info128 = Array(repeating: Int8(0), count: 128)
 
-    typealias TleGetInfoFunction = @convention(c) (UnsafeMutablePointer<Int8>) -> Void      // void TleGetInfo((out-Character[128]) infoStr);
+    typealias TleGetInfoFunction = fnPtrTleGetInfo
     let tleGetInfo = unsafeBitCast(tleGetInfoPointer, to: TleGetInfoFunction.self)
     tleGetInfo(&info128); info128[127] = 0
     return String(cString: info128).trimRight()
@@ -49,10 +50,60 @@ public func tleAddSatFrLines(_ line1: String, _ line2: String) -> Int64 {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
-    typealias TleAddSatFrLinesFunction = @convention(c) (UnsafePointer<UInt8>,              // __int64 TleAddSatFrLines((in-Character[512]) line1,
-                                                         UnsafePointer<UInt8>) -> Int64     //                          (in-Character[512]) line2));
-    let tleAddSatFrLines = unsafeBitCast(tleAddSatFrLinesInfoPointer,
-                                         to: TleAddSatFrLinesFunction.self)
-    return tleAddSatFrLines(Array(line1.utf8), Array(line2.utf8))
+    typealias TleAddSatFrLinesFunction = fnPtrTleAddSatFrLines
+    let tleAddSatFrLines = unsafeBitCast(tleAddSatFrLinesInfoPointer, to: TleAddSatFrLinesFunction.self)
+    return tleAddSatFrLines(line1.withCString { UnsafeMutablePointer(mutating: $0) },
+                            line2.withCString { UnsafeMutablePointer(mutating: $0) })
 
 }
+
+// typedef Int32 (STDCALL *fnPtrTleRemoveSat)(Int64 satKey);
+// . . . . . . . . . . . .
+
+public func tleRemoveSat(_ satKey: Int64) -> Int32 {
+
+    guard let TleRemoveSatPointer = dlsym(libtleHandle, "TleRemoveSat") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias TleRemoveSatFunction = fnPtrTleRemoveSat
+    let TleRemoveSat = unsafeBitCast(TleRemoveSatPointer, to: TleRemoveSatFunction.self)
+
+    return TleRemoveSat(satKey)
+
+}
+
+
+// typedef Int64 (STDCALL *fnPtrTleGetSatKey)(Int32 satNum);
+// . . . . . . . . . . . .
+
+public func tleGetSatKey(_ satNum: Int32) -> Int64 {
+
+    guard let TleGetSatKeyPointer = dlsym(libtleHandle, "TleGetSatKey") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias TleGetSatKeyFunction = fnPtrTleGetSatKey
+    let TleGetSatKey = unsafeBitCast(TleGetSatKeyPointer, to: TleGetSatKeyFunction.self)
+
+    return TleGetSatKey(satNum)
+
+}
+
+
+// typedef Int32 (STDCALL *fnPtrSetTleKeyMode)(Int32 tle_keyMode);
+// . . . . . . . . . . . .
+
+public func setTleKeyMode(_ tle_keyMode: Int32) -> Int32 {
+
+    guard let SetTleKeyModePointer = dlsym(libtleHandle, "SetTleKeyMode") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias SetTleKeyModeFunction = fnPtrSetTleKeyMode
+    let SetTleKeyMode = unsafeBitCast(SetTleKeyModePointer, to: SetTleKeyModeFunction.self)
+
+    return SetTleKeyMode(tle_keyMode)
+
+}
+

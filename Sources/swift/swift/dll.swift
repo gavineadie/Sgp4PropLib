@@ -185,3 +185,20 @@ public func CloseLogFile() {
 
     closeLogFile()
 }
+
+// typedef int (STDCALL *fnPtrSetElsetKeyMode)(int elset_keyMode);
+// . . . . . . . . . . . .
+
+    public func SetElsetKeyMode(_ elset_keyMode: Int32) -> Int32 {
+
+        guard let SetElsetKeyModePointer = dlsym(libdllmainHandle, "SetElsetKeyMode") else {
+            fatalError("dlsym failure: \(String(cString: dlerror()))")
+        }
+
+        typealias SetElsetKeyModeFunction = fnPtrSetElsetKeyMode
+        let SetElsetKeyMode = unsafeBitCast(SetElsetKeyModePointer, to: SetElsetKeyModeFunction.self)
+
+        return SetElsetKeyMode(elset_keyMode)
+
+    }
+

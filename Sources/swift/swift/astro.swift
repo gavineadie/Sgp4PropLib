@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import obj_c
 
 fileprivate let libAstroFuncHandle = loadDll("libastrofunc.dylib")
 
@@ -15,7 +16,7 @@ public func astroFuncInit(_ dllHandle: Int64) -> Int32 {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
-    typealias AstroFuncInitFunction = @convention(c) (Int64) -> Int32
+    typealias AstroFuncInitFunction = fnPtrAstroFuncInit
     let astroFuncInit = unsafeBitCast(astroFuncInitPointer, to: AstroFuncInitFunction.self)
     return astroFuncInit(dllHandle)
 
@@ -29,7 +30,7 @@ public func astroFuncGetInfo() -> String {
 
     var info128 = Array(repeating: Int8(0), count: 128)
 
-    typealias AstroFuncGetInfoFunction = @convention(c) (UnsafeMutablePointer<Int8>) -> Void
+    typealias AstroFuncGetInfoFunction = fnPtrAstroFuncGetInfo
     let astroFuncGetInfo = unsafeBitCast(astroFuncGetInfoPointer, to: AstroFuncGetInfoFunction.self)
     astroFuncGetInfo(&info128); info128[127] = 0
     return String(cString: info128).trimRight()
