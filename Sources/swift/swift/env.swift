@@ -52,88 +52,69 @@ public func envGetInfo() -> String {
 
 }
 
+// ---------------- AUTO GENERATED ----------------
 
-// typedef void (STDCALL *fnPtrEnvSetFkIdx)(int xf_FkMod);
-// . . . . . . . . . . . .
+public func envSetFkIdx(_ xf_FkMod: Int32) {
 
-    public func envSetFkIdx(_ xf_FkMod: Int32) {
-
-        guard let EnvSetFkIdxPointer = dlsym(libenvconstHandle, "EnvSetFkIdx") else {
-            fatalError("dlsym failure: \(String(cString: dlerror()))")
-        }
-
-        typealias EnvSetFkIdxFunction = fnPtrEnvSetFkIdx
-        let EnvSetFkIdx = unsafeBitCast(EnvSetFkIdxPointer, to: EnvSetFkIdxFunction.self)
-
-        return EnvSetFkIdx(xf_FkMod)
-
+    guard let EnvSetFkIdxPointer = dlsym(libenvconstHandle, "EnvSetFkIdx") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
+    typealias EnvSetFkIdxFunction = fnPtrEnvSetFkIdx
+    let EnvSetFkIdx = unsafeBitCast(EnvSetFkIdxPointer, to: EnvSetFkIdxFunction.self)
 
-// typedef void (STDCALL *fnPtrEnvSetGeoIdx)(int xf_GeoMod);
-// . . . . . . . . . . . .
+    return EnvSetFkIdx(xf_FkMod)
 
-    public func envSetGeoIdx(_ xf_GeoMod: Int32) {
+}
 
-        guard let EnvSetGeoIdxPointer = dlsym(libenvconstHandle, "EnvSetGeoIdx") else {
-            fatalError("dlsym failure: \(String(cString: dlerror()))")
-        }
+public func envSetGeoIdx(_ xf_GeoMod: Int32) {
 
-        typealias EnvSetGeoIdxFunction = fnPtrEnvSetGeoIdx
-        let EnvSetGeoIdx = unsafeBitCast(EnvSetGeoIdxPointer, to: EnvSetGeoIdxFunction.self)
-
-        return EnvSetGeoIdx(xf_GeoMod)
-
+    guard let EnvSetGeoIdxPointer = dlsym(libenvconstHandle, "EnvSetGeoIdx") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
+    typealias EnvSetGeoIdxFunction = fnPtrEnvSetGeoIdx
+    let EnvSetGeoIdx = unsafeBitCast(EnvSetGeoIdxPointer, to: EnvSetGeoIdxFunction.self)
 
-// typedef double (STDCALL *fnPtrEnvGetGeoConst)(int xf_GeoCon);
-// . . . . . . . . . . . .
+    return EnvSetGeoIdx(xf_GeoMod)
 
-    public func envGetGeoConst(_ xf_GeoCon: Int32) -> Double {
+}
 
-        guard let EnvGetGeoConstPointer = dlsym(libenvconstHandle, "EnvGetGeoConst") else {
-            fatalError("dlsym failure: \(String(cString: dlerror()))")
-        }
+public func envGetGeoConst(_ xf_GeoCon: Int32) -> Double {
 
-        typealias EnvGetGeoConstFunction = fnPtrEnvGetGeoConst
-        let EnvGetGeoConst = unsafeBitCast(EnvGetGeoConstPointer, to: EnvGetGeoConstFunction.self)
-
-        return EnvGetGeoConst(xf_GeoCon)
-
+    guard let EnvGetGeoConstPointer = dlsym(libenvconstHandle, "EnvGetGeoConst") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
+    typealias EnvGetGeoConstFunction = fnPtrEnvGetGeoConst
+    let EnvGetGeoConst = unsafeBitCast(EnvGetGeoConstPointer, to: EnvGetGeoConstFunction.self)
 
-// typedef double (STDCALL *fnPtrEnvGetFkConst)(int xf_FkCon);
-// . . . . . . . . . . . .
+    return EnvGetGeoConst(xf_GeoCon)
 
-    public func envGetFkConst(_ xf_FkCon: Int32) -> Double {
+}
 
-        guard let EnvGetFkConstPointer = dlsym(libenvconstHandle, "EnvGetFkConst") else {
-            fatalError("dlsym failure: \(String(cString: dlerror()))")
-        }
+public func envGetFkConst(_ xf_FkCon: Int32) -> Double {
 
-        typealias EnvGetFkConstFunction = fnPtrEnvGetFkConst
-        let EnvGetFkConst = unsafeBitCast(EnvGetFkConstPointer, to: EnvGetFkConstFunction.self)
-
-        return EnvGetFkConst(xf_FkCon)
-
+    guard let EnvGetFkConstPointer = dlsym(libenvconstHandle, "EnvGetFkConst") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
+    typealias EnvGetFkConstFunction = fnPtrEnvGetFkConst
+    let EnvGetFkConst = unsafeBitCast(EnvGetFkConstPointer, to: EnvGetFkConstFunction.self)
 
-// typedef void (STDCALL *fnPtrEnvSetEarthShape)(int earthShape);
-// . . . . . . . . . . . .
+    return EnvGetFkConst(xf_FkCon)
 
-    public func envSetEarthShape(_ earthShape: Int32) {
+}
 
-        guard let EnvSetEarthShapePointer = dlsym(libenvconstHandle, "EnvSetEarthShape") else {
-            fatalError("dlsym failure: \(String(cString: dlerror()))")
-        }
+public func envSetEarthShape(_ earthShape: Int32) {
 
-        typealias EnvSetEarthShapeFunction = fnPtrEnvSetEarthShape
-        let EnvSetEarthShape = unsafeBitCast(EnvSetEarthShapePointer, to: EnvSetEarthShapeFunction.self)
-
-        return EnvSetEarthShape(earthShape)
-
+    guard let EnvSetEarthShapePointer = dlsym(libenvconstHandle, "EnvSetEarthShape") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
+    typealias EnvSetEarthShapeFunction = fnPtrEnvSetEarthShape
+    let EnvSetEarthShape = unsafeBitCast(EnvSetEarthShapePointer, to: EnvSetEarthShapeFunction.self)
+
+    return EnvSetEarthShape(earthShape)
+
+}

@@ -57,8 +57,7 @@ public func tleAddSatFrLines(_ line1: String, _ line2: String) -> Int64 {
 
 }
 
-// typedef Int32 (STDCALL *fnPtrTleRemoveSat)(Int64 satKey);
-// . . . . . . . . . . . .
+// ---------------- AUTO GENERATED ----------------
 
 public func tleRemoveSat(_ satKey: Int64) -> Int32 {
 
@@ -73,10 +72,6 @@ public func tleRemoveSat(_ satKey: Int64) -> Int32 {
 
 }
 
-
-// typedef Int64 (STDCALL *fnPtrTleGetSatKey)(Int32 satNum);
-// . . . . . . . . . . . .
-
 public func tleGetSatKey(_ satNum: Int32) -> Int64 {
 
     guard let TleGetSatKeyPointer = dlsym(libtleHandle, "TleGetSatKey") else {
@@ -89,10 +84,6 @@ public func tleGetSatKey(_ satNum: Int32) -> Int64 {
     return TleGetSatKey(satNum)
 
 }
-
-
-// typedef Int32 (STDCALL *fnPtrSetTleKeyMode)(Int32 tle_keyMode);
-// . . . . . . . . . . . .
 
 public func setTleKeyMode(_ tle_keyMode: Int32) -> Int32 {
 

@@ -85,11 +85,11 @@ public func sgp4InitSat(_ satKey: Int64) -> Int32 {
 /// - Parameter satKey: The satellite's unique key. (in-Long)
 /// - Returns: 0 if the satellite is removed successfully, non-0 if there is an error
 public func sgp4RemoveSat(_ satKey: Int64) -> Int32 {
-    
+
     guard let sgp4RemoveSatPointer = dlsym(libSgp4Handle, "Sgp4RemoveSat") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
-    
+
     typealias Sgp4RemoveSatFunction = fnPtrSgp4RemoveSat
     let dll_Sgp4RemoveSat = unsafeBitCast(sgp4RemoveSatPointer, to: Sgp4RemoveSatFunction.self)
 
@@ -102,14 +102,14 @@ public func sgp4RemoveSat(_ satKey: Int64) -> Int32 {
 /// Sgp4Prop.dll. However, the TLE data loaded by Tle.dll is unaffected by this function.
 /// - Returns: 0 if all satellites are removed successfully from memory, non-0 if there is an error.
 public func sgp4RemoveAllSats() -> Int32 {
-    
+
     guard let sgp4RemoveAllSatsPointer = dlsym(libSgp4Handle, "Sgp4RemoveAllSats") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
-    
+
     typealias Sgp4RemoveAllSatsFunction = fnPtrSgp4RemoveAllSats
     let dll_Sgp4RemoveAllSats = unsafeBitCast(sgp4RemoveAllSatsPointer, to: Sgp4RemoveAllSatsFunction.self)
-    
+
     return dll_Sgp4RemoveAllSats()
 }
 
@@ -185,8 +185,7 @@ public func sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: inout Dou
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
 public func sgp4PropDs50UtcPosVel(_ satKey: Int64, _ ds50UTC: Double,
                                   _ pos: inout Real1D, _ vel: inout Real1D) -> Int32 {
-    
-    return objcSgp4PropDs50UtcPosVel(libSgp4Handle, satKey, ds50UTC, &pos, &vel)
+    objcSgp4PropDs50UtcPosVel(libSgp4Handle, satKey, ds50UTC, &pos, &vel)
 }
 
 /// Propagates a satellite, represented by the satKey, to the time expressed in days since 1950, UTC.
@@ -214,8 +213,7 @@ public func sgp4PropDs50UtcPosVel(_ satKey: Int64, _ ds50UTC: Double,
 ///   - pos: ###. (out-Double[3])
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
 public func sgp4PropDs50UtcPos(_ satKey: Int64, _ ds50UTC: Double,  _ pos: inout Real1D) -> Int32 {
-    
-    return objcSgp4PropDs50UtcPos(libSgp4Handle, satKey, ds50UTC, &pos)
+    objcSgp4PropDs50UtcPos(libSgp4Handle, satKey, ds50UTC, &pos)
 }
 
 /// Propagates a satellite, represented by the satKey, to the time expressed in days since 1950, UTC.
@@ -243,6 +241,34 @@ public func sgp4PropDs50UtcPos(_ satKey: Int64, _ ds50UTC: Double,  _ pos: inout
 ///   - llh: Resulting geodetic latitude (deg), longitude(deg), and height (km). (out-Double[3])
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
 public func sgp4PropDs50UtcLLH(_ satKey: Int64, _ ds50UTC: Double,  _ llh: inout Real1D) -> Int32 {
-    
-    return objcSgp4PropDs50UtcLLH(libSgp4Handle, satKey, ds50UTC, &llh)
+    objcSgp4PropDs50UtcLLH(libSgp4Handle, satKey, ds50UTC, &llh)
 }
+
+// ---------------- AUTO GENERATED ----------------
+
+public func Sgp4InitSat(_ satKey: Int64) -> Int32 {
+
+    guard let Sgp4InitSatPointer = dlsym(libSgp4Handle, "Sgp4InitSat") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias Sgp4InitSatFunction = fnPtrSgp4InitSat
+    let Sgp4InitSat = unsafeBitCast(Sgp4InitSatPointer, to: Sgp4InitSatFunction.self)
+
+    return Sgp4InitSat(satKey)
+
+}
+
+public func Sgp4RemoveSat(_ satKey: Int64) -> Int32 {
+
+    guard let Sgp4RemoveSatPointer = dlsym(libSgp4Handle, "Sgp4RemoveSat") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias Sgp4RemoveSatFunction = fnPtrSgp4RemoveSat
+    let Sgp4RemoveSat = unsafeBitCast(Sgp4RemoveSatPointer, to: Sgp4RemoveSatFunction.self)
+
+    return Sgp4RemoveSat(satKey)
+
+}
+

@@ -36,3 +36,31 @@ public func astroFuncGetInfo() -> String {
     return String(cString: info128).trimRight()
 
 }
+
+// ---------------- AUTO GENERATED ----------------
+
+public func NToA(_ n: Double) -> Double {
+
+    guard let NToAPointer = dlsym(libAstroFuncHandle, "NToA") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias NToAFunction = fnPtrNToA
+    let NToA = unsafeBitCast(NToAPointer, to: NToAFunction.self)
+
+    return NToA(n)
+
+}
+
+public func AToN(_ a: Double) -> Double {
+
+    guard let AToNPointer = dlsym(libAstroFuncHandle, "AToN") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias AToNFunction = fnPtrAToN
+    let AToN = unsafeBitCast(AToNPointer, to: AToNFunction.self)
+
+    return AToN(a)
+
+}

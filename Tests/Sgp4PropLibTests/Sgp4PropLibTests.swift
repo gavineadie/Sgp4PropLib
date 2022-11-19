@@ -92,4 +92,28 @@ final class Sgp4App2Tests: XCTestCase {
         print("\(year) \(month) \(dayOfMonth) \(hh) \(mm) \(sss)")
 
     }
+
+    func testTimeComps() {
+
+        var ds50 = TimeComps1ToUTC(1956, 1, 0, 0, 0.0)
+        print(ds50)
+
+        var y = Int32(0)
+        var d = Int32(0)
+        var h = Int32(0)
+        var mi = Int32(0)
+        var s = Double(0)
+
+        UTCToTimeComps1(ds50, &y, &d, &h, &mi, &s)
+        print("\(y)y \(d)d \(h)h \(mi)m \(s)s")
+
+        ds50 = TimeComps2ToUTC(1956, 1, 0, 0, 0, 0.0)
+        print(ds50)
+
+        var mo = Int32(0)
+
+        UTCToTimeComps2(ds50, &y, &mo, &d, &h, &mi, &s)
+        print("\(y)y \(mo)m \(d)d \(h)h \(mi)m \(s)s")
+
+    }
 }

@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Sgp4PropLib",
-    platforms: [.macOS(.v13)],
+    platforms: [.macOS(.v10_13)],
     products: [
         .library(name: "Sgp4PropLib", targets: ["swift", "obj_c"]),
     ],

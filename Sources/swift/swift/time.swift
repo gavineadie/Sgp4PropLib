@@ -135,8 +135,16 @@ public func UTCToET(_ ds50UTC: Double) -> Double {
 ///   - dayOfYear: The day of year. Partial days can be specified. (in-Double)
 /// - Returns: returns The number of days since 1950, UTC. Partial days may be returned.
 func YrDaysToUTC(_ year: Int32, _ dayOfYear: Double) -> Double {
-    preconditionFailure(">>> NOT IMPLEMENTED <<<")
-    return 0.0
+
+    guard let YrDaysToUTCPointer = dlsym(libTimeFuncHandle, "YrDaysToUTC") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias YrDaysToUTCFunction = fnPtrYrDaysToUTC
+    let YrDaysToUTC = unsafeBitCast(YrDaysToUTCPointer, to: YrDaysToUTCFunction.self)
+
+    return YrDaysToUTC(year, dayOfYear)
+
 }
 
 /// Converts a time in ds50UTC to a year and day of year.
@@ -150,8 +158,16 @@ func YrDaysToUTC(_ year: Int32, _ dayOfYear: Double) -> Double {
 ///   Partial days may be expressed in this variable. (out-Double)
 func UTCToYrDays(_ ds50UTC: Double,
                  _ year: inout Int32, _ dayOfYear: inout Double) {
-    preconditionFailure(">>> NOT IMPLEMENTED <<<")
-    
+
+    guard let UTCToYrDaysPointer = dlsym(libTimeFuncHandle, "UTCToYrDays") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias UTCToYrDaysFunction = fnPtrUTCToYrDays
+    let UTCToYrDays = unsafeBitCast(UTCToYrDaysPointer, to: UTCToYrDaysFunction.self)
+
+    UTCToYrDays(ds50UTC, &year, &dayOfYear)
+
 }
 
 /// Converts a set of time components (year, day of year, hour, minute, second) to a time in ds50UTC.
@@ -167,8 +183,16 @@ func UTCToYrDays(_ ds50UTC: Double,
 /// - Returns: The number of Days since 1950, UTC. Partial days may be returned.
 func TimeComps1ToUTC(_ year: Int32, _ dayOfYear: Int32,
                      _ hh: Int32, _ mm: Int32, _ sss: Double) -> Double {
-    preconditionFailure(">>> NOT IMPLEMENTED <<<")
-    return 0.0
+
+    guard let TimeComps1ToUTCPointer = dlsym(libTimeFuncHandle, "TimeComps1ToUTC") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias TimeComps1ToUTCFunction = fnPtrTimeComps1ToUTC
+    let TimeComps1ToUTC = unsafeBitCast(TimeComps1ToUTCPointer, to: TimeComps1ToUTCFunction.self)
+
+    return TimeComps1ToUTC(year, dayOfYear, hh, mm, sss)
+
 }
 
 /// Converts a time in ds50UTC to its individual components (year, day of year, hour, minute, second).
@@ -187,7 +211,7 @@ func UTCToTimeComps1(_ ds50UTC: Double,
                      _ year: inout Int32, _ dayOfYear: inout Int32,
                      _ hh: inout Int32, _ mm: inout Int32, _ sss: inout Double) {
 
-    precondition(ds50UTC > 2192.0, "UTCToTimeComps1 failure: ds50UTC < 2192.0")
+    precondition(ds50UTC >= 2192.0, "UTCToTimeComps1 failure: ds50UTC < 2192.0")
 
     guard let UTCToTimeComps1Pointer = dlsym(libTimeFuncHandle, "UTCToTimeComps1") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
@@ -199,6 +223,22 @@ func UTCToTimeComps1(_ ds50UTC: Double,
     UTCToTimeComps1(ds50UTC, &year, &dayOfYear, &hh, &mm, &sss)
 
 }
+
+func TimeComps2ToUTC(_ year: Int32, _ month: Int32, _ dayOfMonth: Int32,
+                     _ hh: Int32, _ mm: Int32, _ sss: Double) -> Double {
+
+    guard let TimeComps2ToUTCPointer = dlsym(libTimeFuncHandle, "TimeComps1ToUTC") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias TimeComps2ToUTCFunction = fnPtrTimeComps2ToUTC
+    let TimeComps2ToUTC = unsafeBitCast(TimeComps2ToUTCPointer, to: TimeComps2ToUTCFunction.self)
+
+    return TimeComps2ToUTC(year, month, dayOfMonth, hh, mm, sss)
+
+}
+
+
 
 /// Converts a time in ds50UTC to its individual components (year, day of year, hour, minute, second).
 ///
@@ -216,7 +256,7 @@ func UTCToTimeComps2(_ ds50UTC: Double,
                      _ year: inout Int32, _ month: inout Int32, _ dayofMonth: inout Int32,
                      _ hh: inout Int32, _ mm: inout Int32, _ sss: inout Double) {
 
-    precondition(ds50UTC > 2192.0, "UTCToTimeComps2 failure: ds50UTC < 2192.0")
+    precondition(ds50UTC >= 2192.0, "UTCToTimeComps2 failure: ds50UTC < 2192.0")
 
     guard let UTCToTimeComps2Pointer = dlsym(libTimeFuncHandle, "UTCToTimeComps2") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
@@ -333,8 +373,7 @@ public func TConRemoveAll() -> Int32 {
     
 }
 
-// typedef int (STDCALL *fnPtrTimeFuncInit)(Int64 apPtr);
-// . . . . . . . . . . . .
+// ---------------- AUTO GENERATED ----------------
 
 public func TimeFuncInit(_ apPtr: Int64) -> Int32 {
     
@@ -349,10 +388,6 @@ public func TimeFuncInit(_ apPtr: Int64) -> Int32 {
     
 }
 
-
-// typedef double (STDCALL *fnPtrTAIToUTC)(double ds50TAI);
-// . . . . . . . . . . . .
-
 public func TAIToUTC(_ ds50TAI: Double) -> Double {
     
     guard let TAIToUTCPointer = dlsym(libTimeFuncHandle, "TAIToUTC") else {
@@ -365,10 +400,6 @@ public func TAIToUTC(_ ds50TAI: Double) -> Double {
     return TAIToUTC(ds50TAI)
     
 }
-
-
-// typedef double (STDCALL *fnPtrTAIToUT1)(double ds50TAI);
-// . . . . . . . . . . . .
 
 public func TAIToUT1(_ ds50TAI: Double) -> Double {
     
@@ -383,10 +414,6 @@ public func TAIToUT1(_ ds50TAI: Double) -> Double {
     
 }
 
-
-// typedef double (STDCALL *fnPtrThetaGrnwchFK4)(double ds50UT1);
-// . . . . . . . . . . . .
-
 public func ThetaGrnwchFK4(_ ds50UT1: Double) -> Double {
     
     guard let ThetaGrnwchFK4Pointer = dlsym(libTimeFuncHandle, "ThetaGrnwchFK4") else {
@@ -399,10 +426,6 @@ public func ThetaGrnwchFK4(_ ds50UT1: Double) -> Double {
     return ThetaGrnwchFK4(ds50UT1)
     
 }
-
-
-// typedef double (STDCALL *fnPtrThetaGrnwchFK5)(double ds50UT1);
-// . . . . . . . . . . . .
 
 public func ThetaGrnwchFK5(_ ds50UT1: Double) -> Double {
     
