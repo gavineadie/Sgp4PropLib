@@ -186,8 +186,47 @@ func TimeComps1ToUTC(_ year: Int32, _ dayOfYear: Int32,
 func UTCToTimeComps1(_ ds50UTC: Double,
                      _ year: inout Int32, _ dayOfYear: inout Int32,
                      _ hh: inout Int32, _ mm: inout Int32, _ sss: inout Double) {
-    preconditionFailure(">>> NOT IMPLEMENTED <<<")
-    
+
+    precondition(ds50UTC > 2192.0, "UTCToTimeComps1 failure: ds50UTC < 2192.0")
+
+    guard let UTCToTimeComps1Pointer = dlsym(libTimeFuncHandle, "UTCToTimeComps1") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias UTCToTimeComps1Function = fnPtrUTCToTimeComps1
+    let UTCToTimeComps1 = unsafeBitCast(UTCToTimeComps1Pointer, to: UTCToTimeComps1Function.self)
+
+    UTCToTimeComps1(ds50UTC, &year, &dayOfYear, &hh, &mm, &sss)
+
+}
+
+/// Converts a time in ds50UTC to its individual components (year, day of year, hour, minute, second).
+///
+/// The input ds50UTC must be greater than 2192.0, which corresponds to a time later
+/// than 1st Jan 1956. Any input value less than or equal to 2192.0 will be reset to that value.
+/// - Parameters:
+///   - ds50UTC: Days since 1950, UTC to be converted. (in-Double)
+///   - year: A reference to a variable in which to store the 4-digit year. (out-Integer)
+///   - dayOfYear: A reference to a variable in which to store the day of year. (out-Integer)
+///   - hh: A reference to a variable in which to store the hour. (out-Integer)
+///   - mm: A reference to a variable in which to store the minute. (out-Integer)
+///   - sss: A reference to a variable in which to store the second.
+///   Partial seconds may be expressed if necessary. (out-Double)
+func UTCToTimeComps2(_ ds50UTC: Double,
+                     _ year: inout Int32, _ month: inout Int32, _ dayofMonth: inout Int32,
+                     _ hh: inout Int32, _ mm: inout Int32, _ sss: inout Double) {
+
+    precondition(ds50UTC > 2192.0, "UTCToTimeComps2 failure: ds50UTC < 2192.0")
+
+    guard let UTCToTimeComps2Pointer = dlsym(libTimeFuncHandle, "UTCToTimeComps2") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias UTCToTimeComps2Function = fnPtrUTCToTimeComps2
+    let UTCToTimeComps2 = unsafeBitCast(UTCToTimeComps2Pointer, to: UTCToTimeComps2Function.self)
+
+    UTCToTimeComps2(ds50UTC, &year, &month, &dayofMonth, &hh, &mm, &sss)
+
 }
 
 /// Converts an internal time in ds50UTC to a string in DTG20 format.
@@ -377,4 +416,3 @@ public func ThetaGrnwchFK5(_ ds50UT1: Double) -> Double {
     return ThetaGrnwchFK5(ds50UT1)
     
 }
-

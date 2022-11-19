@@ -82,3 +82,22 @@ func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
     }
     return result
 }
+
+// ---------------- Time Services ---------------- //
+
+extension Date {
+    /// The number of seconds from 1 January 1950 to the reference date, 1 January 2001.
+    public static let timeIntervalBetween1950AndReferenceDate: TimeInterval = 1609459200.0
+
+    /// Returns a `Date` initialized relative to 00:00:00 UTC on 1 January 1950 by a given number of seconds.
+    public init(timeIntervalSince1950: TimeInterval) {
+        self.init(timeIntervalSinceReferenceDate: timeIntervalSince1950 - Date.timeIntervalBetween1950AndReferenceDate)
+    }
+}
+
+/// Converts a Swift `Date` type to days since 1950-01-01 (ds50UTC)
+/// - Parameter date: a `Date`
+/// - Returns: days since 1950
+public func dateToUTC(_ date: Date) -> Double {
+    return date.timeIntervalSince(Date(timeIntervalSince1950: 0.0)) / (60*1440)
+}

@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "Sgp4PropLib",
+    platforms: [.macOS(.v13)],
     products: [
         .library(name: "Sgp4PropLib", targets: ["swift", "obj_c"]),
     ],
@@ -12,5 +13,6 @@ let package = Package(
     targets: [
         .target(name: "swift", dependencies: [ "obj_c" ]),
         .target(name: "obj_c", dependencies: [ ]),
+        .testTarget(name: "Sgp4PropLibTests", dependencies: ["swift"]),
     ]
 )
