@@ -87,7 +87,8 @@ func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
 
 extension Date {
     /// The number of seconds from 1 January 1950 to the reference date, 1 January 2001.
-    public static let timeIntervalBetween1950AndReferenceDate: TimeInterval = 1609459200.0
+    public static let
+        timeIntervalBetween1950AndReferenceDate: TimeInterval = 1_609_545_600.0   // 86,400 sec/day -> 18,629 days
 
     /// Returns a `Date` initialized relative to 00:00:00 UTC on 1 January 1950 by a given number of seconds.
     public init(timeIntervalSince1950: TimeInterval) {

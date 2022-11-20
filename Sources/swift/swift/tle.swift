@@ -15,7 +15,7 @@ fileprivate let libtleHandle = loadDll("libtle.dylib")
 /// - Parameter dllHandle: The handle that was returned from DllMainInit
 /// - Returns: 0 if Tle.dll is initialized successfully, non-0 if there is an error.
 public func tleInit(_ dllHandle: Int64) -> Int32 {
- 
+
     guard let tleInitPointer = dlsym(libtleHandle, "TleInit") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
@@ -145,7 +145,7 @@ public func tleAddSatFrLines(_ line1: String, _ line2: String) -> Int64 {
 ///   - satKey: The satellite's unique key.
 ///   - xfTle: Predefined number specifying which field to retrieve. See remarks.
 /// - Returns: A string containing the value of the requested field; NULL if failure.
-private func TleGetField(_ satKey: Int64, _ xfTle: Int32) -> String? {
+public func TleGetField(_ satKey: Int64, _ xfTle: Int32) -> String? {
 
     guard let TleGetFieldPointer = dlsym(libtleHandle, "TleGetField") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
@@ -156,7 +156,7 @@ private func TleGetField(_ satKey: Int64, _ xfTle: Int32) -> String? {
 
     var info512 = Array(repeating: Int8(0), count: 512)
 
-    _ = TleGetField(satKey, xfTle, &info512)
+    _ = TleGetField(satKey, xfTle, &info512); info512[511] = 0
     return String(cString: info512).trimRight()
 
 }

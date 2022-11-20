@@ -52,6 +52,9 @@ final class Sgp4App2Tests: XCTestCase {
 
     func testUTCToTimeComps() {
 
+        let ds50 = TimeComps1ToUTC(1956, 1, 0, 0, 0.0)
+        print("  TimeComps1ToUTC(1956) = \(ds50)")
+
         var year = Int32(0)
         var dayOfYear = Int32(0)
         var hh = Int32(0)
@@ -59,22 +62,25 @@ final class Sgp4App2Tests: XCTestCase {
         var sss = Double(0.0)
 
         UTCToTimeComps1(10000.2, &year, &dayOfYear, &hh, &mm, &sss)
-
-        print("\(year) \(dayOfYear) \(hh) \(mm) \(sss)")
+        print("TimeComps1ToUTC(10000.2) = \(year) \(dayOfYear) \(hh) \(mm) \(sss)")
 
         var month = Int32(0)
         var dayOfMonth = Int32(0)
 
         UTCToTimeComps2(10000.2, &year, &month, &dayOfMonth, &hh, &mm, &sss)
-
-        print("\(year) \(month) \(dayOfMonth) \(hh) \(mm) \(sss)")
+        print("TimeComps2ToUTC(10000.2) = \(year) \(month) \(dayOfMonth) \(hh) \(mm) \(sss)")
 
     }
 
     func testDates() {
 
-        let daysFrom1950 = dateToUTC(Date())
-        print(     "days from 1950: \(daysFrom1950)")
+        let now = Date()
+        print("                  (now) = \(now)")
+
+        let nowFrom1950 = dateToUTC(now)
+        print("      daysFrom1950(now) = \(nowFrom1950)")
+
+        print("        utcToDTG17(now) = \(utcToDTG17(nowFrom1950))")
 
         var year = Int32(0)
         var dayOfYear = Int32(0)
@@ -82,38 +88,19 @@ final class Sgp4App2Tests: XCTestCase {
         var mm = Int32(0)
         var sss = Double(0.0)
 
-        UTCToTimeComps1(daysFrom1950, &year, &dayOfYear, &hh, &mm, &sss)
-        print("\(year) \(dayOfYear) \(hh) \(mm) \(sss)")
+        UTCToTimeComps1(nowFrom1950, &year, &dayOfYear, &hh, &mm, &sss)
+        print("   TimeComps1ToUTC(now) = \(year) \(dayOfYear) \(hh) \(mm) \(sss)")
 
         var month = Int32(0)
         var dayOfMonth = Int32(0)
 
-        UTCToTimeComps2(daysFrom1950, &year, &month, &dayOfMonth, &hh, &mm, &sss)
-        print("\(year) \(month) \(dayOfMonth) \(hh) \(mm) \(sss)")
+        UTCToTimeComps2(nowFrom1950, &year, &month, &dayOfMonth, &hh, &mm, &sss)
+        print("   TimeComps2ToUTC(now) = \(year) \(month) \(dayOfMonth) \(hh) \(mm) \(sss)")
 
-    }
-
-    func testTimeComps() {
-
-        var ds50 = TimeComps1ToUTC(1956, 1, 0, 0, 0.0)
-        print(ds50)
-
-        var y = Int32(0)
-        var d = Int32(0)
-        var h = Int32(0)
-        var mi = Int32(0)
-        var s = Double(0)
-
-        UTCToTimeComps1(ds50, &y, &d, &h, &mi, &s)
-        print("\(y)y \(d)d \(h)h \(mi)m \(s)s")
-
-        ds50 = TimeComps2ToUTC(1956, 1, 0, 0, 0, 0.0)
-        print(ds50)
-
-        var mo = Int32(0)
-
-        UTCToTimeComps2(ds50, &y, &mo, &d, &h, &mi, &s)
-        print("\(y)y \(mo)m \(d)d \(h)h \(mi)m \(s)s")
-
+        let tleDate = YrDaysToUTC(2022, 323.89725341)                 // "22323.89725341
+        UTCToTimeComps1(tleDate, &year, &dayOfYear, &hh, &mm, &sss)
+        print("   TimeComps1ToUTC(tle) = \(year) \(dayOfYear) \(hh) \(mm) \(sss)")
+        UTCToTimeComps2(tleDate, &year, &month, &dayOfMonth, &hh, &mm, &sss)
+        print("   TimeComps2ToUTC(tle) = \(year) \(month) \(dayOfMonth) \(hh) \(mm) \(sss)")
     }
 }

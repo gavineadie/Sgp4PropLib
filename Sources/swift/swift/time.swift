@@ -238,8 +238,6 @@ func TimeComps2ToUTC(_ year: Int32, _ month: Int32, _ dayOfMonth: Int32,
 
 }
 
-
-
 /// Converts a time in ds50UTC to its individual components (year, day of year, hour, minute, second).
 ///
 /// The input ds50UTC must be greater than 2192.0, which corresponds to a time later
