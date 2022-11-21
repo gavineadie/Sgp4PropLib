@@ -8,7 +8,7 @@
 import Foundation
 import obj_c
 
-fileprivate let libtleHandle = loadDll("libtle.dylib")
+fileprivate let libHandle = loadDll("libtle.dylib")
 
 /// Initializes Tle DLL for use in the program. If this function returns an error, it is recommended that you stop the program immediately.
 ///
@@ -16,7 +16,7 @@ fileprivate let libtleHandle = loadDll("libtle.dylib")
 /// - Returns: 0 if Tle.dll is initialized successfully, non-0 if there is an error.
 public func tleInit(_ dllHandle: Int64) -> Int32 {
 
-    guard let tleInitPointer = dlsym(libtleHandle, "TleInit") else {
+    guard let tleInitPointer = dlsym(libHandle, "TleInit") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -32,7 +32,7 @@ public func tleInit(_ dllHandle: Int64) -> Int32 {
 /// - Returns: A string to hold the information about the Tle DLL.
 public func tleGetInfo() -> String {
 
-    guard let tleGetInfoPointer = dlsym(libtleHandle, "TleGetInfo") else {
+    guard let tleGetInfoPointer = dlsym(libHandle, "TleGetInfo") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -56,7 +56,7 @@ public func tleGetInfo() -> String {
 /// - Returns: 0 if the two line element sets in the file are successfully loaded, non-0 if there is an error.
 private func TleLoadFile(_ tleFileName: String) -> Int32 {
 
-    guard let TleLoadFilePointer = dlsym(libtleHandle, "TleLoadFile") else {
+    guard let TleLoadFilePointer = dlsym(libHandle, "TleLoadFile") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -73,7 +73,7 @@ private func TleLoadFile(_ tleFileName: String) -> Int32 {
 
 public func tleRemoveSat(_ satKey: Int64) -> Int32 {
 
-    guard let TleRemoveSatPointer = dlsym(libtleHandle, "TleRemoveSat") else {
+    guard let TleRemoveSatPointer = dlsym(libHandle, "TleRemoveSat") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -90,7 +90,7 @@ public func tleRemoveSat(_ satKey: Int64) -> Int32 {
 
 public func tleAddSatFrLines(_ line1: String, _ line2: String) -> Int64 {
 
-    guard let tleAddSatFrLinesPointer = dlsym(libtleHandle, "TleAddSatFrLines") else {
+    guard let tleAddSatFrLinesPointer = dlsym(libHandle, "TleAddSatFrLines") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -147,7 +147,7 @@ public func tleAddSatFrLines(_ line1: String, _ line2: String) -> Int64 {
 /// - Returns: A string containing the value of the requested field; NULL if failure.
 public func TleGetField(_ satKey: Int64, _ xfTle: Int32) -> String? {
 
-    guard let TleGetFieldPointer = dlsym(libtleHandle, "TleGetField") else {
+    guard let TleGetFieldPointer = dlsym(libHandle, "TleGetField") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -189,7 +189,7 @@ public func TleGetField(_ satKey: Int64, _ xfTle: Int32) -> String? {
 
 public func tleGetSatKey(_ satNum: Int32) -> Int64 {
 
-    guard let TleGetSatKeyPointer = dlsym(libtleHandle, "TleGetSatKey") else {
+    guard let TleGetSatKeyPointer = dlsym(libHandle, "TleGetSatKey") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -214,7 +214,7 @@ public func tleGetSatKey(_ satNum: Int32) -> Int64 {
 
 public func setTleKeyMode(_ tle_keyMode: Int32) -> Int32 {
 
-    guard let SetTleKeyModePointer = dlsym(libtleHandle, "SetTleKeyMode") else {
+    guard let SetTleKeyModePointer = dlsym(libHandle, "SetTleKeyMode") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 

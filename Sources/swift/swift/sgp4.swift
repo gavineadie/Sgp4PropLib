@@ -8,7 +8,7 @@
 import Foundation
 import obj_c
 
-fileprivate let libSgp4Handle = loadDll("libsgp4prop.dylib")
+fileprivate let libHandle = loadDll("libsgp4prop.dylib")
 
 /// Initializes the Sgp4 DLL for use in the program.
 ///
@@ -21,7 +21,7 @@ fileprivate let libSgp4Handle = loadDll("libsgp4prop.dylib")
 /// - Returns: 0 if Sgp4Prop.dll is initialized successfully, non-0 if there is an error.
 public func sgp4Init(_ dllHandle: Int64) -> Int32 {
 
-    guard let sgp4InitPointer = dlsym(libSgp4Handle, "Sgp4Init") else {
+    guard let sgp4InitPointer = dlsym(libHandle, "Sgp4Init") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -36,7 +36,7 @@ public func sgp4Init(_ dllHandle: Int64) -> Int32 {
 /// - Returns: The returned string provides information about the version number, build date, and platform.
 public func sgp4GetInfo() -> String {
 
-    guard let sgp4GetInfoPointer = dlsym(libSgp4Handle, "Sgp4GetInfo") else {
+    guard let sgp4GetInfoPointer = dlsym(libHandle, "Sgp4GetInfo") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -70,7 +70,7 @@ public func sgp4GetInfo() -> String {
 /// Sgp4Prop.dll's set of satellites, non-0 if there is an error.
 public func sgp4InitSat(_ satKey: Int64) -> Int32 {
 
-    guard let sgp4InitSatPointer = dlsym(libSgp4Handle, "Sgp4InitSat") else {
+    guard let sgp4InitSatPointer = dlsym(libHandle, "Sgp4InitSat") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -86,7 +86,7 @@ public func sgp4InitSat(_ satKey: Int64) -> Int32 {
 /// - Returns: 0 if the satellite is removed successfully, non-0 if there is an error
 public func sgp4RemoveSat(_ satKey: Int64) -> Int32 {
 
-    guard let sgp4RemoveSatPointer = dlsym(libSgp4Handle, "Sgp4RemoveSat") else {
+    guard let sgp4RemoveSatPointer = dlsym(libHandle, "Sgp4RemoveSat") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -103,7 +103,7 @@ public func sgp4RemoveSat(_ satKey: Int64) -> Int32 {
 /// - Returns: 0 if all satellites are removed successfully from memory, non-0 if there is an error.
 public func sgp4RemoveAllSats() -> Int32 {
 
-    guard let sgp4RemoveAllSatsPointer = dlsym(libSgp4Handle, "Sgp4RemoveAllSats") else {
+    guard let sgp4RemoveAllSatsPointer = dlsym(libHandle, "Sgp4RemoveAllSats") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -143,7 +143,7 @@ public func sgp4RemoveAllSats() -> Int32 {
 public func sgp4PropMse(_ satKey: Int64, _ ds50UTC: Double, _ mse: inout Double,
                             _ pos: inout Real1D, _ vel: inout Real1D, _ llh: inout Real1D) -> Int32 {
 
-    return objcSgp4PropMsePointer(libSgp4Handle, satKey, ds50UTC, &mse, &pos, &vel, &llh)
+    return objcSgp4PropMsePointer(libHandle, satKey, ds50UTC, &mse, &pos, &vel, &llh)
 }
 
 /// Propagates a satellite, represented by the satKey, to the time expressed in days since 1950, UTC.
@@ -171,7 +171,7 @@ public func sgp4PropMse(_ satKey: Int64, _ ds50UTC: Double, _ mse: inout Double,
 public func sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: inout Double,
                             _ pos: inout Real1D, _ vel: inout Real1D, _ llh: inout Real1D) -> Int32 {
 
-    return objcSgp4PropDs50UTC(libSgp4Handle, satKey, ds50UTC, &mse, &pos, &vel, &llh)
+    return objcSgp4PropDs50UTC(libHandle, satKey, ds50UTC, &mse, &pos, &vel, &llh)
 }
 
 /// Propagates a satellite, represented by the satKey, to the time expressed in days since 1950, UTC.
@@ -185,7 +185,7 @@ public func sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: inout Dou
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
 public func sgp4PropDs50UtcPosVel(_ satKey: Int64, _ ds50UTC: Double,
                                   _ pos: inout Real1D, _ vel: inout Real1D) -> Int32 {
-    objcSgp4PropDs50UtcPosVel(libSgp4Handle, satKey, ds50UTC, &pos, &vel)
+    objcSgp4PropDs50UtcPosVel(libHandle, satKey, ds50UTC, &pos, &vel)
 }
 
 /// Propagates a satellite, represented by the satKey, to the time expressed in days since 1950, UTC.
@@ -213,7 +213,7 @@ public func sgp4PropDs50UtcPosVel(_ satKey: Int64, _ ds50UTC: Double,
 ///   - pos: ###. (out-Double[3])
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
 public func sgp4PropDs50UtcPos(_ satKey: Int64, _ ds50UTC: Double,  _ pos: inout Real1D) -> Int32 {
-    objcSgp4PropDs50UtcPos(libSgp4Handle, satKey, ds50UTC, &pos)
+    objcSgp4PropDs50UtcPos(libHandle, satKey, ds50UTC, &pos)
 }
 
 /// Propagates a satellite, represented by the satKey, to the time expressed in days since 1950, UTC.
@@ -241,14 +241,14 @@ public func sgp4PropDs50UtcPos(_ satKey: Int64, _ ds50UTC: Double,  _ pos: inout
 ///   - llh: Resulting geodetic latitude (deg), longitude(deg), and height (km). (out-Double[3])
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
 public func sgp4PropDs50UtcLLH(_ satKey: Int64, _ ds50UTC: Double,  _ llh: inout Real1D) -> Int32 {
-    objcSgp4PropDs50UtcLLH(libSgp4Handle, satKey, ds50UTC, &llh)
+    objcSgp4PropDs50UtcLLH(libHandle, satKey, ds50UTC, &llh)
 }
 
 // ---------------- AUTO GENERATED ----------------
 
 public func Sgp4InitSat(_ satKey: Int64) -> Int32 {
 
-    guard let Sgp4InitSatPointer = dlsym(libSgp4Handle, "Sgp4InitSat") else {
+    guard let Sgp4InitSatPointer = dlsym(libHandle, "Sgp4InitSat") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -261,7 +261,7 @@ public func Sgp4InitSat(_ satKey: Int64) -> Int32 {
 
 public func Sgp4RemoveSat(_ satKey: Int64) -> Int32 {
 
-    guard let Sgp4RemoveSatPointer = dlsym(libSgp4Handle, "Sgp4RemoveSat") else {
+    guard let Sgp4RemoveSatPointer = dlsym(libHandle, "Sgp4RemoveSat") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
