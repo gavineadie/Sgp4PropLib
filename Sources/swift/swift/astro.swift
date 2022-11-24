@@ -38,14 +38,5 @@ public func astroFuncGetInfo() -> String {
 
 }
 
-// Converts a set of Keplerian elements to a set of equinoctial elements.
-// metricKep          The set of Keplerian elements to be converted. (in-Double[6])
-// metricEqnx         The resulting set of equinoctial elements. (out-Double[6])
-//      typedef void (STDCALL *fnPtrKepToEqnx)(double metricKep[6], double metricEqnx[6]);
-
-public func KepToEqnx() {
-
-}
-
 // ---------------- AUTO GENERATED ----------------
 

@@ -139,11 +139,11 @@ public func GetLastInfoMsg() -> String {
 /// be used for debugging purposes.
 /// - Parameter fileName: The name of the log file to use. (in-Character[512])
 /// - Returns: 0 if the file was opened successfully. Other values indicate an error.
-public func OpenLogFile(fileName: String) -> Int32 {
+public func OpenLogFile(_ fileName: String) -> Int32 {
     guard let openLogFilePointer = dlsym(libHandle, "OpenLogFile") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
-    
+
     typealias OpenLogFileFunction = fnPtrOpenLogFile
     let openLogFile = unsafeBitCast(openLogFilePointer, to: OpenLogFileFunction.self)
 
