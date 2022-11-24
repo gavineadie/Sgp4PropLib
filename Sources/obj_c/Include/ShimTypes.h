@@ -21,10 +21,6 @@ typedef struct {
 } Real1D;
 
 typedef struct {
-    double p, q, r, s, t, u;
-} Double_1x6;
-
-typedef struct {
     Int1D a, b;
 } Int2D;
 

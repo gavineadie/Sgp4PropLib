@@ -47,11 +47,10 @@ public func dllMainGetInfo() -> String {
     }
 
     typealias MainGetInfoFunction = fnPtrDllMainGetInfo
+    let dllMainGetInfo = unsafeBitCast(mainGetInfoPointer, to: MainGetInfoFunction.self)
 
     var info128 = Array(repeating: Int8(0), count: Int(INFOSTRLEN))
-    let dllMainGetInfo = unsafeBitCast(mainGetInfoPointer, to: MainGetInfoFunction.self)
     dllMainGetInfo(&info128); info128[Int(INFOSTRLEN)-1] = 0
-
     return String(cString: info128).trimRight()
 }
 
@@ -140,11 +139,11 @@ public func GetLastInfoMsg() -> String {
 /// be used for debugging purposes.
 /// - Parameter fileName: The name of the log file to use. (in-Character[512])
 /// - Returns: 0 if the file was opened successfully. Other values indicate an error.
-public func OpenLogFile(fileName: String) -> Int32 {
+public func OpenLogFile(_ fileName: String) -> Int32 {
     guard let openLogFilePointer = dlsym(libHandle, "OpenLogFile") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
-    
+
     typealias OpenLogFileFunction = fnPtrOpenLogFile
     let openLogFile = unsafeBitCast(openLogFilePointer, to: OpenLogFileFunction.self)
 
@@ -159,7 +158,7 @@ public func OpenLogFile(fileName: String) -> Int32 {
 ///
 /// - Parameter message: A message to be written into the log file, limited to 128 characters.
 /// If the message is longer than this, it will be truncated. (in-Character[128])
-public func LogMessage(message: String) {
+public func LogMessage(_ message: String) {
     guard let logMessagePointer = dlsym(libHandle, "LogMessage") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
@@ -187,17 +186,4 @@ public func CloseLogFile() {
 }
 
 // ---------------- AUTO GENERATED ----------------
-
-public func SetElsetKeyMode(_ elset_keyMode: Int32) -> Int32 {
-
-    guard let SetElsetKeyModePointer = dlsym(libHandle, "SetElsetKeyMode") else {
-        fatalError("dlsym failure: \(String(cString: dlerror()))")
-    }
-
-    typealias SetElsetKeyModeFunction = fnPtrSetElsetKeyMode
-    let SetElsetKeyMode = unsafeBitCast(SetElsetKeyModePointer, to: SetElsetKeyModeFunction.self)
-
-    return SetElsetKeyMode(elset_keyMode)
-
-}
 

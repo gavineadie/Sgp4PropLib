@@ -8,23 +8,24 @@
 import Foundation
 import obj_c
 
-fileprivate let libAstroFuncHandle = loadDll("libastrofunc.dylib")
+fileprivate let libHandle = loadDll("libastrofunc.dylib")
 
 public func astroFuncInit(_ dllHandle: Int64) -> Int32 {
 
-    guard let astroFuncInitPointer = dlsym(libAstroFuncHandle, "AstroFuncInit") else {
+    guard let astroFuncInitPointer = dlsym(libHandle, "AstroFuncInit") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
     typealias AstroFuncInitFunction = fnPtrAstroFuncInit
     let astroFuncInit = unsafeBitCast(astroFuncInitPointer, to: AstroFuncInitFunction.self)
+
     return astroFuncInit(dllHandle)
 
 }
 
 public func astroFuncGetInfo() -> String {
 
-    guard let astroFuncGetInfoPointer = dlsym(libAstroFuncHandle, "AstroFuncGetInfo") else {
+    guard let astroFuncGetInfoPointer = dlsym(libHandle, "AstroFuncGetInfo") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -39,28 +40,3 @@ public func astroFuncGetInfo() -> String {
 
 // ---------------- AUTO GENERATED ----------------
 
-public func NToA(_ n: Double) -> Double {
-
-    guard let NToAPointer = dlsym(libAstroFuncHandle, "NToA") else {
-        fatalError("dlsym failure: \(String(cString: dlerror()))")
-    }
-
-    typealias NToAFunction = fnPtrNToA
-    let NToA = unsafeBitCast(NToAPointer, to: NToAFunction.self)
-
-    return NToA(n)
-
-}
-
-public func AToN(_ a: Double) -> Double {
-
-    guard let AToNPointer = dlsym(libAstroFuncHandle, "AToN") else {
-        fatalError("dlsym failure: \(String(cString: dlerror()))")
-    }
-
-    typealias AToNFunction = fnPtrAToN
-    let AToN = unsafeBitCast(AToNPointer, to: AToNFunction.self)
-
-    return AToN(a)
-
-}

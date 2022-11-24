@@ -246,29 +246,3 @@ public func sgp4PropDs50UtcLLH(_ satKey: Int64, _ ds50UTC: Double,  _ llh: inout
 
 // ---------------- AUTO GENERATED ----------------
 
-public func Sgp4InitSat(_ satKey: Int64) -> Int32 {
-
-    guard let Sgp4InitSatPointer = dlsym(libHandle, "Sgp4InitSat") else {
-        fatalError("dlsym failure: \(String(cString: dlerror()))")
-    }
-
-    typealias Sgp4InitSatFunction = fnPtrSgp4InitSat
-    let Sgp4InitSat = unsafeBitCast(Sgp4InitSatPointer, to: Sgp4InitSatFunction.self)
-
-    return Sgp4InitSat(satKey)
-
-}
-
-public func Sgp4RemoveSat(_ satKey: Int64) -> Int32 {
-
-    guard let Sgp4RemoveSatPointer = dlsym(libHandle, "Sgp4RemoveSat") else {
-        fatalError("dlsym failure: \(String(cString: dlerror()))")
-    }
-
-    typealias Sgp4RemoveSatFunction = fnPtrSgp4RemoveSat
-    let Sgp4RemoveSat = unsafeBitCast(Sgp4RemoveSatPointer, to: Sgp4RemoveSatFunction.self)
-
-    return Sgp4RemoveSat(satKey)
-
-}
-
