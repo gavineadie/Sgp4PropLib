@@ -8,7 +8,7 @@
 import Foundation
 import obj_c
 
-fileprivate let libTimeFuncHandle = loadDll("libtimefunc.dylib")
+fileprivate let libHandle = loadDll("libtimefunc.dylib")
 
 /// Initializes the TimeFunc DLL for use in the program. If this function returns an error, it is recommended that you stop the program immediately.
 ///
@@ -19,7 +19,7 @@ fileprivate let libTimeFuncHandle = loadDll("libtimefunc.dylib")
 /// - Returns: zero indicating the TimeFunc DLL has been initialized successfully. Other values indicate an error
 public func timeFuncInit(_ dllHandle: Int64) -> Int32 {
 
-    guard let timeFuncInitPointer = dlsym(libTimeFuncHandle, "TimeFuncInit") else {
+    guard let timeFuncInitPointer = dlsym(libHandle, "TimeFuncInit") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -34,7 +34,7 @@ public func timeFuncInit(_ dllHandle: Int64) -> Int32 {
 /// - Returns: A string to hold the information about TimeFunc.dll. (out-Character[128])
 public func timeFuncGetInfo() -> String {
 
-    guard let timeFuncGetInfoPointer = dlsym(libTimeFuncHandle, "TimeFuncGetInfo") else {
+    guard let timeFuncGetInfoPointer = dlsym(libHandle, "TimeFuncGetInfo") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -61,7 +61,7 @@ public func dtgToUTC(_ DTG19: String?) -> Double {
         fatalError("dtgToUTC failure: NULL string")
     }
     
-    guard let DTGToUTCPointer = dlsym(libTimeFuncHandle, "DTGToUTC") else {
+    guard let DTGToUTCPointer = dlsym(libHandle, "DTGToUTC") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -80,7 +80,7 @@ public func dtgToUTC(_ DTG19: String?) -> Double {
 /// - Returns: The number of days since 1950, TAI. Partial days may be returned.
 public func UTCToTAI(_ ds50UTC: Double) -> Double {
 
-    guard let UTCToTAIPointer = dlsym(libTimeFuncHandle, "UTCToTAI") else {
+    guard let UTCToTAIPointer = dlsym(libHandle, "UTCToTAI") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -98,7 +98,7 @@ public func UTCToTAI(_ ds50UTC: Double) -> Double {
 /// - Returns: The number of days since 1950, TAI. Partial days may be returned.
 public func UTCToUT1(_ ds50UTC: Double) -> Double {
 
-    guard let UTCToUT1Pointer = dlsym(libTimeFuncHandle, "UTCToUT1") else {
+    guard let UTCToUT1Pointer = dlsym(libHandle, "UTCToUT1") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -117,7 +117,7 @@ public func UTCToUT1(_ ds50UTC: Double) -> Double {
 /// - Returns: The number of days since 1950, ET. Partial days may be returned.
 public func UTCToET(_ ds50UTC: Double) -> Double {
 
-    guard let UTCToETPointer = dlsym(libTimeFuncHandle, "UTCToET") else {
+    guard let UTCToETPointer = dlsym(libHandle, "UTCToET") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -136,7 +136,7 @@ public func UTCToET(_ ds50UTC: Double) -> Double {
 /// - Returns: returns The number of days since 1950, UTC. Partial days may be returned.
 func YrDaysToUTC(_ year: Int32, _ dayOfYear: Double) -> Double {
 
-    guard let YrDaysToUTCPointer = dlsym(libTimeFuncHandle, "YrDaysToUTC") else {
+    guard let YrDaysToUTCPointer = dlsym(libHandle, "YrDaysToUTC") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -159,7 +159,7 @@ func YrDaysToUTC(_ year: Int32, _ dayOfYear: Double) -> Double {
 func UTCToYrDays(_ ds50UTC: Double,
                  _ year: inout Int32, _ dayOfYear: inout Double) {
 
-    guard let UTCToYrDaysPointer = dlsym(libTimeFuncHandle, "UTCToYrDays") else {
+    guard let UTCToYrDaysPointer = dlsym(libHandle, "UTCToYrDays") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -184,7 +184,7 @@ func UTCToYrDays(_ ds50UTC: Double,
 func TimeComps1ToUTC(_ year: Int32, _ dayOfYear: Int32,
                      _ hh: Int32, _ mm: Int32, _ sss: Double) -> Double {
 
-    guard let TimeComps1ToUTCPointer = dlsym(libTimeFuncHandle, "TimeComps1ToUTC") else {
+    guard let TimeComps1ToUTCPointer = dlsym(libHandle, "TimeComps1ToUTC") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -213,7 +213,7 @@ func UTCToTimeComps1(_ ds50UTC: Double,
 
     precondition(ds50UTC >= 2192.0, "UTCToTimeComps1 failure: ds50UTC < 2192.0")
 
-    guard let UTCToTimeComps1Pointer = dlsym(libTimeFuncHandle, "UTCToTimeComps1") else {
+    guard let UTCToTimeComps1Pointer = dlsym(libHandle, "UTCToTimeComps1") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -227,7 +227,7 @@ func UTCToTimeComps1(_ ds50UTC: Double,
 func TimeComps2ToUTC(_ year: Int32, _ month: Int32, _ dayOfMonth: Int32,
                      _ hh: Int32, _ mm: Int32, _ sss: Double) -> Double {
 
-    guard let TimeComps2ToUTCPointer = dlsym(libTimeFuncHandle, "TimeComps1ToUTC") else {
+    guard let TimeComps2ToUTCPointer = dlsym(libHandle, "TimeComps1ToUTC") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -256,7 +256,7 @@ func UTCToTimeComps2(_ ds50UTC: Double,
 
     precondition(ds50UTC >= 2192.0, "UTCToTimeComps2 failure: ds50UTC < 2192.0")
 
-    guard let UTCToTimeComps2Pointer = dlsym(libTimeFuncHandle, "UTCToTimeComps2") else {
+    guard let UTCToTimeComps2Pointer = dlsym(libHandle, "UTCToTimeComps2") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -277,7 +277,7 @@ func UTCToTimeComps2(_ ds50UTC: Double,
 /// - Returns: A string to hold the result of the conversion. (out-Character[20])
 public func utcToDTG20(_ ds50UTC: Double) -> String {
     
-    guard let UTCToDTG20Pointer = dlsym(libTimeFuncHandle, "UTCToDTG20") else {
+    guard let UTCToDTG20Pointer = dlsym(libHandle, "UTCToDTG20") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
     
@@ -299,7 +299,7 @@ public func utcToDTG20(_ ds50UTC: Double) -> String {
 /// - Returns: A string to hold the result of the conversion. (out-Character[19])
 public func utcToDTG19(_ ds50UTC: Double) -> String {
 
-    guard let UTCToDTG19Pointer = dlsym(libTimeFuncHandle, "UTCToDTG19") else {
+    guard let UTCToDTG19Pointer = dlsym(libHandle, "UTCToDTG19") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -321,7 +321,7 @@ public func utcToDTG19(_ ds50UTC: Double) -> String {
 /// - Returns: A string to hold the result of the conversion. (out-Character[19])
 public func utcToDTG17(_ ds50UTC: Double) -> String {
 
-    guard let UTCToDTG17Pointer = dlsym(libTimeFuncHandle, "UTCToDTG17") else {
+    guard let UTCToDTG17Pointer = dlsym(libHandle, "UTCToDTG17") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -343,7 +343,7 @@ public func utcToDTG17(_ ds50UTC: Double) -> String {
 /// - Returns: A string to hold the result of the conversion. (out-Character[19])
 public func utcToDTG15(_ ds50UTC: Double) -> String {
 
-    guard let UTCToDTG15Pointer = dlsym(libTimeFuncHandle, "UTCToDTG15") else {
+    guard let UTCToDTG15Pointer = dlsym(libHandle, "UTCToDTG15") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
@@ -360,7 +360,7 @@ public func utcToDTG15(_ ds50UTC: Double) -> String {
 /// non-0 if there is an error.
 public func TConRemoveAll() -> Int32 {
     
-    guard let TConRemoveAllPointer = dlsym(libTimeFuncHandle, "TConRemoveAll") else {
+    guard let TConRemoveAllPointer = dlsym(libHandle, "TConRemoveAll") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
     
@@ -373,67 +373,3 @@ public func TConRemoveAll() -> Int32 {
 
 // ---------------- AUTO GENERATED ----------------
 
-public func TimeFuncInit(_ apPtr: Int64) -> Int32 {
-    
-    guard let TimeFuncInitPointer = dlsym(libTimeFuncHandle, "TimeFuncInit") else {
-        fatalError("dlsym failure: \(String(cString: dlerror()))")
-    }
-    
-    typealias TimeFuncInitFunction = fnPtrTimeFuncInit
-    let TimeFuncInit = unsafeBitCast(TimeFuncInitPointer, to: TimeFuncInitFunction.self)
-    
-    return TimeFuncInit(apPtr)
-    
-}
-
-public func TAIToUTC(_ ds50TAI: Double) -> Double {
-    
-    guard let TAIToUTCPointer = dlsym(libTimeFuncHandle, "TAIToUTC") else {
-        fatalError("dlsym failure: \(String(cString: dlerror()))")
-    }
-    
-    typealias TAIToUTCFunction = fnPtrTAIToUTC
-    let TAIToUTC = unsafeBitCast(TAIToUTCPointer, to: TAIToUTCFunction.self)
-    
-    return TAIToUTC(ds50TAI)
-    
-}
-
-public func TAIToUT1(_ ds50TAI: Double) -> Double {
-    
-    guard let TAIToUT1Pointer = dlsym(libTimeFuncHandle, "TAIToUT1") else {
-        fatalError("dlsym failure: \(String(cString: dlerror()))")
-    }
-    
-    typealias TAIToUT1Function = fnPtrTAIToUT1
-    let TAIToUT1 = unsafeBitCast(TAIToUT1Pointer, to: TAIToUT1Function.self)
-    
-    return TAIToUT1(ds50TAI)
-    
-}
-
-public func ThetaGrnwchFK4(_ ds50UT1: Double) -> Double {
-    
-    guard let ThetaGrnwchFK4Pointer = dlsym(libTimeFuncHandle, "ThetaGrnwchFK4") else {
-        fatalError("dlsym failure: \(String(cString: dlerror()))")
-    }
-    
-    typealias ThetaGrnwchFK4Function = fnPtrThetaGrnwchFK4
-    let ThetaGrnwchFK4 = unsafeBitCast(ThetaGrnwchFK4Pointer, to: ThetaGrnwchFK4Function.self)
-    
-    return ThetaGrnwchFK4(ds50UT1)
-    
-}
-
-public func ThetaGrnwchFK5(_ ds50UT1: Double) -> Double {
-    
-    guard let ThetaGrnwchFK5Pointer = dlsym(libTimeFuncHandle, "ThetaGrnwchFK5") else {
-        fatalError("dlsym failure: \(String(cString: dlerror()))")
-    }
-    
-    typealias ThetaGrnwchFK5Function = fnPtrThetaGrnwchFK5
-    let ThetaGrnwchFK5 = unsafeBitCast(ThetaGrnwchFK5Pointer, to: ThetaGrnwchFK5Function.self)
-    
-    return ThetaGrnwchFK5(ds50UT1)
-    
-}
