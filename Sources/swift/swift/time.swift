@@ -60,11 +60,7 @@ public func dtgToUTC(_ DTG19: String?) -> Double {
     guard let timeString = DTG19 else {
         fatalError("dtgToUTC failure: NULL string")
     }
-<<<<<<< HEAD
 
-=======
-
->>>>>>> autogen
     guard let DTGToUTCPointer = dlsym(libHandle, "DTGToUTC") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
