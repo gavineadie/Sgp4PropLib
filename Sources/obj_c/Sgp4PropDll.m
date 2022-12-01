@@ -9,7 +9,7 @@
 #import "ShimTypes.h"
 
 int objcSgp4PropDs50UTC(void * libSgp4Handle, int64_t satKey, double ds50UTC, double* mseOut,
-                        Real1D* posOut, Real1D* velOut, Real1D* llhOut) {
+                        Double_3* posOut, Double_3* velOut, Double_3* llhOut) {
 
     fnPtrSgp4PropDs50UTC dll_Sgp4PropDs50UTC = (fnPtrSgp4PropDs50UTC)dlsym(libSgp4Handle, "Sgp4PropDs50UTC");
     
@@ -18,7 +18,7 @@ int objcSgp4PropDs50UTC(void * libSgp4Handle, int64_t satKey, double ds50UTC, do
 }
 
 int objcSgp4PropMsePointer(void * libSgp4Handle, int64_t satKey, double mse, double* ds50UTC,
-                           Real1D* pos, Real1D* vel, Real1D* llh) {
+                           Double_3* pos, Double_3* vel, Double_3* llh) {
     
     fnPtrSgp4PropDs50UTC dll_Sgp4PropMse = (fnPtrSgp4PropMse)dlsym(libSgp4Handle, "Sgp4PropMse");
     
@@ -27,7 +27,7 @@ int objcSgp4PropMsePointer(void * libSgp4Handle, int64_t satKey, double mse, dou
 }
 
 int objcSgp4PropDs50UtcPosVel(void * libSgp4Handle, int64_t satKey, double ds50UTC,
-                              Real1D* pos, Real1D* vel) {
+                              Double_3* pos, Double_3* vel) {
     
     fnPtrSgp4PropDs50UtcPosVel dll_Sgp4PropDs50UtcPosVel = (fnPtrSgp4PropDs50UtcPosVel)dlsym(libSgp4Handle, "Sgp4PropDs50UtcPosVel");
     
@@ -35,7 +35,7 @@ int objcSgp4PropDs50UtcPosVel(void * libSgp4Handle, int64_t satKey, double ds50U
     
 }
 
-int objcSgp4PropDs50UtcLLH(void * libSgp4Handle, int64_t satKey, double ds50UTC, Real1D* llh) {
+int objcSgp4PropDs50UtcLLH(void * libSgp4Handle, int64_t satKey, double ds50UTC, Double_3* llh) {
     
     fnPtrSgp4PropDs50UtcLLH dll_Sgp4PropDs50UtcLLH = (fnPtrSgp4PropDs50UtcLLH)dlsym(libSgp4Handle, "Sgp4PropDs50UtcLLH");
     
@@ -43,7 +43,7 @@ int objcSgp4PropDs50UtcLLH(void * libSgp4Handle, int64_t satKey, double ds50UTC,
     
 }
 
-int objcSgp4PropDs50UtcPos(void * libSgp4Handle, int64_t satKey, double ds50UTC, Real1D* pos) {
+int objcSgp4PropDs50UtcPos(void * libSgp4Handle, int64_t satKey, double ds50UTC, Double_3* pos) {
     
     fnPtrSgp4PropDs50UtcPos dll_Sgp4PropDs50UtcPos = (fnPtrSgp4PropDs50UtcPos)dlsym(libSgp4Handle, "Sgp4PropDs50UtcPos");
     

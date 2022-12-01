@@ -24,40 +24,51 @@ fileprivate let libHandle = loadDll("libdllmain.dylib")
 /// If you forget to call this function first, the `GetLastErrMsg()` function won't return a
 /// correct value.
 /// - Returns: A handle to the global data set. You will pass this handle to other initialization functions within other DLLs in the API.
+
+//------------------------------------------------------------------
+// ORIGINAL: Int64 DllMainInit()
+
 public func dllMainInit() -> Int64 {
 
-    guard let mainInitPointer = dlsym(libHandle, "DllMainInit") else {
+    guard let dllMainInitPointer = dlsym(libHandle, "DllMainInit") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
-    typealias MainInitFunction = fnPtrDllMainInit
-    let mainInit = unsafeBitCast(mainInitPointer, to: MainInitFunction.self)
+    typealias DllMainInitFunction = fnPtrDllMainInit
+    let dllMainInit = unsafeBitCast(dllMainInitPointer, to: DllMainInitFunction.self)
 
-    return mainInit()
+    return dllMainInit()
+
 }
 
 /// Returns information about the DllMain DLL.
 ///
 /// The returned string provides information about the version number, build date, and the platform.
 /// - Returns: A string holding the information about DllMain.dll. (out-Character[128])
+
+//------------------------------------------------------------------
+// ORIGINAL: void DllMainGetInfo((out-Character[128]) infoStr)
+
 public func dllMainGetInfo() -> String {
 
-    guard let mainGetInfoPointer = dlsym(libHandle, "DllMainGetInfo") else {
+    guard let dllMainGetInfoPointer = dlsym(libHandle, "DllMainGetInfo") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
     }
 
-    typealias MainGetInfoFunction = fnPtrDllMainGetInfo
-    let dllMainGetInfo = unsafeBitCast(mainGetInfoPointer, to: MainGetInfoFunction.self)
+    typealias DllMainGetInfoFunction = fnPtrDllMainGetInfo
+    let dllMainGetInfo = unsafeBitCast(dllMainGetInfoPointer, to: DllMainGetInfoFunction.self)
 
-    var info128 = Array(repeating: Int8(0), count: Int(INFOSTRLEN))
-    dllMainGetInfo(&info128); info128[Int(INFOSTRLEN)-1] = 0
-    return String(cString: info128).trimRight()
+    var string128 = Array(repeating: Int8(0), count: Int(128))
+    dllMainGetInfo(&string128); string128[Int(127)] = 0
+    return String(cString: string128).trimRight()
+
 }
 
 /// Returns a list of names of the Standardized Astrodynamic Algorithms dynamic
 /// libraries that were initialized successfully.
 /// - Returns: A string with the names of the dynamic libraries that were initialized
 /// successfully. (out-Character[512])
+
 public func getInitDllNames() -> String {
 
     guard let getInitDllNamesPointer = dlsym(libHandle, "GetInitDllNames") else {
@@ -82,6 +93,7 @@ public func getInitDllNames() -> String {
 /// If you call this function before you have called DllMainInit(), the function will
 /// return an invalid string. This could result in undefined behavior.
 /// - Returns: A string that stores the last logged error message. (out-Character[128])
+
 public func GetLastErrMsg() -> String {
 
     guard let getLastErrMsgPointer = dlsym(libHandle, "GetLastErrMsg") else {
@@ -114,6 +126,7 @@ public func GetLastErrMsg() -> String {
 /// Standardized Astrodynamic Algorithms dynamic libraries is one of the most common
 /// causes of program crashes.)
 /// - Returns: A string that stores the last logged informational message. (out-Character[128])
+
 public func GetLastInfoMsg() -> String {
 
     guard let getLastInfoMsgPointer = dlsym(libHandle, "GetLastInfoMsg") else {
@@ -139,6 +152,7 @@ public func GetLastInfoMsg() -> String {
 /// be used for debugging purposes.
 /// - Parameter fileName: The name of the log file to use. (in-Character[512])
 /// - Returns: 0 if the file was opened successfully. Other values indicate an error.
+
 public func OpenLogFile(_ fileName: String) -> Int32 {
     guard let openLogFilePointer = dlsym(libHandle, "OpenLogFile") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
@@ -158,6 +172,7 @@ public func OpenLogFile(_ fileName: String) -> Int32 {
 ///
 /// - Parameter message: A message to be written into the log file, limited to 128 characters.
 /// If the message is longer than this, it will be truncated. (in-Character[128])
+
 public func LogMessage(_ message: String) {
     guard let logMessagePointer = dlsym(libHandle, "LogMessage") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
@@ -172,6 +187,7 @@ public func LogMessage(_ message: String) {
 /// Closes the currently open log file and reset the last logged error message to null.
 ///
 /// Remember to close the log file before exiting the program.
+
 public func CloseLogFile() {
     guard let closeLogFilePointer = dlsym(libHandle, "CloseLogFile") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")

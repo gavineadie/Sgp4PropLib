@@ -19,6 +19,7 @@ fileprivate let libHandle = loadDll("libsgp4prop.dylib")
 /// before using this DLL.
 /// - Parameter dllHandle: The handle that was returned from `DllMainInit()`
 /// - Returns: 0 if Sgp4Prop.dll is initialized successfully, non-0 if there is an error.
+
 public func sgp4Init(_ dllHandle: Int64) -> Int32 {
 
     guard let sgp4InitPointer = dlsym(libHandle, "Sgp4Init") else {
@@ -34,6 +35,7 @@ public func sgp4Init(_ dllHandle: Int64) -> Int32 {
 /// Returns information about the current version of Sgp4Prop.dll.
 ///
 /// - Returns: The returned string provides information about the version number, build date, and platform.
+
 public func sgp4GetInfo() -> String {
 
     guard let sgp4GetInfoPointer = dlsym(libHandle, "Sgp4GetInfo") else {
@@ -68,6 +70,7 @@ public func sgp4GetInfo() -> String {
 /// This key will have been returned by one of the routines in Tle.dll. (in-Long)
 /// - Returns: 0 if the satellite is successfully initialized and added to
 /// Sgp4Prop.dll's set of satellites, non-0 if there is an error.
+
 public func sgp4InitSat(_ satKey: Int64) -> Int32 {
 
     guard let sgp4InitSatPointer = dlsym(libHandle, "Sgp4InitSat") else {
@@ -84,6 +87,7 @@ public func sgp4InitSat(_ satKey: Int64) -> Int32 {
 /// corresponding TLE data loaded by calls to routines in Tle.dll.
 /// - Parameter satKey: The satellite's unique key. (in-Long)
 /// - Returns: 0 if the satellite is removed successfully, non-0 if there is an error
+
 public func sgp4RemoveSat(_ satKey: Int64) -> Int32 {
 
     guard let sgp4RemoveSatPointer = dlsym(libHandle, "Sgp4RemoveSat") else {
@@ -101,6 +105,7 @@ public func sgp4RemoveSat(_ satKey: Int64) -> Int32 {
 /// Calling this function removes all satellites from the set maintained by
 /// Sgp4Prop.dll. However, the TLE data loaded by Tle.dll is unaffected by this function.
 /// - Returns: 0 if all satellites are removed successfully from memory, non-0 if there is an error.
+
 public func sgp4RemoveAllSats() -> Int32 {
 
     guard let sgp4RemoveAllSatsPointer = dlsym(libHandle, "Sgp4RemoveAllSats") else {
@@ -140,8 +145,9 @@ public func sgp4RemoveAllSats() -> Int32 {
 ///   - vel: Resulting ECI velocity vector (km/s) in True Equator and Mean Equinox of Epoch. (out-Double[3])
 ///   - llh: Resulting geodetic latitude (deg), longitude(deg), and height (km). (out-Double[3])
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
+
 public func sgp4PropMse(_ satKey: Int64, _ ds50UTC: Double, _ mse: inout Double,
-                            _ pos: inout Real1D, _ vel: inout Real1D, _ llh: inout Real1D) -> Int32 {
+                            _ pos: inout Double_3, _ vel: inout Double_3, _ llh: inout Double_3) -> Int32 {
 
     return objcSgp4PropMsePointer(libHandle, satKey, ds50UTC, &mse, &pos, &vel, &llh)
 }
@@ -168,8 +174,9 @@ public func sgp4PropMse(_ satKey: Int64, _ ds50UTC: Double, _ mse: inout Double,
 ///   - vel: Resulting ECI velocity vector (km/s) in True Equator and Mean Equinox of Epoch. (out-Double[3])
 ///   - llh: Resulting geodetic latitude (deg), longitude(deg), and height (km). (out-Double[3])
 /// - Returns: returns 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
+
 public func sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: inout Double,
-                            _ pos: inout Real1D, _ vel: inout Real1D, _ llh: inout Real1D) -> Int32 {
+                            _ pos: inout Double_3, _ vel: inout Double_3, _ llh: inout Double_3) -> Int32 {
 
     return objcSgp4PropDs50UTC(libHandle, satKey, ds50UTC, &mse, &pos, &vel, &llh)
 }
@@ -183,8 +190,9 @@ public func sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: inout Dou
 ///   - pos: Resulting ECI position vector (km) in True Equator and Mean Equinox of Epoch. (out-Double[3])
 ///   - vel: Resulting ECI velocity vector (km/s) in True Equator and Mean Equinox of Epoch. (out-Double[3])
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
+
 public func sgp4PropDs50UtcPosVel(_ satKey: Int64, _ ds50UTC: Double,
-                                  _ pos: inout Real1D, _ vel: inout Real1D) -> Int32 {
+                                  _ pos: inout Double_3, _ vel: inout Double_3) -> Int32 {
     objcSgp4PropDs50UtcPosVel(libHandle, satKey, ds50UTC, &pos, &vel)
 }
 
@@ -212,7 +220,8 @@ public func sgp4PropDs50UtcPosVel(_ satKey: Int64, _ ds50UTC: Double,
 ///   - ds50UTC: The time to propagate to, expressed in days since 1950, UTC. (in-Double)
 ///   - pos: ###. (out-Double[3])
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
-public func sgp4PropDs50UtcPos(_ satKey: Int64, _ ds50UTC: Double,  _ pos: inout Real1D) -> Int32 {
+
+public func sgp4PropDs50UtcPos(_ satKey: Int64, _ ds50UTC: Double,  _ pos: inout Double_3) -> Int32 {
     objcSgp4PropDs50UtcPos(libHandle, satKey, ds50UTC, &pos)
 }
 
@@ -240,9 +249,19 @@ public func sgp4PropDs50UtcPos(_ satKey: Int64, _ ds50UTC: Double,  _ pos: inout
 ///   - ds50UTC: The time to propagate to, expressed in days since 1950, UTC. (in-Double)
 ///   - llh: Resulting geodetic latitude (deg), longitude(deg), and height (km). (out-Double[3])
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
-public func sgp4PropDs50UtcLLH(_ satKey: Int64, _ ds50UTC: Double,  _ llh: inout Real1D) -> Int32 {
-    objcSgp4PropDs50UtcLLH(libHandle, satKey, ds50UTC, &llh)
+
+//------------------------------------------------------------------
+// ORIGINAL: Int32 Sgp4PropDs50UtcLLH((in-Long) satKey, (in-Double) ds50UTC, (out-Double[3]) llh)
+
+public func sgp4PropDs50UtcLLH(_ satKey: Int64, _ ds50UTC: Double, _ llh: inout [Double]) -> Int32 {
+
+    guard let sgp4PropDs50UtcLLHPointer = dlsym(libHandle, "Sgp4PropDs50UtcLLH") else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    typealias Sgp4PropDs50UtcLLHFunction = fnPtrSgp4PropDs50UtcLLH
+    let sgp4PropDs50UtcLLH = unsafeBitCast(sgp4PropDs50UtcLLHPointer, to: Sgp4PropDs50UtcLLHFunction.self)
+
+    return sgp4PropDs50UtcLLH(satKey, ds50UTC, &llh)
+
 }
-
-// ---------------- AUTO GENERATED ----------------
-

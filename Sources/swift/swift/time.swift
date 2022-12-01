@@ -17,6 +17,7 @@ fileprivate let libHandle = loadDll("libtimefunc.dylib")
 /// before using this DLL.
 /// - Parameter dllHandle: The pointer that was returned from DllMain.DllMainInit (in-Long)
 /// - Returns: zero indicating the TimeFunc DLL has been initialized successfully. Other values indicate an error
+
 public func timeFuncInit(_ dllHandle: Int64) -> Int32 {
 
     guard let timeFuncInitPointer = dlsym(libHandle, "TimeFuncInit") else {
@@ -32,6 +33,7 @@ public func timeFuncInit(_ dllHandle: Int64) -> Int32 {
 /// Returns information about the TimeFunc DLL. The returned string provides information
 /// about the version number, build date, and the platform of the TimeFunc DLL.
 /// - Returns: A string to hold the information about TimeFunc.dll. (out-Character[128])
+
 public func timeFuncGetInfo() -> String {
 
     guard let timeFuncGetInfoPointer = dlsym(libHandle, "TimeFuncGetInfo") else {
@@ -55,6 +57,7 @@ public func timeFuncGetInfo() -> String {
 /// - Parameter time: The string to convert. Can be any of the DTG formats
 /// previously documented. (in-Character[20])
 /// - Returns: The number of days since 1950 UTC
+
 public func dtgToUTC(_ DTG19: String?) -> Double {
 
     guard let timeString = DTG19 else {
@@ -78,6 +81,7 @@ public func dtgToUTC(_ DTG19: String?) -> Double {
 /// If no timing constants records were loaded, ds50UTC and ds50TAI are the same.
 /// - Parameter ds50UTC: Days since 1950, UTC to be converted.
 /// - Returns: The number of days since 1950, TAI. Partial days may be returned.
+
 public func UTCToTAI(_ ds50UTC: Double) -> Double {
 
     guard let UTCToTAIPointer = dlsym(libHandle, "UTCToTAI") else {
@@ -96,6 +100,7 @@ public func UTCToTAI(_ ds50UTC: Double) -> Double {
 /// If no timing constants records were loaded, `ds50UTC` and `ds50UT1` are the same.
 /// - Parameter ds50UTC: Days since 1950, UTC to be converted. (in-Double)
 /// - Returns: The number of days since 1950, TAI. Partial days may be returned.
+
 public func UTCToUT1(_ ds50UTC: Double) -> Double {
 
     guard let UTCToUT1Pointer = dlsym(libHandle, "UTCToUT1") else {
@@ -115,6 +120,7 @@ public func UTCToUT1(_ ds50UTC: Double) -> Double {
 ///
 /// - Parameter ds50UTC: Days since 1950, UTC to be converted. (in-Double)
 /// - Returns: The number of days since 1950, ET. Partial days may be returned.
+
 public func UTCToET(_ ds50UTC: Double) -> Double {
 
     guard let UTCToETPointer = dlsym(libHandle, "UTCToET") else {
@@ -134,7 +140,8 @@ public func UTCToET(_ ds50UTC: Double) -> Double {
 ///   - year: Two or four digit years are accepted. (in-Integer)
 ///   - dayOfYear: The day of year. Partial days can be specified. (in-Double)
 /// - Returns: returns The number of days since 1950, UTC. Partial days may be returned.
-func YrDaysToUTC(_ year: Int32, _ dayOfYear: Double) -> Double {
+
+public func YrDaysToUTC(_ year: Int32, _ dayOfYear: Double) -> Double {
 
     guard let YrDaysToUTCPointer = dlsym(libHandle, "YrDaysToUTC") else {
         fatalError("dlsym failure: \(String(cString: dlerror()))")
@@ -156,7 +163,8 @@ func YrDaysToUTC(_ year: Int32, _ dayOfYear: Double) -> Double {
 ///   - year: A reference to a variable in which to place the 4-digit year. (out-Integer)
 ///   - dayOfYear: A reference to a variable in which to place the day of year.
 ///   Partial days may be expressed in this variable. (out-Double)
-func UTCToYrDays(_ ds50UTC: Double,
+
+public func UTCToYrDays(_ ds50UTC: Double,
                  _ year: inout Int32, _ dayOfYear: inout Double) {
 
     guard let UTCToYrDaysPointer = dlsym(libHandle, "UTCToYrDays") else {
@@ -181,7 +189,8 @@ func UTCToYrDays(_ ds50UTC: Double,
 ///   - mm: The minute. (in-Integer)
 ///   - sss: The second, including partial seconds if desired. (in-Double)
 /// - Returns: The number of Days since 1950, UTC. Partial days may be returned.
-func TimeComps1ToUTC(_ year: Int32, _ dayOfYear: Int32,
+
+public func TimeComps1ToUTC(_ year: Int32, _ dayOfYear: Int32,
                      _ hh: Int32, _ mm: Int32, _ sss: Double) -> Double {
 
     guard let TimeComps1ToUTCPointer = dlsym(libHandle, "TimeComps1ToUTC") else {
@@ -207,7 +216,8 @@ func TimeComps1ToUTC(_ year: Int32, _ dayOfYear: Int32,
 ///   - mm: A reference to a variable in which to store the minute. (out-Integer)
 ///   - sss: A reference to a variable in which to store the second.
 ///   Partial seconds may be expressed if necessary. (out-Double)
-func UTCToTimeComps1(_ ds50UTC: Double,
+
+public func UTCToTimeComps1(_ ds50UTC: Double,
                      _ year: inout Int32, _ dayOfYear: inout Int32,
                      _ hh: inout Int32, _ mm: inout Int32, _ sss: inout Double) {
 
@@ -224,7 +234,7 @@ func UTCToTimeComps1(_ ds50UTC: Double,
 
 }
 
-func TimeComps2ToUTC(_ year: Int32, _ month: Int32, _ dayOfMonth: Int32,
+public func TimeComps2ToUTC(_ year: Int32, _ month: Int32, _ dayOfMonth: Int32,
                      _ hh: Int32, _ mm: Int32, _ sss: Double) -> Double {
 
     guard let TimeComps2ToUTCPointer = dlsym(libHandle, "TimeComps1ToUTC") else {
@@ -250,7 +260,8 @@ func TimeComps2ToUTC(_ year: Int32, _ month: Int32, _ dayOfMonth: Int32,
 ///   - mm: A reference to a variable in which to store the minute. (out-Integer)
 ///   - sss: A reference to a variable in which to store the second.
 ///   Partial seconds may be expressed if necessary. (out-Double)
-func UTCToTimeComps2(_ ds50UTC: Double,
+
+public func UTCToTimeComps2(_ ds50UTC: Double,
                      _ year: inout Int32, _ month: inout Int32, _ dayofMonth: inout Int32,
                      _ hh: inout Int32, _ mm: inout Int32, _ sss: inout Double) {
 
@@ -275,6 +286,7 @@ func UTCToTimeComps2(_ ds50UTC: Double,
 /// "1956/001 0000 00.000".
 /// - Parameter ds50UTC: Days since 1950, UTC to be converted. (in-Double)
 /// - Returns: A string to hold the result of the conversion. (out-Character[20])
+
 public func utcToDTG20(_ ds50UTC: Double) -> String {
     
     guard let UTCToDTG20Pointer = dlsym(libHandle, "UTCToDTG20") else {
@@ -297,6 +309,7 @@ public func utcToDTG20(_ ds50UTC: Double) -> String {
 /// "1956Jan01000000.000".
 /// - Parameter ds50UTC: Days since 1950, UTC to be converted. (in-Double)
 /// - Returns: A string to hold the result of the conversion. (out-Character[19])
+
 public func utcToDTG19(_ ds50UTC: Double) -> String {
 
     guard let UTCToDTG19Pointer = dlsym(libHandle, "UTCToDTG19") else {
@@ -319,6 +332,7 @@ public func utcToDTG19(_ ds50UTC: Double) -> String {
 /// "1956/001.00000000".
 /// - Parameter ds50UTC: Days since 1950, UTC to be converted. (in-Double)
 /// - Returns: A string to hold the result of the conversion. (out-Character[19])
+
 public func utcToDTG17(_ ds50UTC: Double) -> String {
 
     guard let UTCToDTG17Pointer = dlsym(libHandle, "UTCToDTG17") else {
@@ -341,6 +355,7 @@ public func utcToDTG17(_ ds50UTC: Double) -> String {
 /// "56001000000.000".
 /// - Parameter ds50UTC: Days since 1950, UTC to be converted. (in-Double)
 /// - Returns: A string to hold the result of the conversion. (out-Character[19])
+
 public func utcToDTG15(_ ds50UTC: Double) -> String {
 
     guard let UTCToDTG15Pointer = dlsym(libHandle, "UTCToDTG15") else {
@@ -358,6 +373,7 @@ public func utcToDTG15(_ ds50UTC: Double) -> String {
 /// Removes all the timing constants records in memory.
 /// - Returns: 0 if all timing constants records are successfully removed from memory,
 /// non-0 if there is an error.
+
 public func TConRemoveAll() -> Int32 {
     
     guard let TConRemoveAllPointer = dlsym(libHandle, "TConRemoveAll") else {
