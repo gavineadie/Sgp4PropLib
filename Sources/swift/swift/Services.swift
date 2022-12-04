@@ -29,9 +29,19 @@ func freeDll(_ dllHandle: UnsafeMutableRawPointer) -> Int32 {
 
 extension String {
 
-    func trimRight() -> String {
+    public func trimRight() -> String {
         String(reversed().drop { $0.isWhitespace }.reversed())
     }
+}
+
+func getFunctionPointer(_ libHandle: UnsafeMutableRawPointer?,
+                        _ functionName: String) -> UnsafeMutableRawPointer {
+
+    guard let functionPointer = dlsym(libHandle, functionName) else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+
+    return functionPointer
 }
 
 // -----
