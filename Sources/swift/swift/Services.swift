@@ -8,16 +8,16 @@
 import Foundation
 
 func getDylibPath() -> String {
-    if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
-        return dylibDirectory + "/"
-    }
+//    if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
+//        return dylibDirectory + "/"
+//    }
 
     return "/usr/local/lib/sgp4prop/"
 }
 
-public func loadDll(_ dllPath: String) -> UnsafeMutableRawPointer {
-    guard let dllHandle = dlopen(getDylibPath() + dllPath, RTLD_NOW) else {
-        fatalError("Could not open \(getDylibPath() + dllPath) \(String(cString: dlerror()))")
+public func loadDll(_ dllName: String) -> UnsafeMutableRawPointer {
+    guard let dllHandle = dlopen(getDylibPath() + dllName, RTLD_NOW) else {
+        fatalError("Could not open \(getDylibPath() + dllName) \(String(cString: dlerror()))")
     }
 
     return dllHandle
