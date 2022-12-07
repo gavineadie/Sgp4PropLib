@@ -14,11 +14,11 @@ fileprivate let libHandle = loadDll("libsgp4prop.dylib")
 // ORIGINAL:     int Sgp4Init((in-Long) apPtr)
 
 public func Sgp4Init(_ apPtr: Int64) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4Init"),
-                          to: fnPtrSgp4Init.self)
-
+                                 to: fnPtrSgp4Init.self)
+    
     return function(apPtr)
 }
 
@@ -26,11 +26,11 @@ public func Sgp4Init(_ apPtr: Int64) -> Int32 {
 // ORIGINAL:     void Sgp4GetInfo((out-Character[128]) infoStr)
 
 public func Sgp4GetInfo(_ infoStr: UnsafeMutablePointer<CChar>) {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4GetInfo"),
-                          to: fnPtrSgp4GetInfo.self)
-
+                                 to: fnPtrSgp4GetInfo.self)
+    
     function(infoStr)
 }
 
@@ -38,11 +38,11 @@ public func Sgp4GetInfo(_ infoStr: UnsafeMutablePointer<CChar>) {
 // ORIGINAL:     int Sgp4InitSat((in-Long) satKey)
 
 public func Sgp4InitSat(_ satKey: Int64) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4InitSat"),
-                          to: fnPtrSgp4InitSat.self)
-
+                                 to: fnPtrSgp4InitSat.self)
+    
     return function(satKey)
 }
 
@@ -50,11 +50,11 @@ public func Sgp4InitSat(_ satKey: Int64) -> Int32 {
 // ORIGINAL:     int Sgp4RemoveSat((in-Long) satKey)
 
 public func Sgp4RemoveSat(_ satKey: Int64) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4RemoveSat"),
-                          to: fnPtrSgp4RemoveSat.self)
-
+                                 to: fnPtrSgp4RemoveSat.self)
+    
     return function(satKey)
 }
 
@@ -62,11 +62,11 @@ public func Sgp4RemoveSat(_ satKey: Int64) -> Int32 {
 // ORIGINAL:     int Sgp4RemoveAllSats()
 
 public func Sgp4RemoveAllSats() -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4RemoveAllSats"),
-                          to: fnPtrSgp4RemoveAllSats.self)
-
+                                 to: fnPtrSgp4RemoveAllSats.self)
+    
     return function()
 }
 
@@ -74,11 +74,11 @@ public func Sgp4RemoveAllSats() -> Int32 {
 // ORIGINAL:     int Sgp4GetCount()
 
 public func Sgp4GetCount() -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4GetCount"),
-                          to: fnPtrSgp4GetCount.self)
-
+                                 to: fnPtrSgp4GetCount.self)
+    
     return function()
 }
 
@@ -86,11 +86,11 @@ public func Sgp4GetCount() -> Int32 {
 // ORIGINAL:     int Sgp4PropMse((in-Long) satKey, (in-Double) mse, (out-Double) ds50UTC, (out-Double[3]) pos, (out-Double[3]) vel, (out-Double[3]) llh)
 
 public func Sgp4PropMse(_ satKey: Int64, _ mse: Double, _ ds50UTC: UnsafeMutablePointer<Double>, _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>, _ llh: UnsafeMutablePointer<Double>) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4PropMse"),
-                          to: fnPtrSgp4PropMse.self)
-
+                                 to: fnPtrSgp4PropMse.self)
+    
     return function(satKey, mse, ds50UTC, pos, vel, llh)
 }
 
@@ -98,11 +98,11 @@ public func Sgp4PropMse(_ satKey: Int64, _ mse: Double, _ ds50UTC: UnsafeMutable
 // ORIGINAL:     int Sgp4PropDs50UTC((in-Long) satKey, (in-Double) ds50UTC, (out-Double) mse, (out-Double[3]) pos, (out-Double[3]) vel, (out-Double[3]) llh)
 
 public func Sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: UnsafeMutablePointer<Double>, _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>, _ llh: UnsafeMutablePointer<Double>) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4PropDs50UTC"),
-                          to: fnPtrSgp4PropDs50UTC.self)
-
+                                 to: fnPtrSgp4PropDs50UTC.self)
+    
     return function(satKey, ds50UTC, mse, pos, vel, llh)
 }
 
@@ -110,11 +110,11 @@ public func Sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: UnsafeMut
 // ORIGINAL:     int Sgp4PropDs50UtcPosVel((in-Long) satKey, (in-Double) ds50UTC, (out-Double[3]) pos, (out-Double[3]) vel)
 
 public func Sgp4PropDs50UtcPosVel(_ satKey: Int64, _ ds50UTC: Double, _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4PropDs50UtcPosVel"),
-                          to: fnPtrSgp4PropDs50UtcPosVel.self)
-
+                                 to: fnPtrSgp4PropDs50UtcPosVel.self)
+    
     return function(satKey, ds50UTC, pos, vel)
 }
 
@@ -122,11 +122,11 @@ public func Sgp4PropDs50UtcPosVel(_ satKey: Int64, _ ds50UTC: Double, _ pos: Uns
 // ORIGINAL:     int Sgp4PropDs50UtcLLH((in-Long) satKey, (in-Double) ds50UTC, (out-Double[3]) llh)
 
 public func Sgp4PropDs50UtcLLH(_ satKey: Int64, _ ds50UTC: Double, _ llh: UnsafeMutablePointer<Double>) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4PropDs50UtcLLH"),
-                          to: fnPtrSgp4PropDs50UtcLLH.self)
-
+                                 to: fnPtrSgp4PropDs50UtcLLH.self)
+    
     return function(satKey, ds50UTC, llh)
 }
 
@@ -134,11 +134,11 @@ public func Sgp4PropDs50UtcLLH(_ satKey: Int64, _ ds50UTC: Double, _ llh: Unsafe
 // ORIGINAL:     int Sgp4PropDs50UtcPos((in-Long) satKey, (in-Double) ds50UTC, (out-Double[3]) pos)
 
 public func Sgp4PropDs50UtcPos(_ satKey: Int64, _ ds50UTC: Double, _ pos: UnsafeMutablePointer<Double>) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4PropDs50UtcPos"),
-                          to: fnPtrSgp4PropDs50UtcPos.self)
-
+                                 to: fnPtrSgp4PropDs50UtcPos.self)
+    
     return function(satKey, ds50UTC, pos)
 }
 
@@ -146,11 +146,11 @@ public func Sgp4PropDs50UtcPos(_ satKey: Int64, _ ds50UTC: Double, _ pos: Unsafe
 // ORIGINAL:     int Sgp4PropAll((in-Long) satKey, (in-Integer) timeType, (in-Double) timeIn, (out-Double[64]) xa_Sgp4Out)
 
 public func Sgp4PropAll(_ satKey: Int64, _ timeType: Int32, _ timeIn: Double, _ xa_Sgp4Out: UnsafeMutablePointer<Double>) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4PropAll"),
-                          to: fnPtrSgp4PropAll.self)
-
+                                 to: fnPtrSgp4PropAll.self)
+    
     return function(satKey, timeType, timeIn, xa_Sgp4Out)
 }
 
@@ -158,11 +158,11 @@ public func Sgp4PropAll(_ satKey: Int64, _ timeType: Int32, _ timeIn: Double, _ 
 // ORIGINAL:     int Sgp4PosVelToKep((in-Integer) yr, (in-Double) day, (in-Double[3]) pos, (in-Double[3]) vel, (out-Double[3]) posNew, (out-Double[3]) velNew, (out-Double[6]) sgp4MeanKep)
 
 public func Sgp4PosVelToKep(_ yr: Int32, _ day: Double, _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>, _ posNew: UnsafeMutablePointer<Double>, _ velNew: UnsafeMutablePointer<Double>, _ sgp4MeanKep: UnsafeMutablePointer<Double>) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4PosVelToKep"),
-                          to: fnPtrSgp4PosVelToKep.self)
-
+                                 to: fnPtrSgp4PosVelToKep.self)
+    
     return function(yr, day, pos, vel, posNew, velNew, sgp4MeanKep)
 }
 
@@ -170,11 +170,11 @@ public func Sgp4PosVelToKep(_ yr: Int32, _ day: Double, _ pos: UnsafeMutablePoin
 // ORIGINAL:     int Sgp4PosVelToTleArr((in-Double[3]) pos, (in-Double[3]) vel, (out-Double[64]) xa_tle)
 
 public func Sgp4PosVelToTleArr(_ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>, _ xa_tle: UnsafeMutablePointer<Double>) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4PosVelToTleArr"),
-                          to: fnPtrSgp4PosVelToTleArr.self)
-
+                                 to: fnPtrSgp4PosVelToTleArr.self)
+    
     return function(pos, vel, xa_tle)
 }
 
@@ -182,11 +182,11 @@ public func Sgp4PosVelToTleArr(_ pos: UnsafeMutablePointer<Double>, _ vel: Unsaf
 // ORIGINAL:     int Sgp4ReepochTLE((in-Long) satKey, (in-Double) reepochDs50UTC, (out-Character[512]) line1Out, (out-Character[512]) line2Out)
 
 public func Sgp4ReepochTLE(_ satKey: Int64, _ reepochDs50UTC: Double, _ line1Out: UnsafeMutablePointer<CChar>, _ line2Out: UnsafeMutablePointer<CChar>) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4ReepochTLE"),
-                          to: fnPtrSgp4ReepochTLE.self)
-
+                                 to: fnPtrSgp4ReepochTLE.self)
+    
     return function(satKey, reepochDs50UTC, line1Out, line2Out)
 }
 
@@ -194,11 +194,11 @@ public func Sgp4ReepochTLE(_ satKey: Int64, _ reepochDs50UTC: Double, _ line1Out
 // ORIGINAL:     int Sgp4ReepochCsv((in-Long) satKey, (in-Double) reepochDs50UTC, (out-Character[512]) csvLine)
 
 public func Sgp4ReepochCsv(_ satKey: Int64, _ reepochDs50UTC: Double, _ csvLine: UnsafeMutablePointer<CChar>) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4ReepochCsv"),
-                          to: fnPtrSgp4ReepochCsv.self)
-
+                                 to: fnPtrSgp4ReepochCsv.self)
+    
     return function(satKey, reepochDs50UTC, csvLine)
 }
 
@@ -206,11 +206,11 @@ public func Sgp4ReepochCsv(_ satKey: Int64, _ reepochDs50UTC: Double, _ csvLine:
 // ORIGINAL:     void Sgp4SetLicFilePath((in-Character[512]) licFilePath)
 
 public func Sgp4SetLicFilePath(_ licFilePath: UnsafeMutablePointer<CChar>) {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4SetLicFilePath"),
-                          to: fnPtrSgp4SetLicFilePath.self)
-
+                                 to: fnPtrSgp4SetLicFilePath.self)
+    
     function(licFilePath)
 }
 
@@ -218,10 +218,10 @@ public func Sgp4SetLicFilePath(_ licFilePath: UnsafeMutablePointer<CChar>) {
 // ORIGINAL:     void Sgp4GetLicFilePath((out-Character[512]) licFilePath)
 
 public func Sgp4GetLicFilePath(_ licFilePath: UnsafeMutablePointer<CChar>) {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4GetLicFilePath"),
-                          to: fnPtrSgp4GetLicFilePath.self)
-
+                                 to: fnPtrSgp4GetLicFilePath.self)
+    
     function(licFilePath)
 }

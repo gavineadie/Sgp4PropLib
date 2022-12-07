@@ -14,11 +14,11 @@ fileprivate let libHandle = loadDll("libdllmain.dylib")
 // ORIGINAL:     __int64 DllMainInit()
 
 public func DllMainInit() -> Int64 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "DllMainInit"),
-                          to: fnPtrDllMainInit.self)
-
+                                 to: fnPtrDllMainInit.self)
+    
     return function()
 }
 
@@ -26,11 +26,11 @@ public func DllMainInit() -> Int64 {
 // ORIGINAL:     void DllMainGetInfo((out-Character[128]) infoStr)
 
 public func DllMainGetInfo(_ infoStr: UnsafeMutablePointer<CChar>) {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "DllMainGetInfo"),
-                          to: fnPtrDllMainGetInfo.self)
-
+                                 to: fnPtrDllMainGetInfo.self)
+    
     function(infoStr)
 }
 
@@ -38,11 +38,11 @@ public func DllMainGetInfo(_ infoStr: UnsafeMutablePointer<CChar>) {
 // ORIGINAL:     int DllMainLoadFile((in-Character[512]) dllMainFile)
 
 public func DllMainLoadFile(_ dllMainFile: UnsafeMutablePointer<CChar>) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "DllMainLoadFile"),
-                          to: fnPtrDllMainLoadFile.self)
-
+                                 to: fnPtrDllMainLoadFile.self)
+    
     return function(dllMainFile)
 }
 
@@ -50,11 +50,11 @@ public func DllMainLoadFile(_ dllMainFile: UnsafeMutablePointer<CChar>) -> Int32
 // ORIGINAL:     int OpenLogFile((in-Character[512]) fileName)
 
 public func OpenLogFile(_ fileName: UnsafeMutablePointer<CChar>) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "OpenLogFile"),
-                          to: fnPtrOpenLogFile.self)
-
+                                 to: fnPtrOpenLogFile.self)
+    
     return function(fileName)
 }
 
@@ -62,11 +62,11 @@ public func OpenLogFile(_ fileName: UnsafeMutablePointer<CChar>) -> Int32 {
 // ORIGINAL:     void CloseLogFile()
 
 public func CloseLogFile() {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "CloseLogFile"),
-                          to: fnPtrCloseLogFile.self)
-
+                                 to: fnPtrCloseLogFile.self)
+    
     function()
 }
 
@@ -74,11 +74,11 @@ public func CloseLogFile() {
 // ORIGINAL:     void LogMessage((in-Character[128]) msgStr)
 
 public func LogMessage(_ msgStr: UnsafeMutablePointer<CChar>) {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "LogMessage"),
-                          to: fnPtrLogMessage.self)
-
+                                 to: fnPtrLogMessage.self)
+    
     function(msgStr)
 }
 
@@ -86,11 +86,11 @@ public func LogMessage(_ msgStr: UnsafeMutablePointer<CChar>) {
 // ORIGINAL:     void GetLastErrMsg((out-Character[128]) lastErrMsg)
 
 public func GetLastErrMsg(_ lastErrMsg: UnsafeMutablePointer<CChar>) {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "GetLastErrMsg"),
-                          to: fnPtrGetLastErrMsg.self)
-
+                                 to: fnPtrGetLastErrMsg.self)
+    
     function(lastErrMsg)
 }
 
@@ -98,11 +98,11 @@ public func GetLastErrMsg(_ lastErrMsg: UnsafeMutablePointer<CChar>) {
 // ORIGINAL:     void GetLastInfoMsg((out-Character[128]) lastInfoMsg)
 
 public func GetLastInfoMsg(_ lastInfoMsg: UnsafeMutablePointer<CChar>) {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "GetLastInfoMsg"),
-                          to: fnPtrGetLastInfoMsg.self)
-
+                                 to: fnPtrGetLastInfoMsg.self)
+    
     function(lastInfoMsg)
 }
 
@@ -110,11 +110,11 @@ public func GetLastInfoMsg(_ lastInfoMsg: UnsafeMutablePointer<CChar>) {
 // ORIGINAL:     void GetInitDllNames((out-Character[512]) initDllNames)
 
 public func GetInitDllNames(_ initDllNames: UnsafeMutablePointer<CChar>) {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "GetInitDllNames"),
-                          to: fnPtrGetInitDllNames.self)
-
+                                 to: fnPtrGetInitDllNames.self)
+    
     function(initDllNames)
 }
 
@@ -122,11 +122,11 @@ public func GetInitDllNames(_ initDllNames: UnsafeMutablePointer<CChar>) {
 // ORIGINAL:     int SetElsetKeyMode((in-Integer) elset_keyMode)
 
 public func SetElsetKeyMode(_ elset_keyMode: Int32) -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "SetElsetKeyMode"),
-                          to: fnPtrSetElsetKeyMode.self)
-
+                                 to: fnPtrSetElsetKeyMode.self)
+    
     return function(elset_keyMode)
 }
 
@@ -134,10 +134,10 @@ public func SetElsetKeyMode(_ elset_keyMode: Int32) -> Int32 {
 // ORIGINAL:     int GetElsetKeyMode()
 
 public func GetElsetKeyMode() -> Int32 {
-
+    
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "GetElsetKeyMode"),
-                          to: fnPtrGetElsetKeyMode.self)
-
+                                 to: fnPtrGetElsetKeyMode.self)
+    
     return function()
 }
