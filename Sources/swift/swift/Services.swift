@@ -8,18 +8,18 @@
 import Foundation
 
 func getDylibPath() -> String {
-    if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
-        return dylibDirectory + "/"
-    }
-
+    //    if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
+    //        return dylibDirectory + "/"
+    //    }
+    
     return "/usr/local/lib/sgp4prop/"
 }
 
-public func loadDll(_ dllPath: String) -> UnsafeMutableRawPointer {
-    guard let dllHandle = dlopen(getDylibPath() + dllPath, RTLD_NOW) else {
-        fatalError("Could not open \(getDylibPath() + dllPath) \(String(cString: dlerror()))")
+public func loadDll(_ dllName: String) -> UnsafeMutableRawPointer {
+    guard let dllHandle = dlopen(getDylibPath() + dllName, RTLD_NOW) else {
+        fatalError("Could not open \(getDylibPath() + dllName) \(String(cString: dlerror()))")
     }
-
+    
     return dllHandle
 }
 
@@ -27,11 +27,30 @@ func freeDll(_ dllHandle: UnsafeMutableRawPointer) -> Int32 {
     return dlclose(dllHandle)
 }
 
-extension String {
+public func loadAllDlls() {
+    let globalHandle = DllMainInit()
+    guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
+    guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
+    guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
+    guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
+    guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
+}
 
-    func trimRight() -> String {
+extension String {
+    
+    public func trimRight() -> String {
         String(reversed().drop { $0.isWhitespace }.reversed())
     }
+}
+
+func getFunctionPointer(_ libHandle: UnsafeMutableRawPointer?,
+                        _ functionName: String) -> UnsafeMutableRawPointer {
+    
+    guard let functionPointer = dlsym(libHandle, functionName) else {
+        fatalError("dlsym failure: \(String(cString: dlerror()))")
+    }
+    
+    return functionPointer
 }
 
 // -----
@@ -47,7 +66,7 @@ extension CChar {
 }
 
 extension RangeReplaceableCollection {
-
+    
     /// If not already at least the given length, appends enough copies of a
     /// given element to reach that length.
     public mutating func pad(toLength count: Int, with element: Element) {
@@ -87,9 +106,8 @@ func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
 
 extension Date {
     /// The number of seconds from 1 January 1950 to the reference date, 1 January 2001.
-    public static let
-        timeIntervalBetween1950AndReferenceDate: TimeInterval = 1_609_545_600.0   // 86,400 sec/day -> 18,629 days
-
+    public static let timeIntervalBetween1950AndReferenceDate: TimeInterval = 1_609_545_600.0   // 86,400 sec/day -> 18,629 days
+    
     /// Returns a `Date` initialized relative to 00:00:00 UTC on 1 January 1950 by a given number of seconds.
     public init(timeIntervalSince1950: TimeInterval) {
         self.init(timeIntervalSinceReferenceDate: timeIntervalSince1950 - Date.timeIntervalBetween1950AndReferenceDate)
