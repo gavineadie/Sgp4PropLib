@@ -561,3 +561,15 @@ public func GetTleKeyMode() -> Int32 {
     
     return function()
 }
+
+// -------------------------------- TLEGETLOADED
+// ORIGINAL:     void TleGetLoaded((in-Integer) order, (out-Long[*]) satKeys)
+
+public func TleGetLoaded(_ order: Int32, _ satKeys: UnsafeMutablePointer<Int64>) {
+
+    let function = unsafeBitCast(getFunctionPointer(libHandle,
+                                                    "TleGetLoaded"),
+                          to: fnPtrTleGetLoaded.self)
+
+    function(order, satKeys)
+}

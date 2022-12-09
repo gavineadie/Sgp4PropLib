@@ -118,6 +118,18 @@ public func GetInitDllNames(_ initDllNames: UnsafeMutablePointer<CChar>) {
     function(initDllNames)
 }
 
+// -------------------------------- GETMOICDATA
+// ORIGINAL:     void GetMOICData((in-Integer) arrSize, (out-Double[*]) xa_moic)
+
+public func GetMOICData(_ arrSize: Int32, _ xa_moic: UnsafeMutablePointer<Double>) {
+
+    let function = unsafeBitCast(getFunctionPointer(libHandle,
+                                                    "GetMOICData"),
+                          to: fnPtrGetMOICData.self)
+
+    function(arrSize, xa_moic)
+}
+
 // -------------------------------- SETELSETKEYMODE
 // ORIGINAL:     int SetElsetKeyMode((in-Integer) elset_keyMode)
 

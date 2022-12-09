@@ -393,3 +393,15 @@ public func Get6PCardLine(_ card6PLine: UnsafeMutablePointer<CChar>) {
     
     function(card6PLine)
 }
+
+// -------------------------------- TIMECONVFRTO
+// ORIGINAL:     void TimeConvFrTo((in-Integer) funcIdx, (in-Double[*]) frArr, (out-Double[*]) toArr)
+
+public func TimeConvFrTo(_ funcIdx: Int32, _ frArr: UnsafeMutablePointer<Double>, _ toArr: UnsafeMutablePointer<Double>) {
+
+    let function = unsafeBitCast(getFunctionPointer(libHandle,
+                                                    "TimeConvFrTo"),
+                          to: fnPtrTimeConvFrTo.self)
+
+    function(funcIdx, frArr, toArr)
+}

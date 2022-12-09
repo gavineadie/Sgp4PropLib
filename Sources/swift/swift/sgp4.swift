@@ -225,3 +225,51 @@ public func Sgp4GetLicFilePath(_ licFilePath: UnsafeMutablePointer<CChar>) {
     
     function(licFilePath)
 }
+
+// -------------------------------- SGP4GETPROPOUT
+// ORIGINAL:     int Sgp4GetPropOut((in-Long) satKey, (in-Integer) xf_Sgp4Out, (out-Double[*]) destArr)
+
+public func Sgp4GetPropOut(_ satKey: Int64, _ xf_Sgp4Out: Int32, _ destArr: UnsafeMutablePointer<Double>) -> Int32 {
+
+    let function = unsafeBitCast(getFunctionPointer(libHandle,
+                                                    "Sgp4GetPropOut"),
+                          to: fnPtrSgp4GetPropOut.self)
+
+    return function(satKey, xf_Sgp4Out, destArr)
+}
+
+// -------------------------------- SGP4GENEPHEMS_OS
+// ORIGINAL:     int Sgp4GenEphems_OS((in-Double[64]) xa_tle, (in-Double) startTime, (in-Double) endTime, (in-Double) stepSize, (in-Integer) sgp4_ephem, (in-Integer) arrSize, (out-Double[*, 7]) ephemArr, (out-Integer) genEphemPts)
+
+public func Sgp4GenEphems_OS(_ xa_tle: UnsafeMutablePointer<Double>, _ startTime: Double, _ endTime: Double, _ stepSize: Double, _ sgp4_ephem: Int32, _ arrSize: Int32, _ ephemArr: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double)>, _ genEphemPts: UnsafeMutablePointer<Int32>) -> Int32 {
+
+    let function = unsafeBitCast(getFunctionPointer(libHandle,
+                                                    "Sgp4GenEphems_OS"),
+                          to: fnPtrSgp4GenEphems_OS.self)
+
+    return function(xa_tle, startTime, endTime, stepSize, sgp4_ephem, arrSize, ephemArr, genEphemPts)
+}
+
+// -------------------------------- SGP4GENEPHEMS
+// ORIGINAL:     int Sgp4GenEphems((in-Long) satKey, (in-Double) startTime, (in-Double) endTime, (in-Double) stepSize, (in-Integer) sgp4_ephem, (in-Integer) arrSize, (out-Double[*, 7]) ephemArr, (out-Integer) genEphemPts)
+
+public func Sgp4GenEphems(_ satKey: Int64, _ startTime: Double, _ endTime: Double, _ stepSize: Double, _ sgp4_ephem: Int32, _ arrSize: Int32, _ ephemArr: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double)>, _ genEphemPts: UnsafeMutablePointer<Int32>) -> Int32 {
+
+    let function = unsafeBitCast(getFunctionPointer(libHandle,
+                                                    "Sgp4GenEphems"),
+                          to: fnPtrSgp4GenEphems.self)
+
+    return function(satKey, startTime, endTime, stepSize, sgp4_ephem, arrSize, ephemArr, genEphemPts)
+}
+
+// -------------------------------- SGP4PROPALLSATS
+// ORIGINAL:     int Sgp4PropAllSats((in-Long[*]) satKeys, (in-Integer) numOfSats, (in-Double) ds50UTC, (out-Double[*, 6]) ephemArr)
+
+public func Sgp4PropAllSats(_ satKeys: UnsafeMutablePointer<Int64>, _ numOfSats: Int32, _ ds50UTC: Double, _ ephemArr: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double)>) -> Int32 {
+
+    let function = unsafeBitCast(getFunctionPointer(libHandle,
+                                                    "Sgp4PropAllSats"),
+                          to: fnPtrSgp4PropAllSats.self)
+
+    return function(satKeys, numOfSats, ds50UTC, ephemArr)
+}
