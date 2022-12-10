@@ -8,7 +8,13 @@
 import Foundation
 import obj_c
 
+#if os(Linux)
+fileprivate let libHandle = loadDll("libastrofunc.so")
+#elseif os(Windows)
+fileprivate let libHandle = loadDll("Astrofunc.dll")
+#else
 fileprivate let libHandle = loadDll("libastrofunc.dylib")
+#endif
 
 // -------------------------------- ASTROFUNCINIT
 // ORIGINAL:     int AstroFuncInit((in-Long) apPtr)

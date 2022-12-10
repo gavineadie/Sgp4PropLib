@@ -8,7 +8,13 @@
 import Foundation
 import obj_c
 
+#if os(Linux)
+fileprivate let libHandle = loadDll("libenvconst.so")
+#elseif os(Windows)
+fileprivate let libHandle = loadDll("Envconst.dll")
+#else
 fileprivate let libHandle = loadDll("libenvconst.dylib")
+#endif
 
 // -------------------------------- ENVINIT
 // ORIGINAL:     int EnvInit((in-Long) apPtr)

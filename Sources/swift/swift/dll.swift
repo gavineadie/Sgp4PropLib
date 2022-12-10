@@ -8,7 +8,13 @@
 import Foundation
 import obj_c
 
+#if os(Linux)
+fileprivate let libHandle = loadDll("libdllmain.so")
+#elseif os(Windows)
+fileprivate let libHandle = loadDll("Dllmain.dll")
+#else
 fileprivate let libHandle = loadDll("libdllmain.dylib")
+#endif
 
 // -------------------------------- DLLMAININIT
 // ORIGINAL:     __int64 DllMainInit()

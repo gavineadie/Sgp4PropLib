@@ -8,7 +8,13 @@
 import Foundation
 import obj_c
 
+#if os(Linux)
+fileprivate let libHandle = loadDll("libtle.so")
+#elseif os(Windows)
+fileprivate let libHandle = loadDll("Tle.dll")
+#else
 fileprivate let libHandle = loadDll("libtle.dylib")
+#endif
 
 // -------------------------------- TLEINIT
 // ORIGINAL:     int TleInit((in-Long) apPtr)

@@ -8,7 +8,13 @@
 import Foundation
 import obj_c
 
+#if os(Linux)
+fileprivate let libHandle = loadDll("libsgp4prop.so")
+#elseif os(Windows)
+fileprivate let libHandle = loadDll("Sgp4prop.dll")
+#else
 fileprivate let libHandle = loadDll("libsgp4prop.dylib")
+#endif
 
 // -------------------------------- SGP4INIT
 // ORIGINAL:     int Sgp4Init((in-Long) apPtr)

@@ -8,7 +8,13 @@
 import Foundation
 import obj_c
 
+#if os(Linux)
+fileprivate let libHandle = loadDll("libtimefunc.so")
+#elseif os(Windows)
+fileprivate let libHandle = loadDll("Timefunc.dll")
+#else
 fileprivate let libHandle = loadDll("libtimefunc.dylib")
+#endif
 
 // -------------------------------- TIMEFUNCINIT
 // ORIGINAL:     int TimeFuncInit((in-Long) apPtr)
