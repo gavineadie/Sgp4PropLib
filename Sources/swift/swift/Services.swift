@@ -36,6 +36,10 @@ public func loadAllDlls() {
     guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
 }
 
+//TODO: FINISH THIS
+public func freeAllDlls() {
+}
+
 extension String {
     
     public func trimRight() -> String {
@@ -119,4 +123,35 @@ extension Date {
 /// - Returns: days since 1950
 public func dateToUTC(_ date: Date) -> Double {
     return date.timeIntervalSince(Date(timeIntervalSince1950: 0.0)) / (60*1440)
+}
+
+public func printWarning(_ softwareName: String) {
+    print(
+        """
+        **********************************************************
+        *                                                        *
+        *  \(softwareName.uppercased()
+                .padding(toLength: 50, withPad: " ", startingAt: 0))    *
+        *                                                        *
+        *                      W A R N I N G                     *
+        *  THIS SOFTWARE CONTAINS TECHNICAL DATA WHOSE EXPORT IS *
+        *  RESTRICTED BY THE ARMS EXPORT CONTROL ACT (TITLE 22,  *
+        *  USC, SEC 2751 ) OR EXECUTIVE ORDER 12470. VIOLATORS   *
+        *  OF EXPORT LAWS ARE SUBJECT TO SEVERE CRIMINAL         *
+        *  PENALTIES.                                            *
+        *                 D I S T R I B U T I O N                *
+        *  DISTRIBUTION IS AUTHORIZED TO US GOVERNMENT AGENCIES  *
+        *  AND THEIR CONTRACTORS FOR OFFICIAL USE ON A NEED TO   *
+        *  KNOW BASIS ONLY. ALL REQUESTS FOR THIS SOFTWARE SHALL *
+        *  BE REFERRED TO AFSPC/A9.  NO SOFTWARE CODE, MANUAL,   *
+        *  OR MEDIA CONTAINING ANY REPRESENTATION OF THE UNITED  *
+        *  STATES AIR FORCE (USAF), HQ AIR FORCE SPACE COMMAND   *
+        *  (AFSPC) SPACE ANALYSIS CENTER (ASAC) [AFSPC/A9]       *
+        *  CAPABILITY MAY BE ASSIGNED, COPIED, OR TRANSFERRED TO *
+        *  ANY NON-AUTHORIZED PERSON, CONTRACTOR, OR GOVERNMENT  *
+        *  AGENCY WITHOUT THE EXPRESSED WRITTEN CONSENT OF       *
+        *               USAF, HQ AFSPC/A9.                       *
+        **********************************************************
+        """
+    )
 }
