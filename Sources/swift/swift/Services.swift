@@ -7,6 +7,23 @@
 
 import Foundation
 
+public func loadAllDlls() {
+    let globalHandle = DllMainInit()
+    guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
+    guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
+    guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
+    guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
+    guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
+}
+
+public func loadDll(_ dllName: String) -> UnsafeMutableRawPointer {
+    guard let dllHandle = dlopen(getDylibPath() + dllName, RTLD_NOW) else {
+        fatalError("Could not open \(getDylibPath() + dllName) \(String(cString: dlerror()))")
+    }
+
+    return dllHandle
+}
+
 func getDylibPath() -> String {
     //    if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
     //        return dylibDirectory + "/"
@@ -15,25 +32,8 @@ func getDylibPath() -> String {
     return "/usr/local/lib/sgp4prop/"
 }
 
-public func loadDll(_ dllName: String) -> UnsafeMutableRawPointer {
-    guard let dllHandle = dlopen(getDylibPath() + dllName, RTLD_NOW) else {
-        fatalError("Could not open \(getDylibPath() + dllName) \(String(cString: dlerror()))")
-    }
-    
-    return dllHandle
-}
-
 func freeDll(_ dllHandle: UnsafeMutableRawPointer) -> Int32 {
     return dlclose(dllHandle)
-}
-
-public func loadAllDlls() {
-    let globalHandle = DllMainInit()
-    guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
-    guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
-    guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
-    guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
-    guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
 }
 
 //TODO: FINISH THIS
@@ -97,7 +97,7 @@ func c128_to_s(c: UnsafePointer<CUnsignedChar>) -> String {
 // https://developer.apple.com/documentation/swift/string/init(cstring:)-2p84k
 
 
-func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
+public func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
     let count = str.utf8.count + 1
     let result = UnsafeMutablePointer<Int8>.allocate(capacity: count)
     str.withCString { (baseAddress) in
@@ -163,7 +163,7 @@ public func printWarning(_ softwareName: String) {
 ///   - inURL: the URL of the target folder.
 ///   - called: the name of the directory.
 /// - Returns: the URL of the directory.
-func createDirectory(_ called: String, at: URL) -> URL {
+public func createDirectory(_ called: String, at: URL) -> URL {
 
     do {
         try FileManager.default.createDirectory(atPath: called, withIntermediateDirectories: true)
@@ -180,7 +180,7 @@ func createDirectory(_ called: String, at: URL) -> URL {
 ///   - inURL: the URL of the target folder.
 ///   - called: the name of the (existing) file.
 /// - Returns: the URL of the file
-func createFile(_ called: String, inURL: URL) -> URL {
+public func createFile(_ called: String, inURL: URL) -> URL {
 
     let fileURL = URL(fileURLWithPath: called, relativeTo: inURL)
 
@@ -198,13 +198,13 @@ func createFile(_ called: String, inURL: URL) -> URL {
 ///   - inURL: the URL of the target folder.
 ///   - called: the name of the (existing) file.
 /// - Returns: the URL of the file
-func selectFile(_ called: String, inURL: URL) -> URL {
+public func selectFile(_ called: String, inURL: URL) -> URL {
 
     URL(fileURLWithPath: called, relativeTo: inURL)
 
 }
 
-func writeString(_ string: String, toURL: URL, appending: Bool = true, terminator: String = "\n") {
+public func writeString(_ string: String, toURL: URL, appending: Bool = true, terminator: String = "\n") {
 
     if let fileHandle = try? FileHandle(forWritingTo: toURL) {
         if appending { fileHandle.seekToEndOfFile() }           // moving pointer to the end

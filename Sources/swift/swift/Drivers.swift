@@ -324,7 +324,7 @@ public func utcToET(_ ds50UTC: Double) -> Double { UTCToET(ds50UTC) }
 ///   - year: Two or four digit years are accepted.
 ///   - dayOfYear: The day of year. Partial days can be specified.
 /// - Returns: returns The number of days since 1950, UTC. Partial days may be returned.
-func yrDaysToUTC(_ year: Int32, _ dayOfYear: Double) -> Double {
+public func yrDaysToUTC(_ year: Int32, _ dayOfYear: Double) -> Double {
 
     YrDaysToUTC(year, dayOfYear)
 
@@ -341,7 +341,7 @@ func yrDaysToUTC(_ year: Int32, _ dayOfYear: Double) -> Double {
 ///   - mm: The minute.
 ///   - sss: The second, including partial seconds if desired.
 /// - Returns: The number of Days since 1950, UTC. Partial days may be returned.
-func timeComps1ToUTC(_ year: Int32, _ dayOfYear: Int32,
+public func timeComps1ToUTC(_ year: Int32, _ dayOfYear: Int32,
                      _ hh: Int32, _ mm: Int32, _ sss: Double) -> Double {
 
     TimeComps1ToUTC(year, dayOfYear, hh, mm, sss)
@@ -361,7 +361,7 @@ func timeComps1ToUTC(_ year: Int32, _ dayOfYear: Int32,
 ///   - mm: A reference to a variable in which to store the minute. (out-Integer)
 ///   - sss: A reference to a variable in which to store the second.
 ///   Partial seconds may be expressed if necessary. (out-Double)
-func utcToTimeComps1(_ ds50UTC: Double,
+public func utcToTimeComps1(_ ds50UTC: Double,
                      _ year: inout Int32, _ dayOfYear: inout Int32,
                      _ hh: inout Int32, _ mm: inout Int32, _ sss: inout Double) {
     precondition(ds50UTC >= 2192.0, "utcToTimeComps1 failure: ds50UTC < 2192.0")
@@ -370,7 +370,7 @@ func utcToTimeComps1(_ ds50UTC: Double,
 
 }
 
-func timeComps2ToUTC(_ year: Int32, _ month: Int32, _ dayOfMonth: Int32,
+public func timeComps2ToUTC(_ year: Int32, _ month: Int32, _ dayOfMonth: Int32,
                      _ hh: Int32, _ mm: Int32, _ sss: Double) -> Double {
 
     TimeComps2ToUTC(year, month, dayOfMonth, hh, mm, sss)
@@ -389,7 +389,7 @@ func timeComps2ToUTC(_ year: Int32, _ month: Int32, _ dayOfMonth: Int32,
 ///   - mm: A reference to a variable in which to store the minute. (out-Integer)
 ///   - sss: A reference to a variable in which to store the second.
 ///   Partial seconds may be expressed if necessary. (out-Double)
-func utcToTimeComps2(_ ds50UTC: Double,
+public func utcToTimeComps2(_ ds50UTC: Double,
                      _ year: inout Int32, _ month: inout Int32, _ dayofMonth: inout Int32,
                      _ hh: inout Int32, _ mm: inout Int32, _ sss: inout Double) {
     precondition(ds50UTC >= 2192.0, "utcToTimeComps2 failure: ds50UTC < 2192.0")
@@ -407,7 +407,7 @@ func utcToTimeComps2(_ ds50UTC: Double,
 ///   - year: A reference to a variable in which to place the 4-digit year. (out-Integer)
 ///   - dayOfYear: A reference to a variable in which to place the day of year.
 ///   Partial days may be expressed in this variable. (out-Double)
-func utcToYrDays(_ ds50UTC: Double,
+public func utcToYrDays(_ ds50UTC: Double,
                  _ year: inout Int32, _ dayOfYear: inout Double) {
     precondition(ds50UTC >= 2192.0, "utcToYrDays failure: ds50UTC < 2192.0")
 
@@ -856,7 +856,7 @@ public func sgp4PropDs50UtcPos(_ satKey: Int64,
 ///   - line1: A string to hold the first line of the TLE
 ///   - line2: A string to hold the second line of the TLE
 /// - Returns: 0 if successful, non-0 on error.
-func tleGetLines(_ satKey: Int64, _ line1: inout String, _ line2: inout String) -> Int {
+public func tleGetLines(_ satKey: Int64, _ line1: inout String, _ line2: inout String) -> Int {
 
     var _line1 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
     var _line2 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
@@ -875,7 +875,7 @@ func tleGetLines(_ satKey: Int64, _ line1: inout String, _ line2: inout String) 
     return Int(errorCode)
 }
 
-func tleRemoveSat(_ satKey: Int64) -> Int { Int(TleRemoveSat(satKey)) }
+public func tleRemoveSat(_ satKey: Int64) -> Int { Int(TleRemoveSat(satKey)) }
 
 /// Retrieves the value of a specific field of a TLE.
 ///
@@ -905,7 +905,7 @@ func tleRemoveSat(_ satKey: Int64) -> Int { Int(TleRemoveSat(satKey)) }
 ///   - satKey: The satellite's unique key.
 ///   - xf_Tle: Predefined number specifying which field to retrieve.
 /// - Returns: A string to contain the value of the requested field (null if failure).
-func tleGetField(_ satKey: Int64, _ xf_Tle: Int32) -> String? {
+public func tleGetField(_ satKey: Int64, _ xf_Tle: Int32) -> String? {
 
     var valueStr = Array(repeating: CChar(0), count: Int(GETSETSTRLEN)+1)
     _ = TleGetField(satKey, XF_TLE_EPOCH, &valueStr)
@@ -931,7 +931,7 @@ func tleGetField(_ satKey: Int64, _ xf_Tle: Int32) -> String? {
 /// documentation file for supported formats.
 /// - Parameter filePath: The name of the file from which to read timing constants data.
 /// - Returns: 0 if the input file has been loaded successfully, non-0 if error
-func tConLoadFile(_ filePath: String) -> Int {
+public func tConLoadFile(_ filePath: String) -> Int {
 
     Int(TConLoadFile(makeCString(from: filePath)))
 
@@ -969,7 +969,7 @@ func tConLoadFile(_ filePath: String) -> Int {
 ///   - xf_SgpOut: Specifies which propagator outputs to retrieve.
 ///   - destArr: Array to receive the resulting propagator outputs.
 /// - Returns: 0 if the requested information is retrieved successfully, non-0 if there is an error
-func sgp4GetPropOut(_ satKey: Int64, _ xf_SgpOut: Int32, _ destArr: UnsafeMutablePointer<Double>)  -> Int {
+public func sgp4GetPropOut(_ satKey: Int64, _ xf_SgpOut: Int32, _ destArr: UnsafeMutablePointer<Double>)  -> Int {
 
     Int(Sgp4GetPropOut(satKey, xf_SgpOut, destArr))
 
