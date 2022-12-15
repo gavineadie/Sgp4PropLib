@@ -875,6 +875,33 @@ public func tleGetLines(_ satKey: Int64, _ line1: inout String, _ line2: inout S
     return Int(errorCode)
 }
 
+/// Reepochs a loaded TLE, represented by the satKey, to a new epoch.
+///
+/// - Parameters:
+///   - satKey: The unique key of the satellite to reepoch.
+///   - newEpoch: The new epoch, express in days since 1950, UTC.
+///   - line1: A string to hold the first line of the reepoched TLE.
+///   - line2: A string to hold the second line of the reepoched TLE.
+/// - Returns: 0 if the reepoch is successful, non-0 if there is an error.
+public func sgp4ReepochTLE(_ satKey: Int64, _ newEpoch: Double, _ line1: inout String, _ line2: inout String) -> Int {
+
+    var _line1 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+    var _line2 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+
+    let errorCode = Sgp4ReepochTLE(satKey, newEpoch, &_line1, &_line2)
+
+    _line1[Int(INPUTCARDLEN)] = 0
+    _line2[Int(INPUTCARDLEN)] = 0
+
+    let line1String = String(cString: _line1).trimRight()
+    let line2String = String(cString: _line2).trimRight()
+
+    line1 = line1String
+    line2 = line2String
+
+    return Int(errorCode)
+}
+
 public func tleRemoveSat(_ satKey: Int64) -> Int { Int(TleRemoveSat(satKey)) }
 
 /// Retrieves the value of a specific field of a TLE.
