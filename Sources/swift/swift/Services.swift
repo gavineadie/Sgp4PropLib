@@ -155,3 +155,63 @@ public func printWarning(_ softwareName: String) {
         """
     )
 }
+
+//TODO: MOVE TO SERVICES
+
+/// Obtains the URL of the directory created at the URL `inURL`
+/// - Parameters:
+///   - inURL: the URL of the target folder.
+///   - called: the name of the directory.
+/// - Returns: the URL of the directory.
+func createDirectory(_ called: String, at: URL) -> URL {
+
+    do {
+        try FileManager.default.createDirectory(atPath: called, withIntermediateDirectories: true)
+    } catch {
+        print("creation of directory \(at) failed: \(error)")
+    }
+
+    return URL(fileURLWithPath: called, isDirectory: true, relativeTo: at)
+
+}
+
+/// Obtains the URL of the directory created at the URL `inURL`
+/// - Parameters:
+///   - inURL: the URL of the target folder.
+///   - called: the name of the (existing) file.
+/// - Returns: the URL of the file
+func createFile(_ called: String, inURL: URL) -> URL {
+
+    let fileURL = URL(fileURLWithPath: called, relativeTo: inURL)
+
+    do {
+        try Data().write(to: fileURL)
+    } catch {
+        print("creation of file \(called) failed: \(error)")
+    }
+
+    return fileURL
+
+}
+/// Obtains the URL of the (existing file) at the URL `inURL`
+/// - Parameters:
+///   - inURL: the URL of the target folder.
+///   - called: the name of the (existing) file.
+/// - Returns: the URL of the file
+func selectFile(_ called: String, inURL: URL) -> URL {
+
+    URL(fileURLWithPath: called, relativeTo: inURL)
+
+}
+
+func writeString(_ string: String, toURL: URL, appending: Bool = true, terminator: String = "\n") {
+
+    if let fileHandle = try? FileHandle(forWritingTo: toURL) {
+        if appending { fileHandle.seekToEndOfFile() }           // moving pointer to the end
+        fileHandle.write((string + terminator).data(using: .utf8)!)            // adding content
+        fileHandle.closeFile()                                  // closing the file
+    } else {
+        print("data not written")
+    }
+
+}
