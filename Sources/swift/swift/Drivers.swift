@@ -1218,9 +1218,12 @@ public func sgp4ReepochTLE(_ satKey: Int64, _ newEpoch: Double, _ line1: inout S
     return Int(errorCode)
 }
 
-//TODO: public func Sgp4ReepochCsv(_ satKey: Int64, _ reepochDs50UTC: Double, _ csvLine: UnsafeMutablePointer<CChar>) -> Int
-
-public func Sgp4ReepochCsv(_ satKey: Int64, _ reepochDs50UTC: Double) -> String? {
+/// Reepochs a loaded TLE, represented by the satKey, to a new epoch in Csv format.
+/// - Parameters:
+///   - satKey: The unique key of the satellite to reepoch.
+///   - reepochDs50UTC: A string to hold the reepoched CSV.
+/// - Returns: A string to hold the reepoched CSV.
+public func sgp4ReepochCsv(_ satKey: Int64, _ reepochDs50UTC: Double) -> String? {
 
     var _csvLine = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)
     guard 0 == Sgp4ReepochCsv(satKey, reepochDs50UTC, &_csvLine) else { return nil }
