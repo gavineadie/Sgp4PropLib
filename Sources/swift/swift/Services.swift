@@ -7,6 +7,23 @@
 
 import Foundation
 
+public func loadAllDlls() {
+    let globalHandle = DllMainInit()
+    guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
+    guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
+    guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
+    guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
+    guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
+}
+
+public func loadDll(_ dllName: String) -> UnsafeMutableRawPointer {
+    guard let dllHandle = dlopen(getDylibPath() + dllName, RTLD_NOW) else {
+        fatalError("Could not open \(getDylibPath() + dllName) \(String(cString: dlerror()))")
+    }
+
+    return dllHandle
+}
+
 func getDylibPath() -> String {
     //    if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
     //        return dylibDirectory + "/"
@@ -15,25 +32,12 @@ func getDylibPath() -> String {
     return "/usr/local/lib/sgp4prop/"
 }
 
-public func loadDll(_ dllName: String) -> UnsafeMutableRawPointer {
-    guard let dllHandle = dlopen(getDylibPath() + dllName, RTLD_NOW) else {
-        fatalError("Could not open \(getDylibPath() + dllName) \(String(cString: dlerror()))")
-    }
-    
-    return dllHandle
-}
-
 func freeDll(_ dllHandle: UnsafeMutableRawPointer) -> Int32 {
     return dlclose(dllHandle)
 }
 
-public func loadAllDlls() {
-    let globalHandle = DllMainInit()
-    guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
-    guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
-    guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
-    guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
-    guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
+//TODO: FINISH THIS
+public func freeAllDlls() {
 }
 
 extension String {
@@ -93,7 +97,7 @@ func c128_to_s(c: UnsafePointer<CUnsignedChar>) -> String {
 // https://developer.apple.com/documentation/swift/string/init(cstring:)-2p84k
 
 
-func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
+public func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
     let count = str.utf8.count + 1
     let result = UnsafeMutablePointer<Int8>.allocate(capacity: count)
     str.withCString { (baseAddress) in
@@ -119,4 +123,95 @@ extension Date {
 /// - Returns: days since 1950
 public func dateToUTC(_ date: Date) -> Double {
     return date.timeIntervalSince(Date(timeIntervalSince1950: 0.0)) / (60*1440)
+}
+
+public func printWarning(_ softwareName: String) {
+    print(
+        """
+        **********************************************************
+        *                                                        *
+        *  \(softwareName.uppercased()
+                .padding(toLength: 50, withPad: " ", startingAt: 0))    *
+        *                                                        *
+        *                      W A R N I N G                     *
+        *  THIS SOFTWARE CONTAINS TECHNICAL DATA WHOSE EXPORT IS *
+        *  RESTRICTED BY THE ARMS EXPORT CONTROL ACT (TITLE 22,  *
+        *  USC, SEC 2751 ) OR EXECUTIVE ORDER 12470. VIOLATORS   *
+        *  OF EXPORT LAWS ARE SUBJECT TO SEVERE CRIMINAL         *
+        *  PENALTIES.                                            *
+        *                 D I S T R I B U T I O N                *
+        *  DISTRIBUTION IS AUTHORIZED TO US GOVERNMENT AGENCIES  *
+        *  AND THEIR CONTRACTORS FOR OFFICIAL USE ON A NEED TO   *
+        *  KNOW BASIS ONLY. ALL REQUESTS FOR THIS SOFTWARE SHALL *
+        *  BE REFERRED TO AFSPC/A9.  NO SOFTWARE CODE, MANUAL,   *
+        *  OR MEDIA CONTAINING ANY REPRESENTATION OF THE UNITED  *
+        *  STATES AIR FORCE (USAF), HQ AIR FORCE SPACE COMMAND   *
+        *  (AFSPC) SPACE ANALYSIS CENTER (ASAC) [AFSPC/A9]       *
+        *  CAPABILITY MAY BE ASSIGNED, COPIED, OR TRANSFERRED TO *
+        *  ANY NON-AUTHORIZED PERSON, CONTRACTOR, OR GOVERNMENT  *
+        *  AGENCY WITHOUT THE EXPRESSED WRITTEN CONSENT OF       *
+        *               USAF, HQ AFSPC/A9.                       *
+        **********************************************************
+        """
+    )
+}
+
+//TODO: MOVE TO SERVICES
+
+/// Obtains the URL of the directory created at the URL `inURL`
+/// - Parameters:
+///   - inURL: the URL of the target folder.
+///   - called: the name of the directory.
+/// - Returns: the URL of the directory.
+public func createDirectory(_ called: String, at: URL) -> URL {
+
+    do {
+        try FileManager.default.createDirectory(atPath: called, withIntermediateDirectories: true)
+    } catch {
+        print("creation of directory \(at) failed: \(error)")
+    }
+
+    return URL(fileURLWithPath: called, isDirectory: true, relativeTo: at)
+
+}
+
+/// Obtains the URL of the directory created at the URL `inURL`
+/// - Parameters:
+///   - inURL: the URL of the target folder.
+///   - called: the name of the (existing) file.
+/// - Returns: the URL of the file
+public func createFile(_ called: String, inURL: URL) -> URL {
+
+    let fileURL = URL(fileURLWithPath: called, relativeTo: inURL)
+
+    do {
+        try Data().write(to: fileURL)
+    } catch {
+        print("creation of file \(called) failed: \(error)")
+    }
+
+    return fileURL
+
+}
+/// Obtains the URL of the (existing file) at the URL `inURL`
+/// - Parameters:
+///   - inURL: the URL of the target folder.
+///   - called: the name of the (existing) file.
+/// - Returns: the URL of the file
+public func selectFile(_ called: String, inURL: URL) -> URL {
+
+    URL(fileURLWithPath: called, relativeTo: inURL)
+
+}
+
+public func writeString(_ string: String, toURL: URL, appending: Bool = true, terminator: String = "\n") {
+
+    if let fileHandle = try? FileHandle(forWritingTo: toURL) {
+        if appending { fileHandle.seekToEndOfFile() }           // moving pointer to the end
+        fileHandle.write((string + terminator).data(using: .utf8)!)            // adding content
+        fileHandle.closeFile()                                  // closing the file
+    } else {
+        print("data not written")
+    }
+
 }
