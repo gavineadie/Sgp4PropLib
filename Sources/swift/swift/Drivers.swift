@@ -171,9 +171,9 @@ public func envInit(_ dllHandle: Int64) -> Int { Int(EnvInit(dllHandle)) }
 /// - Returns: A `String` of information about the DLL version number, build date, and platform.
 public func envGetInfo() -> String {
 
-    var infoString = Array(repeating: Int8(0), count: Int(513))
+    var infoString = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
     EnvGetInfo(&infoString)
-    infoString[512] = 0
+    infoString[Int(GETSETSTRLEN)] = 0
     return String(cString: infoString).trimRight()
 
 }
@@ -221,11 +221,15 @@ public func envGetGeoStr() -> String {
 
 }
 
-/// Changes the Earth constants (GEO) setting to the model specified by a string literal.
+/// Changes the Earth constants (GEO) setting to the model specified
+/// by a string literal.
 ///
-/// If you specify an invalid value for geoStr, the program will continue to use the current setting.
+/// If you specify an invalid value for geoStr, the program will continue
+/// to use the current setting.
 ///
-/// The GEO model is globally shared among the Standardized Astrodynamic Algorithms DLLs. If its setting is changed, the new setting takes effect immediately.
+/// The GEO model is globally shared among the Standardized Astrodynamic
+/// Algorithms DLLs. If its setting is changed, the new setting takes
+/// effect immediately.
 ///
 /// The following table lists possible values of the parameter value GEO setting:
 ///
@@ -254,14 +258,56 @@ public func timeFuncLoadFile(_ filePath: String) -> Int {
 
 }
 
+/// Loads timing constants data from an input file.
+///
+/// Time constants can be included directly in the main input file or they can
+/// be read from a separate file identified with "TIMFIL=[pathname/filename]".
+///
+/// The input file is read in two passes. The function first looks for "TIMFIL=" lines,
+/// then it looks for timing constant data which was included directly. The result of
+/// this is that data entered using both methods will be processed, but the "TIMFIL="
+/// data will be processed first.
+///
+/// The time constants are also read in from each VCM. However, only the most recent
+/// time constants among VCMs are stored in the memory, see VCM.dll documentation.
+/// See the "Time Constants Data Description" section in the accompanying TimeFunc
+/// documentation file for supported formats.
+/// - Parameter filePath: The name of the file from which to read timing constants data.
+/// - Returns: 0 if the input file has been loaded successfully, non-0 if error
+public func tConLoadFile(_ filePath: String) -> Int {
+
+    Int(TConLoadFile(makeCString(from: filePath)))
+
+}
+
+/// Removes all the timing constants records in memory.
+/// - Returns: 0 if all timing constants records are successfully removed from memory,
+/// non-0 if there is an error.
+public func tConRemoveAll() -> Int { Int(TConRemoveAll()) }
+
+/// // Returns current prediction control parameters in form of a 6P-Card string.
+// card6PLine          (out-Character[512])
+
+/// - Parameter card6PLine: The resulting 6P-Card string.
+public func get6PCardLine() -> String {
+
+    var string512 = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
+    Get6PCardLine(&string512)
+    string512[Int(GETSETSTRLEN)] = 0
+    return String(cString: string512).trimRight()
+
+}
+
 //MARK: public func TConSaveFile(_ tconFile: UnsafeMutablePointer<CChar>, _ saveMode: Int32, _ saveForm: Int32) -> Int
 
 /// Initializes the TimeFunc DLL for use in the program.
 ///
-/// If this function returns an error, it is recommended that you stop the program immediately.
+/// If this function returns an error, it is recommended that you stop the
+/// program immediately.
 ///
-/// An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in
-/// the DLL Prerequisites section of the accompanying documentation, before using this DLL.
+/// An error will occur if you forget to load and initialize all the
+/// prerequisite DLLs, as listed in the DLL Prerequisites section of the
+/// accompanying documentation, before using this DLL.
 
 /// - Parameter dllHandle: The pointer that was returned from DllMain.DllMainInit
 /// - Returns: zero indicating the TimeFunc DLL has been initialized successfully. Other values indicate an error.
@@ -275,9 +321,9 @@ public func timeFuncInit(_ dllHandle: Int64) -> Int { Int(TimeFuncInit(dllHandle
 /// - Returns: A string holding the information about TimeFunc.dll.
 public func timeFuncGetInfo() -> String {
 
-    var infoString = Array(repeating: Int8(0), count: Int(513))
+    var infoString = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
     TimeFuncGetInfo(&infoString)
-    infoString[512] = 0
+    infoString[Int(GETSETSTRLEN)] = 0
     return String(cString: infoString).trimRight()
 
 }
@@ -483,24 +529,6 @@ public func utcToDTG15(_ ds50UTC: Double) -> String {
 
 }
 
-/// Removes all the timing constants records in memory.
-/// - Returns: 0 if all timing constants records are successfully removed from memory,
-/// non-0 if there is an error.
-public func tConRemoveAll() -> Int { Int(TConRemoveAll()) }
-
-/// // Returns current prediction control parameters in form of a 6P-Card string.
-// card6PLine          (out-Character[512])
-
-/// - Parameter card6PLine: The resulting 6P-Card string.
-public func get6PCardLine() -> String {
-
-    var string512 = Array(repeating: Int8(0), count: Int(513))
-    Get6PCardLine(&string512)
-    string512[512] = 0
-    return String(cString: string512).trimRight()
-
-}
-
 // ================================================ ASTRO ================================================
 
 /// Initializes AstroFunc DLL for use in the program.
@@ -519,9 +547,9 @@ public func astroFuncInit(_ dllHandle: Int64) -> Int { Int(AstroFuncInit(dllHand
 /// - Returns: A `String` of information about the DLL version number, build date, and platform.
 public func astroFuncGetInfo() -> String {
 
-    var infoString = Array(repeating: Int8(0), count: Int(513))
+    var infoString = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
     AstroFuncGetInfo(&infoString)
-    infoString[512] = 0
+    infoString[Int(GETSETSTRLEN)] = 0
     return String(cString: infoString).trimRight()
 
 }
@@ -534,29 +562,55 @@ public func isPointSunlit(_ ds50ET: Double, _ ptECI: UnsafeMutablePointer<Double
 
 // ================================================ TLE ================================================
 
-//TODO: public func TleAddSatFrFieldsGP(_ satNum: Int32, _ secClass: CChar, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: Int32, _ epochDays: Double, _ bstar: Double, _ ephType: Int32, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32) -> Int64
 //TODO: public func TleAddSatFrFieldsGP2(_ satNum: Int32, _ secClass: CChar, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: Int32, _ epochDays: Double, _ bstar: Double, _ ephType: Int32, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32, _ nDotO2: Double, _ n2DotO6: Double) -> Int64
+
 //TODO: public func TleUpdateSatFrFieldsGP(_ satKey: Int64, _ secClass: CChar, _ satName: UnsafeMutablePointer<CChar>, _ bstar: Double, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32) -> Int
+
 //TODO: public func TleUpdateSatFrFieldsGP2(_ satKey: Int64, _ secClass: CChar, _ satName: UnsafeMutablePointer<CChar>, _ bstar: Double, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32, _ nDotO2: Double, _ n2DotO6: Double) -> Int
+
 //TODO: public func TleAddSatFrFieldsSP(_ satNum: Int32, _ secClass: CChar, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: Int32, _ epochDays: Double, _ bTerm: Double, _ ogParm: Double, _ agom: Double, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32) -> Int64
+
 //TODO: public func TleUpdateSatFrFieldsSP(_ satKey: Int64, _ secClass: CChar, _ satName: UnsafeMutablePointer<CChar>, _ bterm: Double, _ ogParm: Double, _ agom: Double, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32) -> Int
-//TODO: public func TleSetField(_ satKey: Int64, _ xf_Tle: Int32, _ valueStr: UnsafeMutablePointer<CChar>) -> Int
-//TODO: public func TleGetAllFieldsGP(_ satKey: Int64, _ satNum: UnsafeMutablePointer<Int32>, _ secClass: UnsafeMutablePointer<CChar>, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: UnsafeMutablePointer<Int32>, _ epochDays: UnsafeMutablePointer<Double>, _ bstar: UnsafeMutablePointer<Double>, _ ephType: UnsafeMutablePointer<Int32>, _ elsetNum: UnsafeMutablePointer<Int32>, _ incli: UnsafeMutablePointer<Double>, _ node: UnsafeMutablePointer<Double>, _ eccen: UnsafeMutablePointer<Double>, _ omega: UnsafeMutablePointer<Double>, _ mnAnomaly: UnsafeMutablePointer<Double>, _ mnMotion: UnsafeMutablePointer<Double>, _ revNum: UnsafeMutablePointer<Int32>) -> Int
+
+public func tleSetField(_ satKey: Int64, _ xf_Tle: Int32) -> String? {
+
+    var infoString = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
+    guard 0 == TleSetField(satKey, xf_Tle, &infoString) else { return nil }
+
+    infoString[Int(GETSETSTRLEN)] = 0
+    return String(cString: infoString).trimRight()
+
+}
+
+//TODO: public func TleGetAllFieldsGP(_ satKey: Int64, _ satNum: UnsafeMutablePointer<Int32>, _ secClass: UnsafeMutablePointer<CChar>, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: UnsafeMutablePointer<Int32>, _ epochDays: UnsafeMutablePointer<Double>, _ bStar: UnsafeMutablePointer<Double>, _ ephType: UnsafeMutablePointer<Int32>, _ elsetNum: UnsafeMutablePointer<Int32>, _ incli: UnsafeMutablePointer<Double>, _ node: UnsafeMutablePointer<Double>, _ eccen: UnsafeMutablePointer<Double>, _ omega: UnsafeMutablePointer<Double>, _ mnAnomaly: UnsafeMutablePointer<Double>, _ mnMotion: UnsafeMutablePointer<Double>, _ revNum: UnsafeMutablePointer<Int32>) -> Int
+
 //TODO: public func TleGetAllFieldsGP2(_ satKey: Int64, _ satNum: UnsafeMutablePointer<Int32>, _ secClass: UnsafeMutablePointer<CChar>, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: UnsafeMutablePointer<Int32>, _ epochDays: UnsafeMutablePointer<Double>, _ bstar: UnsafeMutablePointer<Double>, _ ephType: UnsafeMutablePointer<Int32>, _ elsetNum: UnsafeMutablePointer<Int32>, _ incli: UnsafeMutablePointer<Double>, _ node: UnsafeMutablePointer<Double>, _ eccen: UnsafeMutablePointer<Double>, _ omega: UnsafeMutablePointer<Double>, _ mnAnomaly: UnsafeMutablePointer<Double>, _ mnMotion: UnsafeMutablePointer<Double>, _ revNum: UnsafeMutablePointer<Int32>, _ nDotO2: UnsafeMutablePointer<Double>, _ n2DotO6: UnsafeMutablePointer<Double>) -> Int
-//TODO: public func TleGetAllFieldsSP(_ satKey: Int64, _ satNum: UnsafeMutablePointer<Int32>, _ secClass: UnsafeMutablePointer<CChar>, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: UnsafeMutablePointer<Int32>, _ epochDays: UnsafeMutablePointer<Double>, _ bTerm: UnsafeMutablePointer<Double>, _ ogParm: UnsafeMutablePointer<Double>, _ agom: UnsafeMutablePointer<Double>, _ elsetNum: UnsafeMutablePointer<Int32>, _ incli: UnsafeMutablePointer<Double>, _ node: UnsafeMutablePointer<Double>, _ eccen: UnsafeMutablePointer<Double>, _ omega: UnsafeMutablePointer<Double>, _ mnAnomaly: UnsafeMutablePointer<Double>, _ mnMotion: UnsafeMutablePointer<Double>, _ revNum: UnsafeMutablePointer<Int32>) -> Int
+
+//TODO: public func TleGetAllFieldsSP(_ satKey: Int64, _ satNum: UnsafeMutablePointer<Int32>, _ secClass: UnsafeMutablePointer<CChar>, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: UnsafeMutablePointer<Int32>, _ epochDays: UnsafeMutablePointer<Double>, _ bterm: UnsafeMutablePointer<Double>, _ ogParm: UnsafeMutablePointer<Double>, _ agom: UnsafeMutablePointer<Double>, _ elsetNum: UnsafeMutablePointer<Int32>, _ incli: UnsafeMutablePointer<Double>, _ node: UnsafeMutablePointer<Double>, _ eccen: UnsafeMutablePointer<Double>, _ omega: UnsafeMutablePointer<Double>, _ mnAnomaly: UnsafeMutablePointer<Double>, _ mnMotion: UnsafeMutablePointer<Double>, _ revNum: UnsafeMutablePointer<Int32>) -> Int
+
 //TODO: public func TleParseGP(_ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>, _ satNum: UnsafeMutablePointer<Int32>, _ secClass: UnsafeMutablePointer<CChar>, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: UnsafeMutablePointer<Int32>, _ epochDays: UnsafeMutablePointer<Double>, _ nDotO2: UnsafeMutablePointer<Double>, _ n2DotO6: UnsafeMutablePointer<Double>, _ bstar: UnsafeMutablePointer<Double>, _ ephType: UnsafeMutablePointer<Int32>, _ elsetNum: UnsafeMutablePointer<Int32>, _ incli: UnsafeMutablePointer<Double>, _ node: UnsafeMutablePointer<Double>, _ eccen: UnsafeMutablePointer<Double>, _ omega: UnsafeMutablePointer<Double>, _ mnAnomaly: UnsafeMutablePointer<Double>, _ mnMotion: UnsafeMutablePointer<Double>, _ revNum: UnsafeMutablePointer<Int32>) -> Int
+
+//TODO: public func TleParseSP(_ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>, _ satNum: UnsafeMutablePointer<Int32>, _ secClass: UnsafeMutablePointer<CChar>, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: UnsafeMutablePointer<Int32>, _ epochDays: UnsafeMutablePointer<Double>, _ bterm: UnsafeMutablePointer<Double>, _ ogParm: UnsafeMutablePointer<Double>, _ agom: UnsafeMutablePointer<Double>, _ elsetNum: UnsafeMutablePointer<Int32>, _ incli: UnsafeMutablePointer<Double>, _ node: UnsafeMutablePointer<Double>, _ eccen: UnsafeMutablePointer<Double>, _ omega: UnsafeMutablePointer<Double>, _ mnAnomaly: UnsafeMutablePointer<Double>, _ mnMotion: UnsafeMutablePointer<Double>, _ revNum: UnsafeMutablePointer<Int32>) -> Int
+
 //TODO: public func TleLinesToArray(_ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>, _ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar>) -> Int
-//TODO: public func TleParseSP(_ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>, _ satNum: UnsafeMutablePointer<Int32>, _ secClass: UnsafeMutablePointer<CChar>, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: UnsafeMutablePointer<Int32>, _ epochDays: UnsafeMutablePointer<Double>, _ bTerm: UnsafeMutablePointer<Double>, _ ogParm: UnsafeMutablePointer<Double>, _ agom: UnsafeMutablePointer<Double>, _ elsetNum: UnsafeMutablePointer<Int32>, _ incli: UnsafeMutablePointer<Double>, _ node: UnsafeMutablePointer<Double>, _ eccen: UnsafeMutablePointer<Double>, _ omega: UnsafeMutablePointer<Double>, _ mnAnomaly: UnsafeMutablePointer<Double>, _ mnMotion: UnsafeMutablePointer<Double>, _ revNum: UnsafeMutablePointer<Int32>) -> Int
+
 //TODO: public func TleGetCsv(_ satKey: Int64, _ csvLine: UnsafeMutablePointer<CChar>) -> Int
-//TODO: public func TleGPFieldsToLines(_ satNum: Int32, _ secClass: CChar, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: Int32, _ epochDays: Double, _ nDotO2: Double, _ n2DotO6: Double, _ bstar: Double, _ ephType: Int32, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32, _ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>)
+
 //TODO: public func TleGPFieldsToCsv(_ satNum: Int32, _ secClass: CChar, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: Int32, _ epochDays: Double, _ nDotO2: Double, _ n2DotO6: Double, _ bstar: Double, _ ephType: Int32, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32, _ csvLine: UnsafeMutablePointer<CChar>)
+
 //TODO: public func TleGPArrayToLines(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar>, _ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>)
+
 //TODO: public func TleGPArrayToCsv(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar>, _ csvline: UnsafeMutablePointer<CChar>)
-//TODO: public func TleSPFieldsToLines(_ satNum: Int32, _ secClass: CChar, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: Int32, _ epochDays: Double, _ bTerm: Double, _ ogParm: Double, _ agom: Double, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32, _ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>)
+//TODO: public func TleSPFieldsToLines(_ satNum: Int32, _ secClass: CChar, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: Int32, _ epochDays: Double, _ bterm: Double, _ ogParm: Double, _ agom: Double, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32, _ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>)
+
 //TODO: public func TleAddSatFrArray(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar>) -> Int64
+
 //TODO: public func TleUpdateSatFrArray(_ satKey: Int64, _ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar>) -> Int
+
 //TODO: public func TleDataToArray(_ satKey: Int64, _ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar>) -> Int
+
 //TODO: public func TleLinesToCsv(_ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>, _ csvline: UnsafeMutablePointer<CChar>) -> Int
+
 //TODO: public func TleCsvToLines(_ csvLine: UnsafeMutablePointer<CChar>, _ newSatno: Int32, _ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>) -> Int
 
 /// Initializes Tle DLL for use in the program. If this function returns an error, it is recommended that you stop the program immediately.
@@ -575,9 +629,9 @@ public func tleInit(_ dllHandle: Int64) -> Int {
 /// - Returns: A `String` of information about the DLL version number, build date, and platform.
 public func tleGetInfo() -> String {
 
-    var infoString = Array(repeating: Int8(0), count: Int(513))
+    var infoString = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
     TleGetInfo(&infoString)
-    infoString[512] = 0
+    infoString[Int(GETSETSTRLEN)] = 0
     return String(cString: infoString).trimRight()
 
 }
@@ -671,12 +725,235 @@ public func tleGetLoaded(_ order: Int32, _ satKeys: UnsafeMutablePointer<Int64> 
 
 }
 
-// ================================================ SGP4 ================================================
+///Returns the first and second lines representation of a TLE of a satellite.
+/// - Parameters:
+///   - satKey: The satellite's unique key.
+///   - line1: A string to hold the first line of the TLE
+///   - line2: A string to hold the second line of the TLE
+/// - Returns: 0 if successful, non-0 on error.
+public func tleGetLines(_ satKey: Int64, _ line1: inout String, _ line2: inout String) -> Int {
 
-//TODO: public func Sgp4ReepochTLE(_ satKey: Int64, _ reepochDs50UTC: Double, _ line1Out: UnsafeMutablePointer<CChar>, _ line2Out: UnsafeMutablePointer<CChar>) -> Int
-//TODO: public func Sgp4ReepochCsv(_ satKey: Int64, _ reepochDs50UTC: Double, _ csvLine: UnsafeMutablePointer<CChar>) -> Int
-//TODO: public func Sgp4SetLicFilePath(_ licFilePath: UnsafeMutablePointer<CChar>)
-//TODO: public func Sgp4GetLicFilePath(_ licFilePath: UnsafeMutablePointer<CChar>)
+    var _line1 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+    var _line2 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+
+    let errorCode = TleGetLines(satKey, &_line1, &_line2)
+
+    _line1[Int(INPUTCARDLEN)] = 0
+    _line2[Int(INPUTCARDLEN)] = 0
+
+    line1 = String(cString: _line1).trimRight()
+    line2 = String(cString: _line2).trimRight()
+
+    return Int(errorCode)
+}
+
+/// Constructs a TLE from individually provided GP data fields.
+///
+/// This function only parses data from the input fields but DOES NOT load/add the TLE to memory.
+///
+// Returned line1 and line2 will be empty if the function fails to construct the lines as requested.
+// satNum             Satellite number (in-Integer)
+// secClass           Security classification (in-Character)
+// satName            Satellite international designator (in-Character[8])
+// epochYr            Element epoch time - year, [YY]YY (in-Integer)
+// epochDays          Element epoch time - day of year, DDD.DDDDDDDD (in-Double)
+// nDotO2             N Dot/2 (rev/day /2) (in-Double)
+// n2DotO6            N Double Dot/6 (rev/day**2 /6) or agom (ephType = 4, XP) (m2/kg) (in-Double)
+// bstar              B* drag term (1/er) (ephType = 0, 2) or BTerm - ballistic coefficient (m2/kg) (ephType = 4, XP) (in-Double)
+// ephType            Satellite ephemeris type (0: SGP, 2: SGP4) (in-Integer)
+// elsetNum           Element set number (in-Integer)
+// incli              Orbit inclination (degrees) (in-Double)
+// node               Right ascension of ascending node (degrees) (in-Double)
+// eccen              Eccentricity (in-Double)
+// omega              Argument of perigee (degrees) (in-Double)
+// mnAnomaly          Mean anomaly (degrees) (in-Double)
+// mnMotion           Mean motion (rev/day) (ephType = 0: Kozai mean motion, ephType = 2 or 4: Brouwer mean motion) (in-Double)
+// revNum             Revolution number at epoch (in-Integer)
+// line1              Returned first line of a TLE. (out-Character[512])
+// line2              Returned second line of a TLE. (out-Character[512])
+/// Constructs a TLE from individually provided GP data fields.
+///
+/// This function only parses data from the input fields but DOES NOT load/add the TLE to memory.
+/// - Parameters:
+///   - satNum: Satellite number
+///   - secClass: Security classification
+///   - satName: Satellite international designator
+///   - epochYr: Element epoch time - year,, [YY]YY
+///   - epochDays: Element epoch time - day of year, DDD.DDDDDDDD
+///   - nDotO2: N Dot/2 (rev/day /2)
+///   - n2DotO6: N Double Dot/6 (rev/day**2 /6) or agom (ephType = 4, XP) (m2/kg)
+///   - bstar: B* drag term (1/er) (ephType = 0, 2) or BTerm - ballistic coefficient (m2/kg) (ephType = 4, XP)
+///   - ephType: Satellite ephemeris type (0: SGP, 2: SGP4)
+///   - elsetNum: Element set number
+///   - incli: Orbit inclination (degrees)
+///   - node: Right ascension of ascending node (degrees)
+///   - eccen: Eccentricity
+///   - omega: Argument of perigee (degrees)
+///   - mnAnomaly: Mean anomaly (degrees)
+///   - mnMotion: Mean motion (rev/day) (ephType = 0: Kozai mean motion, ephType = 2 or 4: Brouwer mean motion)
+///   - revNum: Revolution number at epoch
+///   - line1: Returned first line of a TLE
+///   - line2: Returned second line of a TLE
+public func tleGPFieldsToLines(_ satNum: Int32, _ secClass: String, _ satName: String, _ epochYr: Int32,
+                               _ epochDays: Double, _ nDotO2: Double, _ n2DotO6: Double, _ bstar: Double,
+                               _ ephType: Int32, _ elsetNum: Int32, _ incli: Double, _ node: Double,
+                               _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32,
+                               _ line1: inout String, _ line2: inout String) {
+
+    var _line1 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+    var _line2 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+
+    TleGPFieldsToLines(satNum, secClass.utf8CString[0], makeCString(from: satName), epochYr, epochDays, nDotO2, n2DotO6,
+                       bstar, ephType, elsetNum, incli, node, eccen, omega, mnMotion, mnMotion, revNum, &_line1, &_line2)
+
+    _line1[Int(INPUTCARDLEN)] = 0
+    _line2[Int(INPUTCARDLEN)] = 0
+
+    line1 = String(cString: _line1).trimRight()
+    line2 = String(cString: _line2).trimRight()
+
+}
+
+/// // Adds a GP TLE using its individually provided field values.
+/// The function will indicate an error if the specified two line element set corresponds to a satellite that is already in memory.
+///
+/// This function can be called repeatedly to add many satellites (one satellite at a time).
+///
+/// SGP satellites (ephType = 0) use Kozai mean motion. SGP4 satellites (ephType = 2) use Brouwer mean motion.
+// returns The satKey of the newly added TLE on success, a negative value on error.
+
+/// - Parameters:
+///   - satNum: Satellite number
+///   - secClass: Security classification
+///   - satName: Satellite international designator
+///   - epochYr: Element epoch time - year, [YY]YY
+///   - epochDays: Element epoch time - day of year, DDD.DDDDDDDD
+///   - bstar: B* drag term (1/er) (ephType = 0, 2) or BTerm - ballistic coefficient (m2/kg) (ephType = 4, XP)
+///   - ephType: Satellite ephemeris type (0: SGP, 2: SGP4)
+///   - elsetNum: Element set number
+///   - incli: Orbit inclination (degrees)
+///   - node: Right ascension of ascending node (degrees)
+///   - eccen: Eccentricity
+///   - omega: Argument of perigee (degrees)
+///   - mnAnomaly: Mean anomaly (degrees)
+///   - mnMotion: Mean motion (rev/day) (ephType = 0: Kozai mean motion, ephType = 2 or 4: Brouwer mean motion)
+///   - revNum: Revolution number at epoch
+/// - Returns: returns The satKey of the newly added TLE on success, a negative value on error.
+public func tleAddSatFrFieldsGP(_ satNum: Int32, _ secClass: String, _ satName: String,
+                                _ epochYr: Int32, _ epochDays: Double, _ bstar: Double,
+                                _ ephType: Int32, _ elsetNum: Int32, _ incli: Double,
+                                _ node: Double, _ eccen: Double, _ omega: Double,
+                                _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32) -> Int64 {
+
+    TleAddSatFrFieldsGP(satNum, secClass.utf8CString[0], makeCString(from: satName),
+                        epochYr, epochDays, bstar, ephType,
+                        elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
+
+}
+
+public func tleAddSatFrFieldsGP2(_ satNum: Int32, _ secClass: String, _ satName: String,
+                                 _ epochYr: Int32, _ epochDays: Double, _ bstar: Double,
+                                 _ ephType: Int32, _ elsetNum: Int32, _ incli: Double,
+                                 _ node: Double, _ eccen: Double, _ omega: Double,
+                                 _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32,
+                                 _ nDotO2: Double, _ n2DotO6: Double) -> Int64 {
+
+    TleAddSatFrFieldsGP2(satNum, secClass.utf8CString[0], makeCString(from: satName),
+                         epochYr, epochDays, bstar, ephType,
+                         elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum,
+                         nDotO2, n2DotO6)
+
+}
+
+public func tleAddSatFrFieldsSP(_ satNum: Int32, _ secClass: String, _ satName: String,
+                                _ epochYr: Int32, _ epochDays: Double, _ bterm: Double,
+                                _ ogParm: Double, _ agom: Double,
+                                _ elsetNum: Int32, _ incli: Double,
+                                _ node: Double, _ eccen: Double, _ omega: Double,
+                                _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32) -> Int64 {
+
+    TleAddSatFrFieldsSP(satNum, secClass.utf8CString[0], makeCString(from: satName),
+                        epochYr, epochDays, bterm, ogParm, agom,
+                        elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
+
+}
+
+public func tleUpdateSatFrFieldsGP(_ satKey: Int64, _ secClass: String, _ satName: String,
+                                   _ bstar: Double, _ elsetNum: Int32, _ incli: Double,
+                                   _ node: Double, _ eccen: Double, _ omega: Double,
+                                   _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32) -> Int {
+
+    Int(TleUpdateSatFrFieldsGP(satKey, secClass.utf8CString[0], makeCString(from: satName),
+                               bstar,
+                               elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum))
+
+}
+
+public func tleUpdateSatFrFieldsGP2(_ satKey: Int64, _ secClass: String, _ satName: String,
+                                    _ bstar: Double, _ elsetNum: Int32, _ incli: Double,
+                                    _ node: Double, _ eccen: Double, _ omega: Double,
+                                    _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32,
+                                    _ nDotO2: Double, _ n2DotO6: Double) -> Int {
+
+    Int(TleUpdateSatFrFieldsGP2(satKey, secClass.utf8CString[0], makeCString(from: satName),
+                                bstar,
+                                elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum,
+                                nDotO2, n2DotO6))
+}
+
+public func tleUpdateSatFrFieldsSP(_ satKey: Int64, _ secClass: String, _ satName: String,
+                                   _ bterm: Double, _ ogParm: Double,
+                                   _ agom: Double, _ elsetNum: Int32, _ incli: Double,
+                                   _ node: Double, _ eccen: Double, _ omega: Double,
+                                   _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32) -> Int {
+
+    Int(TleUpdateSatFrFieldsSP(satKey, secClass.utf8CString[0], makeCString(from: satName),
+                               bterm, ogParm, agom,
+                               elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum))
+
+}
+
+public func tleRemoveSat(_ satKey: Int64) -> Int { Int(TleRemoveSat(satKey)) }
+
+/// Retrieves the value of a specific field of a TLE.
+///
+/// The table below indicates which index values correspond to which fields. Make sure to use the
+/// appropriate field index for GP TLEs and SP TLEs.  For indexes 5, 15 and 16, the interpretation
+/// depends on the ephemeris type of the TLE.
+///
+///  | index | index Interpretation |
+///  |  ---  |  ---  |
+///  |   1  |  Satellite number  |
+///  |   2  |  Security classification  |
+///  |   3  |  Satellite international designator  |
+///  |   4  |  Epoch  |
+///  |   5  |  Ephemeris type: 0,2→B* drag term (1/er); 6→SP radiation pressure coefficient agom (m2/kg)  |
+///  |   6  |  Ephemeris type  |
+///  |   7  |  Element set number  |
+///  |   8  |  Orbit inclination (degrees)  |
+///  |   9  |  Right ascension of ascending node (degrees)  |
+///  |   10  |  Eccentricity  |
+///  |   11  |  Argument of perigee (degrees)  |
+///  |   12  |  Mean anomaly (degrees)  |
+///  |   13  |  Mean motion (rev/day)  |
+///  |   14  |  Revolution number at epoch  |
+///  |   15  |  Ephemeris type: 0→SGP mean motion derivative (rev/day÷2); 6→SP ballistic coefficient (m2/kg)   |
+///  |   16  |  Ephemeris type: 0→SGP mean motion second derivative (rev/day²÷6); 6→SP Outgassing parameter/Thrust Acceleration (km/s2)  |
+/// - Parameters:
+///   - satKey: The satellite's unique key.
+///   - xf_Tle: Predefined number specifying which field to retrieve.
+/// - Returns: A string to contain the value of the requested field (null if failure).
+public func tleGetField(_ satKey: Int64, _ xf_Tle: Int32) -> String? {
+
+    var valueStr = Array(repeating: CChar(0), count: Int(GETSETSTRLEN)+1)
+    guard 0  == TleGetField(satKey, XF_TLE_EPOCH, &valueStr) else { return nil }
+
+    valueStr[Int(GETSETSTRLEN)] = 0
+    return String(cString: valueStr).trimRight()
+
+}
+
+// ================================================ SGP4 ================================================
 
 /// Initializes the Sgp4 DLL for use in the program.
 ///
@@ -695,10 +972,37 @@ public func sgp4Init(_ dllHandle: Int64) -> Int { Int(Sgp4Init(dllHandle)) }
 /// - Returns: A `String` of information about the DLL version number, build date, and platform.
 public func sgp4GetInfo() -> String {
 
-    var infoString = Array(repeating: Int8(0), count: Int(513))
+    var infoString = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
     Sgp4GetInfo(&infoString)
-    infoString[512] = 0
+    infoString[Int(GETSETSTRLEN)] = 0
     return String(cString: infoString).trimRight()
+
+}
+
+//TODO: public func Sgp4GetLicFilePath(_ licFilePath: UnsafeMutablePointer<CChar>)
+
+/// Note: The only requirement now is that "SGP4_Open_License.txt" file needs to
+/// be in those folders specified in PATH/LD_LIBRARY_PATH environment or AstroStds DLLs/SOs'
+/// - Returns: The file path to the Sgp4 Open License file
+@available(*, deprecated, message: "This function has been deprecated since v8.2")
+public func Sgp4GetLicFilePath() -> String {
+
+    var licFilePath = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
+    Sgp4GetLicFilePath(&licFilePath)
+    licFilePath[Int(GETSETSTRLEN)] = 0
+    return String(cString: licFilePath).trimRight()
+
+}
+
+//TODO: public func Sgp4SetLicFilePath(_ licFilePath: UnsafeMutablePointer<CChar>)
+
+/// Note: The only requirement now is that "SGP4_Open_License.txt" file needs to be
+/// in those folders specified in PATH/LD_LIBRARY_PATH environment or AstroStds DLLs/SOs'
+/// - Parameter licFilePath: The file path to the Sgp4 Open License file
+@available(*, deprecated, message: "This function has been deprecated since v8.2")
+public func sgp4SetLicFilePath(_ licFilePath: String) {
+
+    Sgp4SetLicFilePath(makeCString(from: licFilePath))
 
 }
 
@@ -763,7 +1067,9 @@ public func sgp4RemoveAllSats() -> Int { Int(Sgp4RemoveAllSats()) }
 ///   - vel: Resulting ECI velocity vector (km/s) in True Equator and Mean Equinox of Epoch.
 ///   - llh: Resulting geodetic latitude (deg), longitude(deg), and height (km).
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
-public func sgp4PropMse(_ satKey: Int64, _ mse: Double, _ ds50UTC: UnsafeMutablePointer<Double>, _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>, _ llh: UnsafeMutablePointer<Double>) -> Int {
+public func sgp4PropMse(_ satKey: Int64, _ mse: Double, _ ds50UTC: UnsafeMutablePointer<Double>,
+                        _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>,
+                        _ llh: UnsafeMutablePointer<Double>) -> Int {
 
     Int(Sgp4PropMse(satKey, mse, ds50UTC, pos, vel, llh))
 }
@@ -790,7 +1096,9 @@ public func sgp4PropMse(_ satKey: Int64, _ mse: Double, _ ds50UTC: UnsafeMutable
 ///   - vel: Resulting ECI velocity vector (km/s) in True Equator and Mean Equinox of Epoch.
 ///   - llh: Resulting geodetic latitude (deg), longitude(deg), and height (km).
 /// - Returns: returns 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
-public func sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: UnsafeMutablePointer<Double>, _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>, _ llh: UnsafeMutablePointer<Double>) -> Int {
+public func sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: UnsafeMutablePointer<Double>,
+                            _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>,
+                            _ llh: UnsafeMutablePointer<Double>) -> Int {
 
     Int(Sgp4PropDs50UTC(satKey, ds50UTC, mse, pos, vel, llh))
 
@@ -848,122 +1156,6 @@ public func sgp4PropDs50UtcPos(_ satKey: Int64,
                                _ ds50UTC: Double,
                                _ pos: UnsafeMutablePointer<Double>) -> Int { Int(Sgp4PropDs50UtcPos(satKey, ds50UTC, pos)) }
 
-// ============================================== ADDITIONS ==============================================
-
-///Returns the first and second lines representation of a TLE of a satellite.
-/// - Parameters:
-///   - satKey: The satellite's unique key.
-///   - line1: A string to hold the first line of the TLE
-///   - line2: A string to hold the second line of the TLE
-/// - Returns: 0 if successful, non-0 on error.
-public func tleGetLines(_ satKey: Int64, _ line1: inout String, _ line2: inout String) -> Int {
-
-    var _line1 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
-    var _line2 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
-
-    let errorCode = TleGetLines(satKey, &_line1, &_line2)
-
-    _line1[Int(INPUTCARDLEN)] = 0
-    _line2[Int(INPUTCARDLEN)] = 0
-
-    let line1String = String(cString: _line1).trimRight()
-    let line2String = String(cString: _line2).trimRight()
-
-    line1 = line1String
-    line2 = line2String
-
-    return Int(errorCode)
-}
-
-/// Reepochs a loaded TLE, represented by the satKey, to a new epoch.
-///
-/// - Parameters:
-///   - satKey: The unique key of the satellite to reepoch.
-///   - newEpoch: The new epoch, express in days since 1950, UTC.
-///   - line1: A string to hold the first line of the reepoched TLE.
-///   - line2: A string to hold the second line of the reepoched TLE.
-/// - Returns: 0 if the reepoch is successful, non-0 if there is an error.
-public func sgp4ReepochTLE(_ satKey: Int64, _ newEpoch: Double, _ line1: inout String, _ line2: inout String) -> Int {
-
-    var _line1 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
-    var _line2 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
-
-    let errorCode = Sgp4ReepochTLE(satKey, newEpoch, &_line1, &_line2)
-
-    _line1[Int(INPUTCARDLEN)] = 0
-    _line2[Int(INPUTCARDLEN)] = 0
-
-    let line1String = String(cString: _line1).trimRight()
-    let line2String = String(cString: _line2).trimRight()
-
-    line1 = line1String
-    line2 = line2String
-
-    return Int(errorCode)
-}
-
-public func tleRemoveSat(_ satKey: Int64) -> Int { Int(TleRemoveSat(satKey)) }
-
-/// Retrieves the value of a specific field of a TLE.
-///
-/// The table below indicates which index values correspond to which fields. Make sure to use the
-/// appropriate field index for GP TLEs and SP TLEs.  For indexes 5, 15 and 16, the interpretation
-/// depends on the ephemeris type of the TLE.
-///
-///  | index | index Interpretation |
-///  |  ---  |  ---  |
-///  |   1  |  Satellite number  |
-///  |   2  |  Security classification  |
-///  |   3  |  Satellite international designator  |
-///  |   4  |  Epoch  |
-///  |   5  |  Ephemeris type: 0,2→B* drag term (1/er); 6→SP radiation pressure coefficient agom (m2/kg)  |
-///  |   6  |  Ephemeris type  |
-///  |   7  |  Element set number  |
-///  |   8  |  Orbit inclination (degrees)  |
-///  |   9  |  Right ascension of ascending node (degrees)  |
-///  |   10  |  Eccentricity  |
-///  |   11  |  Argument of perigee (degrees)  |
-///  |   12  |  Mean anomaly (degrees)  |
-///  |   13  |  Mean motion (rev/day)  |
-///  |   14  |  Revolution number at epoch  |
-///  |   15  |  Ephemeris type: 0→SGP mean motion derivative (rev/day÷2); 6→SP ballistic coefficient (m2/kg)   |
-///  |   16  |  Ephemeris type: 0→SGP mean motion second derivative (rev/day²÷6); 6→SP Outgassing parameter/Thrust Acceleration (km/s2)  |
-/// - Parameters:
-///   - satKey: The satellite's unique key.
-///   - xf_Tle: Predefined number specifying which field to retrieve.
-/// - Returns: A string to contain the value of the requested field (null if failure).
-public func tleGetField(_ satKey: Int64, _ xf_Tle: Int32) -> String? {
-
-    var valueStr = Array(repeating: CChar(0), count: Int(GETSETSTRLEN)+1)
-    _ = TleGetField(satKey, XF_TLE_EPOCH, &valueStr)
-    valueStr[Int(GETSETSTRLEN)] = 0
-
-    return String(cString: valueStr).trimRight()
-
-}
-
-/// Loads timing constants data from an input file.
-///
-/// Time constants can be included directly in the main input file or they can
-/// be read from a separate file identified with "TIMFIL=[pathname/filename]".
-///
-/// The input file is read in two passes. The function first looks for "TIMFIL=" lines,
-/// then it looks for timing constant data which was included directly. The result of
-/// this is that data entered using both methods will be processed, but the "TIMFIL="
-/// data will be processed first.
-///
-/// The time constants are also read in from each VCM. However, only the most recent
-/// time constants among VCMs are stored in the memory, see VCM.dll documentation.
-/// See the "Time Constants Data Description" section in the accompanying TimeFunc
-/// documentation file for supported formats.
-/// - Parameter filePath: The name of the file from which to read timing constants data.
-/// - Returns: 0 if the input file has been loaded successfully, non-0 if error
-public func tConLoadFile(_ filePath: String) -> Int {
-
-    Int(TConLoadFile(makeCString(from: filePath)))
-
-}
-
 /// Retrieves propagator's precomputed results. This function can be used to obtain results from a
 /// propagation which are not made available through calls to the propagation functions themselves.
 ///
@@ -999,5 +1191,41 @@ public func tConLoadFile(_ filePath: String) -> Int {
 public func sgp4GetPropOut(_ satKey: Int64, _ xf_SgpOut: Int32, _ destArr: UnsafeMutablePointer<Double>)  -> Int {
 
     Int(Sgp4GetPropOut(satKey, xf_SgpOut, destArr))
+
+}
+
+/// Reepochs a loaded TLE, represented by the satKey, to a new epoch.
+///
+/// - Parameters:
+///   - satKey: The unique key of the satellite to reepoch.
+///   - newEpoch: The new epoch, express in days since 1950, UTC.
+///   - line1: A string to hold the first line of the reepoched TLE.
+///   - line2: A string to hold the second line of the reepoched TLE.
+/// - Returns: 0 if the reepoch is successful, non-0 if there is an error.
+public func sgp4ReepochTLE(_ satKey: Int64, _ newEpoch: Double, _ line1: inout String, _ line2: inout String) -> Int {
+
+    var _line1 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+    var _line2 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+
+    let errorCode = Sgp4ReepochTLE(satKey, newEpoch, &_line1, &_line2)
+
+    _line1[Int(INPUTCARDLEN)] = 0
+    _line2[Int(INPUTCARDLEN)] = 0
+
+    line1 = String(cString: _line1).trimRight()
+    line2 = String(cString: _line2).trimRight()
+
+    return Int(errorCode)
+}
+
+//TODO: public func Sgp4ReepochCsv(_ satKey: Int64, _ reepochDs50UTC: Double, _ csvLine: UnsafeMutablePointer<CChar>) -> Int
+
+public func Sgp4ReepochCsv(_ satKey: Int64, _ reepochDs50UTC: Double) -> String? {
+
+    var _csvLine = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)
+    guard 0 == Sgp4ReepochCsv(satKey, reepochDs50UTC, &_csvLine) else { return nil }
+
+    _csvLine[Int(INPUTCARDLEN)] = 0
+    return String(cString: _csvLine).trimRight()
 
 }
