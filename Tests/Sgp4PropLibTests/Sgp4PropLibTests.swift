@@ -1,5 +1,6 @@
 import XCTest
 @testable import swift
+@testable import obj_c
 
 final class Sgp4App2Tests: XCTestCase {
 
@@ -114,18 +115,18 @@ final class Sgp4App2Tests: XCTestCase {
 
         loadAllDlls()
 
-// load a TLE using strings (see TLE dll document)
-//      let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-//                                    "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
+        // load a TLE using strings (see TLE dll document)
+        //      let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
+        //                                    "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
 
         let satKey = tleAddSatFrLines("1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999x",
                                       "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468x")
-//                                              1         2         3         4         5         6         7         8
-//                                     12345678901234567890123456789012345678901234567890123456789012345678901234567890
-//                                     1 25544U 98067A   22350.92995838  .00012052  00000+0  21882-3 0  9998
-//                                     2 25544  51.6430 151.3097 0003678 167.7951 338.1576 15.49996899373529
+        //                                              1         2         3         4         5         6         7         8
+        //                                     12345678901234567890123456789012345678901234567890123456789012345678901234567890
+        //                                     1 25544U 98067A   22350.92995838  .00012052  00000+0  21882-3 0  9998
+        //                                     2 25544  51.6430 151.3097 0003678 167.7951 338.1576 15.49996899373529
 
-//                                     1 NNNNNU NNNNNAAA NNNNN.NNNNNNNN +.NNNNNNNN +NNNNN-N +NNNNN-N N NNNNN
+        //                                     1 NNNNNU NNNNNAAA NNNNN.NNNNNNNN +.NNNNNNNN +NNNNN-N +NNNNN-N N NNNNN
         print("\(satKey)")
 
         var satNum: Int32 = 0
@@ -166,10 +167,53 @@ final class Sgp4App2Tests: XCTestCase {
 
     }
 
-//    func testWarning() {
-//
-//        printWarning("\"Gavin's Port of Sgp4Prop\"")
-//
-//    }
+    //    func testWarning() {
+    //
+    //        printWarning("\"Gavin's Port of Sgp4Prop\"")
+    //
+    //    }
 
+    func testStringArrayConversion() {
+
+        let array = nullCharacterArray(size: 24)
+
+        _ = characterArrayToString(array, size: 24)
+
+    }
+
+    func testRealUse() {
+
+        loadAllDlls()
+
+        let satKey = tleAddSatFrLines("1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999",
+        //                             1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999
+                                      "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468")
+        //                             2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996469
+
+        print(tleGetField(satKey, XF_TLE_SATNUM) as Any)    // SATELLITE NUMBER
+        print(tleGetField(satKey, XF_TLE_CLASS) as Any)     // SECURITY CLASSIFICATION U: UNCLASS, C: CONFIDENTIAL, S: SECRET
+        print(tleGetField(satKey, XF_TLE_SATNAME) as Any)   // SATELLITE NAME A8
+        print(tleGetField(satKey, XF_TLE_EPOCH) as Any)     // SATELLITE'S EPOCH TIME "YYYYJJJ.JJJJJJJJ"
+        print(tleGetField(satKey, XF_TLE_BSTAR) as Any)     // GP B* DRAG TERM (1/ER)  (NOT THE SAME AS XF_TLE_BTERM)
+        print(tleGetField(satKey, XF_TLE_EPHTYPE) as Any)   // SATELLITE EPHEMERIS TYPE: 0) as Any)SGP, 2) as Any)SGP4, 6) as Any)SP
+        print(tleGetField(satKey, XF_TLE_ELSETNUM) as Any)  // ELEMENT SET NUMBER
+        print(tleGetField(satKey, XF_TLE_INCLI) as Any)     // ORBIT INCLINATION (DEG)
+        print(tleGetField(satKey, XF_TLE_NODE) as Any)      // RIGHT ASCENSION OF ASENDING NODE (DEG)
+        print(tleGetField(satKey, XF_TLE_ECCEN) as Any)     // ECCENTRICITY
+        print(tleGetField(satKey, XF_TLE_OMEGA) as Any)     // ARGUMENT OF PERIGEE (DEG)
+        print(tleGetField(satKey, XF_TLE_MNANOM) as Any)    // MEAN ANOMALY (DEG)
+        print(tleGetField(satKey, XF_TLE_MNMOTN) as Any)    // MEAN MOTION (REV/DAY) (EPHTYPE) as Any)0: KOZAI, EPHTYPE) as Any)2: BROUWER)
+        print(tleGetField(satKey, XF_TLE_REVNUM) as Any)    // REVOLUTION NUMBER AT EPOCH
+
+        let _ = sgp4InitSat(satKey)
+
+        let epoch = dtgToUTC("22346.21636301")
+        var line1 = ""
+        var line2 = ""
+
+        let _ = sgp4ReepochTLE(satKey, epoch, &line1, &line2)
+
+        print("\n\(line1)\n\(line2)\n")
+
+    }
 }

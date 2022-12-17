@@ -197,7 +197,17 @@ public func envLoadFile(_ filePath: String) -> Int {
 
 }
 
-//TODO: public func EnvSaveFile(_ envConstFile: UnsafeMutablePointer<CChar>, _ saveMode: Int32, _ saveForm: Int32) -> Int
+/// Saves the current Earth constants (GEO) model and fundamental catalogue (FK) model settings to a file.
+/// - Parameters:
+///   - envFilePath: The name of the file in which to save the settings.
+///   - saveMode: Specifies whether to create a new file or append to an existing one. (0 = create, 1= append)
+///   - saveForm: Specifies the mode in which to save the file. (0 = text format, 1 = xml (not yet implemented, reserved for future))
+/// - Returns: zero indicating the GEO and FK settings have been successfully saved to the file. Other values indicate an error.
+public func envSaveFile(_ envFilePath: String, _ saveMode: Int, _ saveForm: Int) -> Int {
+
+    Int(EnvSaveFile(makeCString(from: envFilePath), Int32(saveMode), Int32(saveForm)))
+
+}
 
 /// Returns the name of the current Earth constants (GEO) model.
 ///
@@ -298,7 +308,21 @@ public func get6PCardLine() -> String {
 
 }
 
-//TODO: public func TConSaveFile(_ tconFile: UnsafeMutablePointer<CChar>, _ saveMode: Int32, _ saveForm: Int32) -> Int
+/// Saves currently loaded timing constants data to a file.
+///
+/// The data will be saved in the format specified by the form parameter, regardless of the format
+/// or method originally used to load it.
+
+/// - Parameters:
+///   - envFilePath: The name of the file in which to save the timing constants data.
+///   - saveMode: Specifies whether to create a new file or append to an existing one. (0 = create, 1= append)
+///   - saveForm: Specifies the mode in which to save the file. (0 = SPECTER Print Record format, 1 = XML format (future implementation))
+/// - Returns: zero indicating the GEO and FK settings have been successfully saved to the file. Other values indicate an error.
+public func tConSaveFile(_ tleFile: String, _ saveMode:Int, _ xf_tleForm:Int) -> Int {
+
+    Int(TConSaveFile(makeCString(from: tleFile), Int32(saveMode), Int32(xf_tleForm)))
+
+}
 
 /// Initializes the TimeFunc DLL for use in the program.
 ///
@@ -370,9 +394,9 @@ public func utcToET(_ ds50UTC: Double) -> Double { UTCToET(ds50UTC) }
 ///   - year: Two or four digit years are accepted.
 ///   - dayOfYear: The day of year. Partial days can be specified.
 /// - Returns: returns The number of days since 1950, UTC. Partial days may be returned.
-public func yrDaysToUTC(_ year: Int32, _ dayOfYear: Double) -> Double {
+public func yrDaysToUTC(_ year:Int, _ dayOfYear: Double) -> Double {
 
-    YrDaysToUTC(year, dayOfYear)
+    YrDaysToUTC(Int32(year), dayOfYear)
 
 }
 
@@ -387,10 +411,10 @@ public func yrDaysToUTC(_ year: Int32, _ dayOfYear: Double) -> Double {
 ///   - mm: The minute.
 ///   - sss: The second, including partial seconds if desired.
 /// - Returns: The number of Days since 1950, UTC. Partial days may be returned.
-public func timeComps1ToUTC(_ year: Int32, _ dayOfYear: Int32,
-                            _ hh: Int32, _ mm: Int32, _ sss: Double) -> Double {
+public func timeComps1ToUTC(_ year:Int, _ dayOfYear:Int,
+                            _ hh:Int, _ mm:Int, _ sss: Double) -> Double {
 
-    TimeComps1ToUTC(year, dayOfYear, hh, mm, sss)
+    TimeComps1ToUTC(Int32(year), Int32(dayOfYear), Int32(hh), Int32(mm), sss)
 
 }
 
@@ -416,10 +440,10 @@ public func utcToTimeComps1(_ ds50UTC: Double,
 
 }
 
-public func timeComps2ToUTC(_ year: Int32, _ month: Int32, _ dayOfMonth: Int32,
-                            _ hh: Int32, _ mm: Int32, _ sss: Double) -> Double {
+public func timeComps2ToUTC(_ year:Int, _ month:Int, _ dayOfMonth:Int,
+                            _ hh:Int, _ mm:Int, _ sss: Double) -> Double {
     
-    TimeComps2ToUTC(year, month, dayOfMonth, hh, mm, sss)
+    TimeComps2ToUTC(Int32(year), Int32(month), Int32(dayOfMonth), Int32(hh), Int32(mm), sss)
     
 }
 
@@ -562,48 +586,297 @@ public func isPointSunlit(_ ds50ET: Double, _ ptECI: UnsafeMutablePointer<Double
 
 // ================================================ TLE ================================================
 
-public func tleSetField(_ satKey: Int64, _ xf_Tle: Int32) -> String? {
+public func tleSetField(_ satKey: Int64, _ xf_Tle:Int) -> String? {
 
     var infoString = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
-    guard 0 == TleSetField(satKey, xf_Tle, &infoString) else { return nil }
+    guard 0 == TleSetField(satKey, Int32(xf_Tle), &infoString) else { return nil }
 
     infoString[Int(GETSETSTRLEN)] = 0
     return String(cString: infoString).trimRight()
 
 }
 
-//TODO: public func TleLinesToArray(_ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>, _ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar>) -> Int
+/// Parses GP data from the input first and second lines of a two line element set or a
+/// CSV tle and store that data back into the output parameters.
+///
+/// This function only parses data from the input TLE but DOES NOT load/add the input TLE to memory.
+/// - Parameters:
+///   - line1: The first line of the two line element set or a CSV tle
+///   - line2: The second line of the two line element set or an empty string for a CVS tle
+///   - xa_tle: Array containing TLE's numerical fields, see XA_TLE_? for array arrangement
+/// - Returns: Output string that contains all TLE's text fields, see XS_TLE_? for column arrangement
+public func tleLinesToArray(_ line1: String, _ line2: String, _ xa_tle: inout Double) -> String? {
 
-//TODO: public func TleGetCsv(_ satKey: Int64, _ csvLine: UnsafeMutablePointer<CChar>) -> Int
+    var returnString = Array(repeating: CChar(0), count: Int(GETSETSTRLEN+1))
+    guard 0 == Int(TleLinesToArray(makeCString(from: line1), makeCString(from: line2), &xa_tle, &returnString)) else { return nil }
+    returnString[Int(GETSETSTRLEN)] = 0
+    return String(cString: returnString).trimRight()
 
-//TODO: public func TleGPFieldsToCsv(_ satNum: Int32, _ secClass: CChar, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: Int32, _ epochDays: Double, _ nDotO2: Double, _ n2DotO6: Double, _ bstar: Double, _ ephType: Int32, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32, _ csvLine: UnsafeMutablePointer<CChar>)
+}
 
-//TODO: public func TleGPArrayToLines(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar>, _ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>)
+/// Returns the CSV string representation of a TLE of a satellite.
+/// - Parameters:
+///   - satKey: The satellite's unique key.
+///   - csvLine: A string to hold the TLE in csv format.
+/// - Returns: 0 if successful, non-0 on error.
+public func tleGetCsv(_ satKey: Int64, _ csvLine: inout String) -> Int {
 
-//TODO: public func TleGPArrayToCsv(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar>, _ csvline: UnsafeMutablePointer<CChar>)
+    var _infoArray = Array(repeating: CChar(0), count: Int(GETSETSTRLEN)+1)
+    let errorCode = Int(TleGetCsv(satKey, &_infoArray))
+    _infoArray[Int(GETSETSTRLEN)] = 0
+    csvLine = String(cString: _infoArray).trimRight()
 
-//TODO: public func TleSPFieldsToLines(_ satNum: Int32, _ secClass: CChar, _ satName: UnsafeMutablePointer<CChar>, _ epochYr: Int32, _ epochDays: Double, _ bterm: Double, _ ogParm: Double, _ agom: Double, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32, _ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>)
+    return errorCode
 
-//TODO: public func TleAddSatFrArray(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar>) -> Int64
+}
 
-//TODO: public func TleUpdateSatFrArray(_ satKey: Int64, _ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar>) -> Int
+ /// Constructs a TLE from individually provided GP data fields.
+/// - Parameters:
+///   - satNum: Satellite number
+///   - secClass: Security classification
+///   - satName: Satellite international designator
+///   - epochYr: Element epoch time - year,, [YY]YY
+///   - epochDays: Element epoch time - day of year, DDD.DDDDDDDD
+///   - nDotO2: N Dot/2 (rev/day /2)
+///   - n2DotO6: N Double Dot/6 (rev/day**2 /6) or agom (ephType = 4, XP) (m2/kg)
+///   - bstar: B* drag term (1/er) (ephType = 0, 2) or BTerm - ballistic coefficient (m2/kg) (ephType = 4, XP)
+///   - ephType: Satellite ephemeris type (0: SGP, 2: SGP4)
+///   - elsetNum: Element set number
+///   - incli: Orbit inclination (degrees)
+///   - node: Right ascension of ascending node (degrees)
+///   - eccen: Eccentricity
+///   - omega: Argument of perigee (degrees)
+///   - mnAnomaly: Mean anomaly (degrees)
+///   - mnMotion: Mean motion (rev/day) (ephType = 0: Kozai mean motion, ephType = 2 or 4: Brouwer mean motion)
+///   - revNum: Revolution number at epoch
+/// - Returns: A string to hold the TLE in csv format.
+public func tleGPFieldsToCsv(_ satNum: Int, _ secClass: String, _ satName: String, _ epochYr: Int, _ epochDays: Double, _ nDotO2: Double, _ n2DotO6: Double, _ bstar: Double, _ ephType: Int, _ elsetNum: Int, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int) -> String {
 
-//TODO: public func TleDataToArray(_ satKey: Int64, _ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar>) -> Int
+    var returnString = Array(repeating: CChar(0), count: Int(GETSETSTRLEN)+1)
 
-//TODO: public func TleLinesToCsv(_ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>, _ csvline: UnsafeMutablePointer<CChar>) -> Int
+         TleGPFieldsToCsv(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
+                          Int32(epochYr), epochDays, nDotO2, n2DotO6, bstar, Int32(ephType),
+                          Int32(elsetNum), incli, node, eccen, omega, mnMotion, mnMotion, Int32(revNum), &returnString)
 
-//TODO: public func TleCsvToLines(_ csvLine: UnsafeMutablePointer<CChar>, _ newSatno: Int32, _ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar>) -> Int
+    return String(cString: returnString).trimRight()
+
+}
+
+// Constructs a TLE from GP data stored in the input parameters.
+// This function only parses data from the input data but DOES NOT load/add the TLE to memory.
+// Returned line1 and line2 will be empty if the function fails to construct the lines as requested.
+// xa_tle             Array containing TLE's numerical fields, see XA_TLE_? for array arrangement (in-Double[64])
+// xs_tle             Input string that contains all TLE's text fields, see XS_TLE_? for column arrangement (in-Character[512])
+// line1              Returned first line of a TLE (out-Character[512])
+// line2              Returned second line of a TLE (out-Character[512])
+public func tleGPArrayToLines(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String, _ line1: inout String, _ line2: inout String) {
+
+    var _line1 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+    var _line2 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+
+    TleGPArrayToLines(xa_tle, makeCString(from: xs_tle), &_line1, &_line2)
+
+    _line1[Int(INPUTCARDLEN)] = 0
+    _line2[Int(INPUTCARDLEN)] = 0
+
+    line1 = String(cString: _line1).trimRight()
+    line2 = String(cString: _line2).trimRight()
+
+}
+
+// Constructs a TLE from GP data stored in the input parameters.
+// This function only parses data from the input data but DOES NOT load/add the TLE to memory.
+// Returned line1 and line2 will be empty if the function fails to construct the lines as requested.
+// xa_tle             Array containing TLE's numerical fields, see XA_TLE_? for array arrangement (in-Double[64])
+// xs_tle             Input string that contains all TLE's text fields, see XS_TLE_? for column arrangement (in-Character[512])
+// csvline            Returned csv format elements. (out-Character[512])
+public func tleGPArrayToCsv(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String) -> String? {
+
+    var _csvString = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)
+    TleGPArrayToCsv(xa_tle, makeCString(from: xs_tle), &_csvString)
+    _csvString[Int(INPUTCARDLEN)] = 0
+    return String(cString: _csvString)
+
+}
+
+// Constructs a TLE from individually provided SP data fields.
+// Only applies to SP propagator.
+// This function only parses data from the input fields but DOES NOT load/add the TLE to memory.
+// Returned line1 and line2 will be empty if the function fails to construct the lines as requested.
+// satNum             Satellite number (in-Integer)
+// secClass           Security classification (in-Character)
+// satName            Satellite international designator (in-Character[8])
+// epochYr            Element epoch time - year, [YY]YY (in-Integer)
+// epochDays          Element epoch time - day of year, DDD.DDDDDDDD (in-Double)
+// bTerm              Ballistic coefficient (m^2/kg) (in-Double)
+// ogParm             Outgassing parameter/Thrust Acceleration (km/s^2) (in-Double)
+// agom               Agom (m^2/kg) (in-Double)
+// elsetNum           Element set number (in-Integer)
+// incli              Orbit inclination (degrees) (in-Double)
+// node               Right ascension of ascending node (degrees) (in-Double)
+// eccen              Eccentricity (in-Double)
+// omega              Argument of perigee (degrees) (in-Double)
+// mnAnomaly          Mean anomaly (degrees) (in-Double)
+// mnMotion           Mean motion (rev/day) (in-Double)
+// revNum             Revolution number at epoch (in-Integer)
+// line1              Returned first line of a TLE. (out-Character[512])
+// line2              Returned second line of a TLE. (out-Character[512])
+public func tleSPFieldsToLines(_ satNum: Int32, _ secClass: String, _ satName: String, _ epochYr: Int32, _ epochDays: Double, _ bterm: Double, _ ogParm: Double, _ agom: Double, _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32, _ line1: inout String, _ line2: inout String) {
+
+    var _line1 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+    var _line2 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+
+    TleSPFieldsToLines(satNum, secClass.utf8CString[0], makeCString(from: satName), epochYr, epochDays, bterm, ogParm, agom, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, &_line1, &_line2)
+
+    _line1[Int(INPUTCARDLEN)] = 0
+    _line2[Int(INPUTCARDLEN)] = 0
+
+    line1 = String(cString: _line1).trimRight()
+    line2 = String(cString: _line2).trimRight()
+
+}
+
+// Adds a TLE (satellite), using its data stored in the input parameters.
+// xa_tle             Array containing TLE's numerical fields, see XA_TLE_? for array arrangement (in-Double[64])
+// xs_tle             Input string that contains all TLE's text fields, see XS_TLE_? for column arrangement (in-Character[512])
+// returns The satKey of the newly added TLE on success, a negative value on error.
+public func tleAddSatFrArray(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String) -> Int64 {
+
+    TleAddSatFrArray(xa_tle, makeCString(from: xs_tle))
+
+}
+
+// Updates existing TLE data with the provided new data stored in the input parameters. Note: satNum, year, day, and ephtype can't be updated.
+// nDotO2 and n2DotO6 values are not used in the SGP4 propagator. However, some users still want to preserve the integrity of all input data.
+// satKey             The satellite's unique key (in-Long)
+// xa_tle             Array containing TLE's numerical fields, see XA_TLE_? for array arrangement (in-Double[64])
+// xs_tle             Input string that contains all TLE's text fields, see XS_TLE_? for column arrangement (in-Character[512])
+// returns 0 if the TLE is successfully updated, non-0 if there is an error.
+public func tleUpdateSatFrArray(_ satKey: Int64, _ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String) -> Int {
+
+    Int(TleUpdateSatFrArray(satKey, xa_tle, makeCString(from: xs_tle)))
+
+}
+
+// Retrieves TLE data and stored it in the passing parameters
+//
+// The following table lists the values for the XA_TLE array:
+//
+//
+// name
+// index
+// index Interpretation
+//
+// XA_TLE_SATNUM          0Satellite number
+// XA_TLE_EPOCH           1Satellite's epoch time in DS50UTC
+// XA_TLE_NDOT            2GP Mean motion derivative (rev/day /2)
+// XA_TLE_NDOTDOT         3GP Mean motion second derivative (rev/day**2 /6)
+// XA_TLE_BSTAR           4GP B* drag term (1/er)
+// XA_TLE_EPHTYPE         5Satellite ephemeris type: 0=SGP, 2=SGP4, 6=SP
+// XA_TLE_OBJTYPE         6Object type; 0=unknown, 1=payload, 2=rocket body, 3=platform, 4=debris,
+// 5=manned
+// XA_TLE_EXTRPLTNTYPE    7Extrapolation theory used to generate element set: 0=no extrapolation DC
+//
+// XA_TLE_RCSBIN          8RCS size bin
+// XA_TLE_INCLI          20Orbit inclination (deg)
+// XA_TLE_NODE           21Right ascension of ascending node (deg)
+// XA_TLE_ECCEN          22Eccentricity
+// XA_TLE_OMEGA          23Argument of perigee (deg)
+// XA_TLE_MNANOM         24Mean anomaly (deg)
+// XA_TLE_MNMOTN         25Mean motion (rev/day) (ephType=0: Kozai, ephType=2: Brouwer)
+// XA_TLE_REVNUM         26Revolution number at epoch
+// XA_TLE_ELSETNUM       30Element set number
+// XA_TLE_ERRGRWRATE     31Error growth rate km/day
+// XA_TLE_LSTOBSTIME     32+/- time of last observation offset relative to epoch (+/- ddd.ddddd
+// fractional days)
+// XA_TLE_RADARXSECT     33Radar cross section (in meters squared, followed by character designating
+// radar frequency type used)
+// XA_TLE_VISMAG         34Median visual magnitude of object scaled to 36000km
+// XA_TLE_DRAGCOEFF      35Drag coefficient
+// XA_TLE_AGOMGP         38Radiation Pressure Coefficient GP
+// XA_TLE_SP_BTERM        2SP ballistic coefficient (m2/kg)
+// XA_TLE_SP_OGPARM       3SP outgassing parameter (km/s2)
+// XA_TLE_SP_AGOM         4SP Radiation Pressure Coefficient
+// XA_TLE_SIZE           64
+//
+//
+// The following table lists the values for the XS_TLE array:
+//
+//
+// name
+// index
+// index Interpretation
+//
+// XS_TLE_SECCLASS_1     0Security classification of line 1 and line 2
+// XS_TLE_SATNAME_12     1Satellite name
+// XS_TLE_SECCLASSL3_1  13Security classification of line 3
+// XS_TLE_DISTMARKING_4 14Distribution marking
+// XS_TLE_OBJSTAT_1     18Object status: 'A'=Active, 'D'=Dead, 'U'=Unknown
+// XS_TLE_MSSNCODE_2    19Primary payload mission code
+// XS_TLE_MSSNSTAT_1    21Primary mission status (table lookup)
+// XS_TLE_MANEUV_1      22Maneuverability 'Y'=Yes, 'N'=No, 'U'=Unknown
+// XS_TLE_OOCNTRY_4     23Payload Owner/Operator
+// XS_TLE_FREQBAND_1    27Frequency Band of the RCS: U=UHF, C=C-Band, L=L-Band, S=S-Band, X=X-Band
+//
+// XS_TLE_TBLERATE_1    28Tumble rate
+// XS_TLE_SIZE          512
+//
+// satKey             The satellite's unique key (in-Long)
+// xa_tle             Array containing TLE's numerical fields, see XA_TLE_? for array arrangement (out-Double[64])
+// xs_tle             Output string that contains all TLE's text fields, see XS_TLE_? for column arrangement (out-Character[512])
+// returns 0 if all values are retrieved successfully, non-0 if there is an error
+public func tleDataToArray(_ satKey: Int64, _ xa_tle: inout Double) -> String? {
+
+    var _info = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)
+    guard 0 == TleDataToArray(satKey, &xa_tle, &_info) else { return nil }
+    _info[Int(INPUTCARDLEN)] = 0
+    return String(cString: _info).trimRight()
+
+}
+
+// Converts TLE two line format to CSV format
+// line1              The first line of a two line element set (in-Character[512])
+// line2              The second line of a two line element set (in-Character[512])
+// csvline            A string to hold the TLE in csv format. (out-Character[512])
+// returns 0 if the conversion is successful, non-0 if there is an error.
+public func tleLinesToCsv(_ line1: String, _ line2: String) -> String? {
+
+    var _info = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)
+    guard 0 == TleLinesToCsv(makeCString(from: line1), makeCString(from: line2), &_info) else { return nil }
+    _info[Int(INPUTCARDLEN)] = 0
+    return String(cString: _info).trimRight()
+
+}
+
+// Converts TLE CSV format to two line format
+// csvLine            The input TLE in CSV format (in-Character[512])
+// newSatno           New satellite number to replace what's in CSV obs if desired (won't use/renumber if it's zero) (in-Integer)
+// line1              The output first line of the two line element set (out-Character[512])
+// line2              The output second line of the two line element set (out-Character[512])
+// returns 0 if the conversion is successful, non-0 if there is an error.
+public func tleCsvToLines(_ csvLine: String, _ newSatno: Int32, _ line1: inout String, _ line2: inout String) -> Int {
+
+    var _line1 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+    var _line2 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+
+    let errorCode = Int(TleCsvToLines(makeCString(from: csvLine), newSatno, &_line1, &_line2))
+
+    _line1[Int(INPUTCARDLEN)] = 0
+    _line2[Int(INPUTCARDLEN)] = 0
+
+    line1 = String(cString: _line1).trimRight()
+    line2 = String(cString: _line2).trimRight()
+
+    return errorCode
+
+}
 
 /// Initializes Tle DLL for use in the program. If this function returns an error, it is recommended that you stop the program immediately.
 ///
 /// - Parameter dllHandle: The handle that was returned from DllMainInit
 /// - Returns: 0 if Tle.dll is initialized successfully, non-0 if there is an error.
 @available(*, deprecated, message: "This function has been deprecated since v9.0")
-public func tleInit(_ dllHandle: Int64) -> Int {
-
-    Int(TleInit(dllHandle))
-
-}
+public func tleInit(_ dllHandle: Int64) -> Int { Int(TleInit(dllHandle)) }
 
 /// Returns the information about the Tle DLL.
 ///
@@ -672,9 +945,9 @@ public func tleGetCount() -> Int { Int(TleGetCount()) }
 ///   - saveMode: Specifies whether to create a new file or append to an existing file. (0 = create new file, 1= append to existing file)
 ///   - xf_tleForm: Specifies the format in which to save the file. (0 = two-line element set format, 1 =  CSV, others = future implementation)
 /// - Returns: 0 if the data is successfully saved to the file, non-0 if there is an error.
-public func tleSaveFile(_ tleFile: String, _ saveMode: Int32, _ xf_tleForm: Int32) -> Int {
+public func tleSaveFile(_ tleFile: String, _ saveMode:Int, _ xf_tleForm:Int) -> Int {
 
-    Int(TleSaveFile(makeCString(from: tleFile), saveMode, xf_tleForm))
+    Int(TleSaveFile(makeCString(from: tleFile), Int32(saveMode), Int32(xf_tleForm)))
 
 }
 
@@ -693,9 +966,9 @@ public func tleSaveFile(_ tleFile: String, _ saveMode: Int32, _ xf_tleForm: Int3
 ///     - 2 = sort in the order in which the satKeys were loaded in memory,
 ///     - 9 = Quickest: sort in the order in which the satKeys were stored in the tree
 ///   - satKeys: The array in which to store the satKeys.
-public func tleGetLoaded(_ order: Int32, _ satKeys: UnsafeMutablePointer<Int64> ) {
+public func tleGetLoaded(_ order:Int, _ satKeys: UnsafeMutablePointer<Int64> ) {
 
-    TleGetLoaded(order, satKeys)
+    TleGetLoaded(Int32(order), satKeys)
 
 }
 
@@ -746,17 +1019,17 @@ public func tleGetLines(_ satKey: Int64, _ line1: inout String, _ line2: inout S
 ///   - line1: Returned first line of a TLE
 ///   - line2: Returned second line of a TLE
 /// - Returns: line1 and line2 will be empty if the function fails to construct the lines as requested.
-public func tleGPFieldsToLines(_ satNum: Int32, _ secClass: String, _ satName: String, _ epochYr: Int32,
+public func tleGPFieldsToLines(_ satNum:Int, _ secClass: String, _ satName: String, _ epochYr:Int,
                                _ epochDays: Double, _ nDotO2: Double, _ n2DotO6: Double, _ bstar: Double,
-                               _ ephType: Int32, _ elsetNum: Int32, _ incli: Double, _ node: Double,
-                               _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32,
+                               _ ephType:Int, _ elsetNum:Int, _ incli: Double, _ node: Double,
+                               _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int,
                                _ line1: inout String, _ line2: inout String) {
 
     var _line1 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
     var _line2 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
 
-    TleGPFieldsToLines(satNum, secClass.utf8CString[0], makeCString(from: satName), epochYr, epochDays, nDotO2, n2DotO6,
-                       bstar, ephType, elsetNum, incli, node, eccen, omega, mnMotion, mnMotion, revNum, &_line1, &_line2)
+    TleGPFieldsToLines(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName), Int32(epochYr), epochDays, nDotO2, n2DotO6,
+                       bstar, Int32(ephType), Int32(elsetNum), incli, node, eccen, omega, mnMotion, mnMotion, Int32(revNum), &_line1, &_line2)
 
     _line1[Int(INPUTCARDLEN)] = 0
     _line2[Int(INPUTCARDLEN)] = 0
@@ -791,77 +1064,77 @@ public func tleGPFieldsToLines(_ satNum: Int32, _ secClass: String, _ satName: S
 ///   - mnMotion: Mean motion (rev/day) (ephType = 0: Kozai mean motion, ephType = 2 or 4: Brouwer mean motion)
 ///   - revNum: Revolution number at epoch
 /// - Returns: returns The satKey of the newly added TLE on success, a negative value on error.
-public func tleAddSatFrFieldsGP(_ satNum: Int32, _ secClass: String, _ satName: String,
-                                _ epochYr: Int32, _ epochDays: Double, _ bstar: Double,
-                                _ ephType: Int32, _ elsetNum: Int32, _ incli: Double,
+public func tleAddSatFrFieldsGP(_ satNum:Int, _ secClass: String, _ satName: String,
+                                _ epochYr:Int, _ epochDays: Double, _ bstar: Double,
+                                _ ephType:Int, _ elsetNum:Int, _ incli: Double,
                                 _ node: Double, _ eccen: Double, _ omega: Double,
-                                _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32) -> Int64 {
+                                _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int) -> Int64 {
 
-    TleAddSatFrFieldsGP(satNum, secClass.utf8CString[0], makeCString(from: satName),
-                        epochYr, epochDays, bstar, ephType,
-                        elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
+    TleAddSatFrFieldsGP(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
+                        Int32(epochYr), epochDays, bstar, Int32(ephType),
+                        Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum))
 
 }
 
-public func tleAddSatFrFieldsGP2(_ satNum: Int32, _ secClass: String, _ satName: String,
-                                 _ epochYr: Int32, _ epochDays: Double, _ bstar: Double,
-                                 _ ephType: Int32, _ elsetNum: Int32, _ incli: Double,
+public func tleAddSatFrFieldsGP2(_ satNum:Int, _ secClass: String, _ satName: String,
+                                 _ epochYr:Int, _ epochDays: Double, _ bstar: Double,
+                                 _ ephType:Int, _ elsetNum:Int, _ incli: Double,
                                  _ node: Double, _ eccen: Double, _ omega: Double,
-                                 _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32,
+                                 _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int,
                                  _ nDotO2: Double, _ n2DotO6: Double) -> Int64 {
 
-    TleAddSatFrFieldsGP2(satNum, secClass.utf8CString[0], makeCString(from: satName),
-                         epochYr, epochDays, bstar, ephType,
-                         elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum,
+    TleAddSatFrFieldsGP2(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
+                         Int32(epochYr), epochDays, bstar, Int32(ephType),
+                         Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum),
                          nDotO2, n2DotO6)
 
 }
 
-public func tleAddSatFrFieldsSP(_ satNum: Int32, _ secClass: String, _ satName: String,
-                                _ epochYr: Int32, _ epochDays: Double, _ bterm: Double,
+public func tleAddSatFrFieldsSP(_ satNum:Int, _ secClass: String, _ satName: String,
+                                _ epochYr:Int, _ epochDays: Double, _ bterm: Double,
                                 _ ogParm: Double, _ agom: Double,
-                                _ elsetNum: Int32, _ incli: Double,
+                                _ elsetNum:Int, _ incli: Double,
                                 _ node: Double, _ eccen: Double, _ omega: Double,
-                                _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32) -> Int64 {
+                                _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int) -> Int64 {
 
-    TleAddSatFrFieldsSP(satNum, secClass.utf8CString[0], makeCString(from: satName),
-                        epochYr, epochDays, bterm, ogParm, agom,
-                        elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
+    TleAddSatFrFieldsSP(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
+                        Int32(epochYr), epochDays, bterm, ogParm, agom,
+                        Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum))
 
 }
 
 public func tleUpdateSatFrFieldsGP(_ satKey: Int64, _ secClass: String, _ satName: String,
-                                   _ bstar: Double, _ elsetNum: Int32, _ incli: Double,
+                                   _ bstar: Double, _ elsetNum:Int, _ incli: Double,
                                    _ node: Double, _ eccen: Double, _ omega: Double,
-                                   _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32) -> Int {
+                                   _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int) -> Int {
 
     Int(TleUpdateSatFrFieldsGP(satKey, secClass.utf8CString[0], makeCString(from: satName),
                                bstar,
-                               elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum))
+                               Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum)))
 
 }
 
 public func tleUpdateSatFrFieldsGP2(_ satKey: Int64, _ secClass: String, _ satName: String,
-                                    _ bstar: Double, _ elsetNum: Int32, _ incli: Double,
+                                    _ bstar: Double, _ elsetNum:Int, _ incli: Double,
                                     _ node: Double, _ eccen: Double, _ omega: Double,
-                                    _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32,
+                                    _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int,
                                     _ nDotO2: Double, _ n2DotO6: Double) -> Int {
 
     Int(TleUpdateSatFrFieldsGP2(satKey, secClass.utf8CString[0], makeCString(from: satName),
                                 bstar,
-                                elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum,
+                                Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum),
                                 nDotO2, n2DotO6))
 }
 
 public func tleUpdateSatFrFieldsSP(_ satKey: Int64, _ secClass: String, _ satName: String,
                                    _ bterm: Double, _ ogParm: Double,
-                                   _ agom: Double, _ elsetNum: Int32, _ incli: Double,
+                                   _ agom: Double, _ elsetNum:Int, _ incli: Double,
                                    _ node: Double, _ eccen: Double, _ omega: Double,
-                                   _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32) -> Int {
+                                   _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int) -> Int {
 
     Int(TleUpdateSatFrFieldsSP(satKey, secClass.utf8CString[0], makeCString(from: satName),
                                bterm, ogParm, agom,
-                               elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum))
+                               Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum)))
 
 }
 
@@ -1136,7 +1409,7 @@ public func tleRemoveSat(_ satKey: Int64) -> Int { Int(TleRemoveSat(satKey)) }
 public func tleGetField(_ satKey: Int64, _ xf_Tle: Int32) -> String? {
 
     var valueStr = Array(repeating: CChar(0), count: Int(GETSETSTRLEN)+1)
-    guard 0  == TleGetField(satKey, XF_TLE_EPOCH, &valueStr) else { return nil }
+    guard 0  == TleGetField(satKey, xf_Tle, &valueStr) else { return nil }
 
     valueStr[Int(GETSETSTRLEN)] = 0
     return String(cString: valueStr).trimRight()
@@ -1374,9 +1647,9 @@ public func sgp4PropDs50UtcPos(_ satKey: Int64,
 ///   - xf_SgpOut: Specifies which propagator outputs to retrieve.
 ///   - destArr: Array to receive the resulting propagator outputs.
 /// - Returns: 0 if the requested information is retrieved successfully, non-0 if there is an error
-public func sgp4GetPropOut(_ satKey: Int64, _ xf_SgpOut: Int32, _ destArr: UnsafeMutablePointer<Double>)  -> Int {
+public func sgp4GetPropOut(_ satKey: Int64, _ xf_SgpOut:Int, _ destArr: UnsafeMutablePointer<Double>)  -> Int {
 
-    Int(Sgp4GetPropOut(satKey, xf_SgpOut, destArr))
+    Int(Sgp4GetPropOut(satKey, Int32(xf_SgpOut), destArr))
 
 }
 
@@ -1390,16 +1663,19 @@ public func sgp4GetPropOut(_ satKey: Int64, _ xf_SgpOut: Int32, _ destArr: Unsaf
 /// - Returns: 0 if the reepoch is successful, non-0 if there is an error.
 public func sgp4ReepochTLE(_ satKey: Int64, _ newEpoch: Double, _ line1: inout String, _ line2: inout String) -> Int {
 
-    var _line1 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
-    var _line2 = Array(repeating: CChar(0), count: Int(INPUTCARDLEN)+1)          //[INPUTCARDLEN]
+    var _line1 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
+    var _line2 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
 
     let errorCode = Sgp4ReepochTLE(satKey, newEpoch, &_line1, &_line2)
 
-    _line1[Int(INPUTCARDLEN)] = 0
-    _line2[Int(INPUTCARDLEN)] = 0
+    line1 = characterArrayToString(_line1, size: INPUTCARDLEN)
+    line2 = characterArrayToString(_line2, size: INPUTCARDLEN)
 
-    line1 = String(cString: _line1).trimRight()
-    line2 = String(cString: _line2).trimRight()
+//    _line1[Int(INPUTCARDLEN)] = 0
+//    _line2[Int(INPUTCARDLEN)] = 0
+//
+//    line1 = String(cString: _line1).trimRight()
+//    line2 = String(cString: _line2).trimRight()
 
     return Int(errorCode)
 }

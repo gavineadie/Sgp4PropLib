@@ -215,3 +215,18 @@ public func writeString(_ string: String, toURL: URL, appending: Bool = true, te
     }
 
 }
+
+
+public func nullCharacterArray(size: Int32) -> [Int8] {
+
+    Array(repeating: Int8(0), count: Int(size)+1)
+
+}
+
+public func characterArrayToString(_ array: [Int8], size: Int32) -> String {
+
+    var _array = array
+    _array[Int(size)] = 0
+    return String(cString: _array).trimRight()
+
+}
