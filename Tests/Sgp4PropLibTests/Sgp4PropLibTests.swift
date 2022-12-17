@@ -12,14 +12,6 @@ final class Sgp4App2Tests: XCTestCase {
         guard sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
     }
 
-    //    func testGetInfo() {
-    //
-    //        for i in 1...999 {
-    //            print("\(i) -- \(dllMainGetInfo())")
-    //        }
-    //    }
-
-
     func testUTCtoDTGxx() throws {
 
         XCTAssertEqual(utcToDTG20(0.0), "1956/001 0000 00.000")         // (below limit)
@@ -118,10 +110,66 @@ final class Sgp4App2Tests: XCTestCase {
 
     }
 
-    func testWarning() {
+    func testTLE() {
 
-        printWarning("\"Gavin's Port of Sgp4Prop\"")
-        
+        loadAllDlls()
+
+// load a TLE using strings (see TLE dll document)
+//      let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
+//                                    "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
+
+        let satKey = tleAddSatFrLines("1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999x",
+                                      "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468x")
+//                                              1         2         3         4         5         6         7         8
+//                                     12345678901234567890123456789012345678901234567890123456789012345678901234567890
+//                                     1 25544U 98067A   22350.92995838  .00012052  00000+0  21882-3 0  9998
+//                                     2 25544  51.6430 151.3097 0003678 167.7951 338.1576 15.49996899373529
+
+//                                     1 NNNNNU NNNNNAAA NNNNN.NNNNNNNN +.NNNNNNNN +NNNNN-N +NNNNN-N N NNNNN
+        print("\(satKey)")
+
+        var satNum: Int32 = 0
+        var secClass: String = ""
+        var satName: String = ""
+        var epochYear: Int32 = 0
+        var epochDays = 0.0
+
+        var bstar = 0.0
+        var ephType: Int32 = 0
+        var elsetNum: Int32 = 0
+        var incli = 0.0
+        var node = 0.0
+        var eccen = 0.0
+        var omega = 0.0
+        var mnAnom = 0.0
+        var mnMotion = 0.0
+        var revNum: Int32 = 0
+
+        tleGetAllFieldsGP(satKey,
+                          &satNum,          //TODO: pad with zero ?
+                          &secClass,        //TODO: want ASCII, not Int8
+                          &satName,
+                          &epochYear,
+                          &epochDays,
+                          &bstar,
+                          &ephType,
+                          &elsetNum,        //TODO: no checksum byte
+                          &incli,
+                          &node,
+                          &eccen,
+                          &omega,
+                          &mnAnom,
+                          &mnMotion,
+                          &revNum)          //TODO: no checksum byte
+
+        print("\(satNum) .. ")
+
     }
+
+//    func testWarning() {
+//
+//        printWarning("\"Gavin's Port of Sgp4Prop\"")
+//
+//    }
 
 }

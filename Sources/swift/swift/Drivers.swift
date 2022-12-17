@@ -888,21 +888,21 @@ public func tleUpdateSatFrFieldsSP(_ satKey: Int64, _ secClass: String, _ satNam
 ///   - revNum: Revolution number at epoch
 /// - Returns: 0 if all values are retrieved successfully, non-0 if there is an error.
 public func  tleGetAllFieldsGP(_ satKey: Int64,
-                               _ satNum: inout UnsafeMutablePointer<Int32>, _ secClass: inout String, _ satName: inout String,
-                               _ epochYr: inout UnsafeMutablePointer<Int32>, _ epochDays: inout UnsafeMutablePointer<Double>,
-                               _ bStar: inout UnsafeMutablePointer<Double>, _ ephType: inout UnsafeMutablePointer<Int32>,
-                               _ elsetNum: inout UnsafeMutablePointer<Int32>, _ incli: inout UnsafeMutablePointer<Double>,
-                               _ node: inout UnsafeMutablePointer<Double>, _ eccen: inout UnsafeMutablePointer<Double>,
-                               _ omega: inout UnsafeMutablePointer<Double>, _ mnAnomaly: inout UnsafeMutablePointer<Double>,
-                               _ mnMotion: inout UnsafeMutablePointer<Double>, _ revNum: inout UnsafeMutablePointer<Int32>) -> Int {
+                               _ satNum: inout Int32, _ secClass: inout String, _ satName: inout String,
+                               _ epochYr: inout Int32, _ epochDays: inout Double,
+                               _ bStar: inout Double, _ ephType: inout Int32,
+                               _ elsetNum: inout Int32, _ incli: inout Double,
+                               _ node: inout Double, _ eccen: inout Double,
+                               _ omega: inout Double, _ mnAnomaly: inout Double,
+                               _ mnMotion: inout Double, _ revNum: inout Int32) -> Int {
 
     var _secClass = CChar(0)
 
     var _satName = Array(repeating: CChar(0), count: 10)                // satName is 8 characters
 
-    let errorCode = TleGetAllFieldsGP(satKey, satNum, &_secClass, &_satName,
-                                      epochYr, epochDays, bStar, ephType,
-                                      elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
+    let errorCode = TleGetAllFieldsGP(satKey, &satNum, &_secClass, &_satName,
+                                      &epochYr, &epochDays, &bStar, &ephType,
+                                      &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum)
 
     secClass = String(_secClass)
 
@@ -938,21 +938,21 @@ public func  tleGetAllFieldsGP(_ satKey: Int64,
 ///   - n2DotO6: Mean motion second derivative (rev/day**2 /6) or agom (ephType = 4, XP) (m2/kg)
 /// - Returns: 0 if all values are retrieved successfully, non-0 if there is an error.
 public func tleGetAllFieldsGP2(_ satKey: Int64,
-                               _ satNum: inout UnsafeMutablePointer<Int32>, _ secClass: inout String, _ satName: inout String,
-                               _ epochYr: inout UnsafeMutablePointer<Int32>, _ epochDays: inout UnsafeMutablePointer<Double>,
-                               _ bstar: inout UnsafeMutablePointer<Double>, _ ephType: inout UnsafeMutablePointer<Int32>,
-                               _ elsetNum: inout UnsafeMutablePointer<Int32>, _ incli: inout UnsafeMutablePointer<Double>,
-                               _ node: inout UnsafeMutablePointer<Double>, _ eccen: inout UnsafeMutablePointer<Double>,
-                               _ omega: inout UnsafeMutablePointer<Double>, _ mnAnomaly: inout UnsafeMutablePointer<Double>,
-                               _ mnMotion: inout UnsafeMutablePointer<Double>, _ revNum: inout UnsafeMutablePointer<Int32>,
-                               _ nDotO2: inout UnsafeMutablePointer<Double>, _ n2DotO6: inout UnsafeMutablePointer<Double>) -> Int {
+                               _ satNum: inout Int32, _ secClass: inout String, _ satName: inout String,
+                               _ epochYr: inout Int32, _ epochDays: inout Double,
+                               _ bstar: inout Double, _ ephType: inout Int32,
+                               _ elsetNum: inout Int32, _ incli: inout Double,
+                               _ node: inout Double, _ eccen: inout Double,
+                               _ omega: inout Double, _ mnAnomaly: inout Double,
+                               _ mnMotion: inout Double, _ revNum: inout Int32,
+                               _ nDotO2: inout Double, _ n2DotO6: inout Double) -> Int {
 
     var _secClass = CChar(0)
     var _satName = Array(repeating: CChar(0), count: 10)                // satName is 8 characters
 
-    let errorCode = TleGetAllFieldsGP2(satKey, satNum, &_secClass, &_satName,
-                           epochYr, epochDays, bstar, ephType,
-                                       elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, nDotO2, n2DotO6)
+    let errorCode = TleGetAllFieldsGP2(satKey, &satNum, &_secClass, &_satName,
+                                       &epochYr, &epochDays, &bstar, &ephType,
+                                       &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum, &nDotO2, &n2DotO6)
 
     secClass = String(_secClass)
     _satName[9] = 0
@@ -985,20 +985,20 @@ public func tleGetAllFieldsGP2(_ satKey: Int64,
 ///   - revNum: Revolution number at epoch
 /// - Returns: 0 if all values are retrieved successfully, non-0 if there is an error.
 public func  tleGetAllFieldsSP(_ satKey: Int64,
-                               _ satNum: inout UnsafeMutablePointer<Int32>, _ secClass: inout String, _ satName: inout String,
-                               _ epochYr: inout UnsafeMutablePointer<Int32>, _ epochDays: inout UnsafeMutablePointer<Double>,
-                               _ bterm: inout UnsafeMutablePointer<Double>, _ ogParm: inout UnsafeMutablePointer<Double>, _ agom: inout UnsafeMutablePointer<Double>,
-                               _ elsetNum: inout UnsafeMutablePointer<Int32>, _ incli: inout UnsafeMutablePointer<Double>,
-                               _ node: inout UnsafeMutablePointer<Double>, _ eccen: inout UnsafeMutablePointer<Double>,
-                               _ omega: inout UnsafeMutablePointer<Double>, _ mnAnomaly: inout UnsafeMutablePointer<Double>,
-                               _ mnMotion: inout UnsafeMutablePointer<Double>, _ revNum: inout UnsafeMutablePointer<Int32>) -> Int {
+                               _ satNum: inout Int32, _ secClass: inout String, _ satName: inout String,
+                               _ epochYr: inout Int32, _ epochDays: inout Double,
+                               _ bterm: inout Double, _ ogParm: inout Double, _ agom: inout Double,
+                               _ elsetNum: inout Int32, _ incli: inout Double,
+                               _ node: inout Double, _ eccen: inout Double,
+                               _ omega: inout Double, _ mnAnomaly: inout Double,
+                               _ mnMotion: inout Double, _ revNum: inout Int32) -> Int {
 
     var _secClass = CChar(0)
     var _satName = Array(repeating: CChar(0), count: 10)                // satName is 8 characters
 
-    let errorCode = TleGetAllFieldsSP(satKey, satNum, &_secClass, &_satName,
-                          epochYr, epochDays, bterm, ogParm, agom,
-                                      elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
+    let errorCode = TleGetAllFieldsSP(satKey, &satNum, &_secClass, &_satName,
+                                      &epochYr, &epochDays, &bterm, &ogParm, &agom,
+                                      &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum)
 
     secClass = String(_secClass)
     _satName[9] = 0
@@ -1032,20 +1032,21 @@ public func  tleGetAllFieldsSP(_ satKey: Int64,
 ///   - revNum: Revolution number at epoch
 /// - Returns: 0 if the TLE is parsed successfully, non-0 if there is an error.
 public func tleParseGP(_ line1: String, _ line2: String,
-                       _ satNum: inout UnsafeMutablePointer<Int32>, _ secClass: inout String, _ satName: inout String,
-                       _ epochYr: inout UnsafeMutablePointer<Int32>, _ epochDays: inout UnsafeMutablePointer<Double>,
-                       _ nDotO2: inout UnsafeMutablePointer<Double>, _ n2DotO6: inout UnsafeMutablePointer<Double>,
-                       _ bstar: inout UnsafeMutablePointer<Double>, _ ephType: inout UnsafeMutablePointer<Int32>,
-                       _ elsetNum: inout UnsafeMutablePointer<Int32>, _ incli: inout UnsafeMutablePointer<Double>,
-                       _ node: inout UnsafeMutablePointer<Double>, _ eccen: inout UnsafeMutablePointer<Double>,
-                       _ omega: inout UnsafeMutablePointer<Double>, _ mnAnomaly: inout UnsafeMutablePointer<Double>,
-                       _ mnMotion: inout UnsafeMutablePointer<Double>, _ revNum: inout UnsafeMutablePointer<Int32>) -> Int {
+                       _ satNum: inout Int32, _ secClass: inout String, _ satName: inout String,
+                       _ epochYr: inout Int32, _ epochDays: inout Double,
+                       _ nDotO2: inout Double, _ n2DotO6: inout Double,
+                       _ bstar: inout Double, _ ephType: inout Int32,
+                       _ elsetNum: inout Int32, _ incli: inout Double,
+                       _ node: inout Double, _ eccen: inout Double,
+                       _ omega: inout Double, _ mnAnomaly: inout Double,
+                       _ mnMotion: inout Double, _ revNum: inout Int32) -> Int {
 
     var _secClass = CChar(0)
     var _satName = Array(repeating: CChar(0), count: 10)                // satName is 8 characters
 
-    let errorCode = TleParseGP(makeCString(from: line1), makeCString(from: line2), satNum, &_secClass, &_satName,
-                   epochYr, epochDays, nDotO2, n2DotO6, bstar, ephType, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
+    let errorCode = TleParseGP(makeCString(from: line1), makeCString(from: line2), &satNum, &_secClass, &_satName,
+                               &epochYr, &epochDays, &nDotO2, &n2DotO6, &bstar, &ephType,
+                               &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum)
 
     secClass = String(_secClass)
     _satName[9] = 0
@@ -1079,20 +1080,20 @@ public func tleParseGP(_ line1: String, _ line2: String,
 ///   - revNum: Revolution number at epoch
 /// - Returns: 0 if the TLE is parsed successfully, non-0 if there is an error.
 public func tleParseSP(_ line1: String, _ line2: String,
-                       _ satNum: inout UnsafeMutablePointer<Int32>, _ secClass: inout String, _ satName: inout String,
-                       _ epochYr: UnsafeMutablePointer<Int32>, _ epochDays: UnsafeMutablePointer<Double>,
-                       _ bterm: inout UnsafeMutablePointer<Double>, _ ogParm: inout     UnsafeMutablePointer<Double>, _ agom: UnsafeMutablePointer<Double>,
-                       _ elsetNum: inout UnsafeMutablePointer<Int32>, _ incli: inout UnsafeMutablePointer<Double>,
-                       _ node: UnsafeMutablePointer<Double>, _ eccen: inout UnsafeMutablePointer<Double>,
-                       _ omega: inout UnsafeMutablePointer<Double>, _ mnAnomaly: inout UnsafeMutablePointer<Double>,
-                       _ mnMotion: inout UnsafeMutablePointer<Double>, _ revNum: inout UnsafeMutablePointer<Int32>) -> Int {
+                       _ satNum: inout Int32, _ secClass: inout String, _ satName: inout String,
+                       _ epochYr: inout Int32, _ epochDays: inout Double,
+                       _ bterm: inout Double, _ ogParm: inout Double, _ agom: inout Double,
+                       _ elsetNum: inout Int32, _ incli: inout Double,
+                       _ node: inout Double, _ eccen: inout Double,
+                       _ omega: inout Double, _ mnAnomaly: inout Double,
+                       _ mnMotion: inout Double, _ revNum: inout Int32) -> Int {
 
     var _secClass = CChar(0)
     var _satName = Array(repeating: CChar(0), count: 10)                // satName is 8 characters
 
-    let errorCode = TleParseSP(makeCString(from: line1), makeCString(from: line2), satNum, &_secClass, &_satName,
-                               epochYr, epochDays, bterm, ogParm, agom,
-                               elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
+    let errorCode = TleParseSP(makeCString(from: line1), makeCString(from: line2), &satNum, &_secClass, &_satName,
+                               &epochYr, &epochDays, &bterm, &ogParm, &agom,
+                               &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum)
 
     secClass = String(_secClass)
     _satName[9] = 0
