@@ -7,13 +7,20 @@
 
 import Foundation
 
+public var libHandles = [UnsafeMutableRawPointer]()
+
+//
+//MARK: Dynamic Library Services
+//
 public func loadAllDlls() {
-    let globalHandle = DllMainInit()
-    guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
-    guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
-    guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
-    guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
-    guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
+    if libHandles.isEmpty {
+        let globalHandle = DllMainInit()
+        guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
+        guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
+        guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
+        guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
+        guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
+    }
 }
 
 public func loadDll(_ dllName: String) -> UnsafeMutableRawPointer {
@@ -21,25 +28,62 @@ public func loadDll(_ dllName: String) -> UnsafeMutableRawPointer {
         fatalError("Could not open \(getDylibPath() + dllName) \(String(cString: dlerror()))")
     }
 
+    libHandles.append(dllHandle)                   // put another handle in the pile
+
     return dllHandle
 }
 
+//
+//TODO: I'm not too proud of this .. I need a better way
+//
 func getDylibPath() -> String {
-    //    if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
-    //        return dylibDirectory + "/"
-    //    }
+    if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
+        return dylibDirectory + "/"
+    }
 
     return "/usr/local/lib/sgp4prop/"
+}
+
+func getFunctionPointer(_ libHandle: UnsafeMutableRawPointer?,
+                        _ functionName: String) -> UnsafeMutableRawPointer {
+
+    guard let functionPointer = dlsym(libHandle, functionName) else {
+        fatalError("dlsym failure: \(String(cString: dlerror())) (freed dylib?)")
+    }
+
+    return functionPointer
+}
+
+public func freeAllDlls() {
+    if libHandles.count > 0 {
+        for i in (0..<libHandles.count).reversed() {  // reverse, so the array is diminished from the tail
+            guard 0 == freeDll(libHandles[i]) else {
+                fatalError("dlclose failure: \(String(cString: dlerror()))")
+            }
+            libHandles.remove(at: i)
+        }
+    }
 }
 
 func freeDll(_ dllHandle: UnsafeMutableRawPointer) -> Int32 {
     return dlclose(dllHandle)
 }
 
-//TODO: FINISH THIS
-public func freeAllDlls() {
+
+public func verifyDLLs() {
+
+    print(dllMainGetInfo())
+    print(envGetInfo())
+    print(timeFuncGetInfo())
+    print(astroFuncGetInfo())
+    print(tleGetInfo())
+    print(sgp4GetInfo())
+
 }
 
+//
+//MARK: String Extension
+//
 extension String {
 
     public func trimRight() -> String {
@@ -58,16 +102,6 @@ extension String {
         return urlForString.path
     }
 
-}
-
-func getFunctionPointer(_ libHandle: UnsafeMutableRawPointer?,
-                        _ functionName: String) -> UnsafeMutableRawPointer {
-
-    guard let functionPointer = dlsym(libHandle, functionName) else {
-        fatalError("dlsym failure: \(String(cString: dlerror()))")
-    }
-
-    return functionPointer
 }
 
 // -----
@@ -104,7 +138,9 @@ public func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
     return result
 }
 
-// ---------------- Time Services ---------------- //
+//
+//MARK: Date Extension
+//
 
 extension Date {
     /// The number of seconds from 1 January 1950 to the reference date, 1 January 2001.
@@ -230,7 +266,7 @@ public func characterArrayToString(_ array: [Int8], size: Int32) -> String {
 public func dllVersion() -> Double {
 
     if #available(macOS 13.0, *) {
-        if let dllMainVersion = astroFuncGetInfo().firstMatch(of: #/\w(\d\.\d)/#) {
+        if let dllMainVersion = dllMainGetInfo().firstMatch(of: #/\w(\d\.\d)/#) {
             return Double(dllMainVersion.output.1) ?? 0.0
         }
     } else {

@@ -4,15 +4,9 @@ import XCTest
 
 final class Sgp4App2Tests: XCTestCase {
 
-    override func setUp() {
-        let globalHandle = dllMainInit()
-        guard envInit(globalHandle) == 0 else { fatalError("envInit load failure") }
-        guard timeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
-        guard astroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
-        guard tleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
-        guard sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
-    }
-
+    //
+    //MARK: Time Tests
+    //
     func testUTCtoDTGxx() throws {
 
         XCTAssertEqual(utcToDTG20(0.0), "1956/001 0000 00.000")         // (below limit)
@@ -78,21 +72,9 @@ final class Sgp4App2Tests: XCTestCase {
 
     }
 
-    func testTime() {
-
-        guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
-
-        let dateTimeGroupUTC = dateToUTC(Date())
-        print("time now: \(dateTimeGroupUTC)")
-        print("reversed: \(utcToDTG20(dateTimeGroupUTC))")
-
-    }
-
     /// Note that `utcToTimeComps1` conversion, and `timeComps1ToUTC` back may
     /// have about a 10 mSec difference
     func testTimeConversions() {
-
-        guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
 
         let dateTimeGroupUTC = dateToUTC(Date())
         var year: Int32 = 0
@@ -115,6 +97,14 @@ final class Sgp4App2Tests: XCTestCase {
         var dayOfYearDouble: Double = 0
         utcToYrDays(dateTimeGroupUTC, &year, &dayOfYearDouble)
         print("Now: \(year) \(dayOfYearDouble)")
+
+    }
+
+    func testTime() {
+
+        let dateTimeGroupUTC = dateToUTC(Date())
+        print("time now: \(dateTimeGroupUTC)")
+        print("reversed: \(utcToDTG20(dateTimeGroupUTC))")
 
     }
 
@@ -151,22 +141,18 @@ final class Sgp4App2Tests: XCTestCase {
 
     }
 
+    //
+    //MARK: TLE Tests
+    //
     func testTLE() {
 
-        loadAllDlls()
+//         load a TLE using strings (see TLE dll document)
+              let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
+                                            "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
 
-        // load a TLE using strings (see TLE dll document)
-        //      let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-        //                                    "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
+//        let satKey = tleAddSatFrLines("1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999x",
+//                                      "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468x")
 
-        let satKey = tleAddSatFrLines("1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999x",
-                                      "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468x")
-        //                                              1         2         3         4         5         6         7         8
-        //                                     12345678901234567890123456789012345678901234567890123456789012345678901234567890
-        //                                     1 25544U 98067A   22350.92995838  .00012052  00000+0  21882-3 0  9998
-        //                                     2 25544  51.6430 151.3097 0003678 167.7951 338.1576 15.49996899373529
-
-        //                                     1 NNNNNU NNNNNAAA NNNNN.NNNNNNNN +.NNNNNNNN +NNNNN-N +NNNNN-N N NNNNN
         print("\(satKey)")
 
         var satNum: Int32 = 0
@@ -203,27 +189,31 @@ final class Sgp4App2Tests: XCTestCase {
                           &mnMotion,
                           &revNum)          //TODO: no checksum byte
 
-        print("\(satNum) .. ")
 
     }
 
-    //    func testWarning() {
-    //
-    //        printWarning("\"Gavin's Port of Sgp4Prop\"")
-    //
-    //    }
+    func testTLEs() {
 
-    func testStringArrayConversion() {
+        let tleFilePath = tleString.stringToTmpFile("brightest.2le")
+        let errorCode = tleLoadFile(tleFilePath)
+        XCTAssertEqual(errorCode, 0)
 
-        let array = nullCharacterArray(size: 24)
-
-        _ = characterArrayToString(array, size: 24)
-
+        print("tleGetCount: \(tleGetCount())")
     }
 
+    func testDllVersion() {
+        //        if dllVersion() < 9.0 {
+        //            guard astroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
+        //            guard tleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
+        //        }
+    }
+
+    //
+    //MARK: SGP4 Tests
+    //
     func testRealUse() {
 
-        loadAllDlls()
+        //        loadAllDlls()
 
         let satKey = tleAddSatFrLines("1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999",
                                       "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468")
@@ -255,24 +245,21 @@ final class Sgp4App2Tests: XCTestCase {
 
     }
 
+    //
+    //MARK: Other Tests
+    //
     func testWarning() {
 
-        printWarning("qaqazqaz")
+        printWarning("\"Swift Port of Sgp4Prop\"")
 
     }
 
-    func testTLEs() {
+    func testStringArrayConversion() {
 
-        if dllVersion() < 9.0 {
-            guard astroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
-            guard tleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
-        }
+        let array = nullCharacterArray(size: 24)                // make an empty array
 
-        let tleFilePath = tleString.stringToTmpFile("brightest.2le")
-        let errorCode = tleLoadFile(tleFilePath)
-        XCTAssertEqual(errorCode, 0)
+        _ = characterArrayToString(array, size: 24)             // make a String from array
 
-        print("tleGetCount: \(tleGetCount())")
     }
 
 }

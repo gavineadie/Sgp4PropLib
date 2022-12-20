@@ -529,6 +529,8 @@ public func utcToDTG19(_ ds50UTC: Double) -> String {
 /// - Returns: A string to hold the result of the conversion. (out-Character[19])
 public func utcToDTG17(_ ds50UTC: Double) -> String {
 
+    loadAllDlls()                       // test run before libraries loaded (ouch!)
+
     var string24 = Array(repeating: Int8(0), count: Int(24))
     UTCToDTG17(ds50UTC, &string24)
     string24[23] = 0
