@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Tests.swift
 //  
 //
 //  Created by Gavin Eadie on 12/8/22.
@@ -8,7 +8,13 @@
 import Foundation
 import obj_c
 
-fileprivate let libHandle = loadDll("libdllmain.dylib")
+#if os(Linux)
+fileprivate let libHandle = loadDll("libsgp4prop.so")
+#elseif os(Windows)
+fileprivate let libHandle = loadDll("Sgp4prop.dll")
+#else
+fileprivate let libHandle = loadDll("libsgp4prop.dylib")
+#endif
 
 // -------------------------------- TESTINTERFACE
 // ORIGINAL:     void TestInterface((in-Character) cIn, (out-Character) cOut, (in-Integer) intIn, (out-Integer) intOut, (in-Long) longIn, (out-Long) longOut, (in-Double) realIn, (out-Double) realOut, (in-Character[512]) strIn, (out-Character[512]) strOut, (in-Integer[3]) int1DIn, (out-Integer[3]) int1DOut, (in-Long[3]) long1DIn, (out-Long[3]) long1DOut, (in-Double[3]) real1DIn, (out-Double[3]) real1DOut, (in-Integer[2, 3]) int2DIn, (out-Integer[2, 3]) int2DOut, (in-Long[2, 3]) long2DIn, (out-Long[2, 3]) long2DOut, (in-Double[2, 3]) real2DIn, (out-Double[2, 3]) real2DOut)

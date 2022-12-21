@@ -44,7 +44,7 @@ final class Sgp4App2Tests: XCTestCase {
 
         XCTAssertEqual(dtgToUTC("77138"), 10000.0)                      // Just wrong! (5)
 
-        XCTAssertEqual(dtgToUTC(utcToDTG19(0.0)), 2192.0, accuracy: 0.0)
+        XCTAssertEqual(dtgToUTC(utcToDTG19(0.0)), 2192.0, accuracy: 0.0000001)
 
     }
 
@@ -172,23 +172,22 @@ final class Sgp4App2Tests: XCTestCase {
         var mnMotion = 0.0
         var revNum: Int32 = 0
 
-        tleGetAllFieldsGP(satKey,
-                          &satNum,          //TODO: pad with zero ?
-                          &secClass,        //TODO: want ASCII, not Int8
-                          &satName,
-                          &epochYear,
-                          &epochDays,
-                          &bstar,
-                          &ephType,
-                          &elsetNum,        //TODO: no checksum byte
-                          &incli,
-                          &node,
-                          &eccen,
-                          &omega,
-                          &mnAnom,
-                          &mnMotion,
-                          &revNum)          //TODO: no checksum byte
-
+        let _ = tleGetAllFieldsGP(satKey,
+                                  &satNum,          //TODO: pad with zero ?
+                                  &secClass,        //TODO: want ASCII, not Int8
+                                  &satName,
+                                  &epochYear,
+                                  &epochDays,
+                                  &bstar,
+                                  &ephType,
+                                  &elsetNum,
+                                  &incli,
+                                  &node,
+                                  &eccen,
+                                  &omega,
+                                  &mnAnom,
+                                  &mnMotion,
+                                  &revNum)
 
     }
 
