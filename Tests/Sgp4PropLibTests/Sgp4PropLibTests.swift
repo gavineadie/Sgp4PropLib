@@ -147,8 +147,8 @@ final class Sgp4App2Tests: XCTestCase {
     func testTLE() {
 
 //         load a TLE using strings (see TLE dll document)
-              let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-                                            "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
+        let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
+                                      "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
 
 //        let satKey = tleAddSatFrLines("1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999x",
 //                                      "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468x")
@@ -194,17 +194,15 @@ final class Sgp4App2Tests: XCTestCase {
     func testTLEs() {
 
         let tleFilePath = tleString.stringToTmpFile("brightest.2le")
-        let errorCode = tleLoadFile(tleFilePath)
-        XCTAssertEqual(errorCode, 0)
+        XCTAssertEqual(tleLoadFile(tleFilePath), 0)
 
         print("tleGetCount: \(tleGetCount())")
     }
 
     func testDllVersion() {
-        //        if dllVersion() < 9.0 {
-        //            guard astroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
-        //            guard tleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
-        //        }
+
+        XCTAssert(dllVersion() == 9.0, "dllVersion failure")
+
     }
 
     //
@@ -212,42 +210,72 @@ final class Sgp4App2Tests: XCTestCase {
     //
     func testRealUse() {
 
-        //        loadAllDlls()
+        let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
+                                      "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
 
-        let satKey = tleAddSatFrLines("1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999",
-                                      "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468")
+        XCTAssert(tleGetField(satKey, XF_TLE_SATNUM)! == "90021")
 
+        // "as Any" shows the string with quote marks ("4321")
         print(tleGetField(satKey, XF_TLE_SATNUM) as Any)    // SATELLITE NUMBER
-        print(tleGetField(satKey, XF_TLE_CLASS) as Any)     // SECURITY CLASSIFICATION U: UNCLASS, C: CONFIDENTIAL, S: SECRET
+        print(tleGetField(satKey, XF_TLE_CLASS) as Any)     // SECURITY CLASSIFICATION
         print(tleGetField(satKey, XF_TLE_SATNAME) as Any)   // SATELLITE NAME A8
         print(tleGetField(satKey, XF_TLE_EPOCH) as Any)     // SATELLITE'S EPOCH TIME "YYYYJJJ.JJJJJJJJ"
-        print(tleGetField(satKey, XF_TLE_BSTAR) as Any)     // GP B* DRAG TERM (1/ER)  (NOT THE SAME AS XF_TLE_BTERM)
-        print(tleGetField(satKey, XF_TLE_EPHTYPE) as Any)   // SATELLITE EPHEMERIS TYPE: 0) as Any)SGP, 2) as Any)SGP4, 6) as Any)SP
+        print(tleGetField(satKey, XF_TLE_BSTAR) as Any)     // GP B* DRAG TERM (1/ER)
+        print(tleGetField(satKey, XF_TLE_EPHTYPE) as Any)   // SATELLITE EPHEMERIS TYPE:
         print(tleGetField(satKey, XF_TLE_ELSETNUM) as Any)  // ELEMENT SET NUMBER
+        XCTAssert(tleGetField(satKey, XF_TLE_INCLI)! == "0.022200000000000")
         print(tleGetField(satKey, XF_TLE_INCLI) as Any)     // ORBIT INCLINATION (DEG)
         print(tleGetField(satKey, XF_TLE_NODE) as Any)      // RIGHT ASCENSION OF ASENDING NODE (DEG)
         print(tleGetField(satKey, XF_TLE_ECCEN) as Any)     // ECCENTRICITY
         print(tleGetField(satKey, XF_TLE_OMEGA) as Any)     // ARGUMENT OF PERIGEE (DEG)
         print(tleGetField(satKey, XF_TLE_MNANOM) as Any)    // MEAN ANOMALY (DEG)
-        print(tleGetField(satKey, XF_TLE_MNMOTN) as Any)    // MEAN MOTION (REV/DAY) (EPHTYPE) as Any)0: KOZAI, EPHTYPE) as Any)2: BROUWER)
+        print(tleGetField(satKey, XF_TLE_MNMOTN) as Any)    // MEAN MOTION (REV/DAY)
         print(tleGetField(satKey, XF_TLE_REVNUM) as Any)    // REVOLUTION NUMBER AT EPOCH
 
-        let _ = sgp4InitSat(satKey)
+        XCTAssertEqual(sgp4InitSat(satKey), 0)
 
         let epoch = dtgToUTC("22346.21636301")
         var line1 = ""
         var line2 = ""
 
-        let _ = sgp4ReepochTLE(satKey, epoch, &line1, &line2)
+        XCTAssertEqual(sgp4ReepochTLE(satKey, epoch, &line1, &line2), 0)
 
         print("\n\(line1)\n\(line2)\n")
+
+        XCTAssertEqual(sgp4RemoveSat(satKey), 0)
+
+    }
+
+    func testCSV() {
+
+        if (libHandles.isEmpty) { loadAllDlls() }
+
+        let line1import = "1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999"
+        let line2import = "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468"
+
+        let satKey = tleAddSatFrLines(line1import, line2import)
+
+        let csvString = tleGetCsv(satKey)!
+        print(csvString)
+
+        var line1export = ""
+        var line2export = ""
+
+        guard 0 == tleCsvToLines(csvString, 0, &line1export, &line2export) else {
+            fatalError("tleCsvToLines failure")
+        }
+
+        XCTAssert(line1import == line1export)
+        XCTAssert(line2import == line2export)
+
+//        freeAllDlls()
 
     }
 
     //
     //MARK: Other Tests
     //
-    func testWarning() {
+    func test_Warning() {
 
         printWarning("\"Swift Port of Sgp4Prop\"")
 

@@ -69,7 +69,6 @@ func freeDll(_ dllHandle: UnsafeMutableRawPointer) -> Int32 {
     return dlclose(dllHandle)
 }
 
-
 public func verifyDLLs() {
 
     print(dllMainGetInfo())
@@ -195,15 +194,16 @@ public func printWarning(_ softwareName: String) {
 ///   - inURL: the URL of the target folder.
 ///   - called: the name of the directory.
 /// - Returns: the URL of the directory.
-public func createDirectory(_ called: String, at: URL) -> URL {
+public func createDirectory(_ directory: String, at: URL) -> URL {
 
     do {
-        try FileManager.default.createDirectory(atPath: called, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(atPath: directory,
+                                                withIntermediateDirectories: true)
     } catch {
         print("creation of directory \(at) failed: \(error)")
     }
 
-    return URL(fileURLWithPath: called, isDirectory: true, relativeTo: at)
+    return URL(fileURLWithPath: directory, isDirectory: true, relativeTo: at)
 
 }
 
