@@ -205,10 +205,36 @@ final class Sgp4App2Tests: XCTestCase {
 
     }
 
+    func testTleLineToArray() {
+
+        var tleArray: [Double] = Array(repeating: Double(0.0), count: Int(XA_TLE_SIZE))
+
+        print(tleLinesToArray("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
+                              "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199",
+                              &tleArray) as Any)
+
+        print(tleArray)
+
+    }
+
     //
     //MARK: SGP4 Tests
     //
-    func testRealUse() {
+    func testDuplicates() {
+
+        let _ = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
+                                 "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
+
+        let _ = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
+                                 "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
+
+        print(getLastErrMsg())  // "AddRecToMem: Duplicated record/key  514756_810000_900211 found."
+
+    }
+
+    func test_tleGetField() {
+
+        loadAllDlls()
 
         let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
                                       "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
@@ -240,7 +266,35 @@ final class Sgp4App2Tests: XCTestCase {
 
         XCTAssertEqual(sgp4ReepochTLE(satKey, epoch, &line1, &line2), 0)
 
-        print("\n\(line1)\n\(line2)\n")
+        print("\nGET:\n\(line1)\n\(line2)\n")
+
+    }
+
+    func test_tleSetField() {
+
+        let satKey: Int64 = 514756810000900211
+        
+        let _ = tleSetField(satKey, Int(XF_TLE_SATNUM), "90021")
+        _ = tleSetField(satKey, Int(XF_TLE_CLASS), "U")
+        _ = tleSetField(satKey, Int(XF_TLE_SATNAME), "RELEAS14")
+        _ = tleSetField(satKey, Int(XF_TLE_EPOCH), "2000051.47568104")
+        _ = tleSetField(satKey, Int(XF_TLE_BSTAR), "0.000000000000000")
+        _ = tleSetField(satKey, Int(XF_TLE_EPHTYPE), "0")
+        _ = tleSetField(satKey, Int(XF_TLE_ELSETNUM), "814")
+        _ = tleSetField(satKey, Int(XF_TLE_INCLI), "0.022200000000000")
+        _ = tleSetField(satKey, Int(XF_TLE_NODE), "182.492300000000000")
+        _ = tleSetField(satKey, Int(XF_TLE_ECCEN), "0.000072000000000")
+        _ = tleSetField(satKey, Int(XF_TLE_OMEGA), "45.603600000000000")
+        _ = tleSetField(satKey, Int(XF_TLE_MNANOM), "131.882200000000012")
+        _ = tleSetField(satKey, Int(XF_TLE_MNMOTN), "1.002713280000000")
+        _ = tleSetField(satKey, Int(XF_TLE_REVNUM), "1199")
+        
+        let epoch = dtgToUTC("22346.21636301")
+        var line1 = ""
+        var line2 = ""
+        XCTAssertEqual(sgp4ReepochTLE(satKey, epoch, &line1, &line2), 0)
+
+        print("\nSET:\n\(line1)\n\(line2)\n")
 
         XCTAssertEqual(sgp4RemoveSat(satKey), 0)
 
@@ -268,14 +322,12 @@ final class Sgp4App2Tests: XCTestCase {
         XCTAssert(line1import == line1export)
         XCTAssert(line2import == line2export)
 
-//        freeAllDlls()
-
     }
 
     //
     //MARK: Other Tests
     //
-    func test_Warning() {
+    func testWarning() {
 
         printWarning("\"Swift Port of Sgp4Prop\"")
 
@@ -285,7 +337,7 @@ final class Sgp4App2Tests: XCTestCase {
 
         let array = nullCharacterArray(size: 24)                // make an empty array
 
-        _ = characterArrayToString(array, size: 24)             // make a String from array
+        _ = stringFromCharacterArray(array, size: 24)             // make a String from array
 
     }
 

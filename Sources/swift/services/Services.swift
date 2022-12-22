@@ -225,6 +225,7 @@ public func createFile(_ called: String, inURL: URL) -> URL {
     return fileURL
 
 }
+
 /// Obtains the URL of the (existing file) at the URL `inURL`
 /// - Parameters:
 ///   - inURL: the URL of the target folder.
@@ -255,7 +256,7 @@ public func nullCharacterArray(size: Int32) -> [Int8] {
 
 }
 
-public func characterArrayToString(_ array: [Int8], size: Int32) -> String {
+public func stringFromCharacterArray(_ array: [Int8], size: Int32) -> String {
 
     var _array = array
     _array[Int(size)] = 0

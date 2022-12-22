@@ -91,7 +91,8 @@ public func Sgp4GetCount() -> Int32 {
 // -------------------------------- SGP4PROPMSE
 // ORIGINAL:     int Sgp4PropMse((in-Long) satKey, (in-Double) mse, (out-Double) ds50UTC, (out-Double[3]) pos, (out-Double[3]) vel, (out-Double[3]) llh)
 
-public func Sgp4PropMse(_ satKey: Int64, _ mse: Double, _ ds50UTC: UnsafeMutablePointer<Double>, _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>, _ llh: UnsafeMutablePointer<Double>) -> Int32 {
+public func Sgp4PropMse(_ satKey: Int64, _ mse: Double, _ ds50UTC: UnsafeMutablePointer<Double>,
+                        _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>, _ llh: UnsafeMutablePointer<Double>) -> Int32 {
     
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4PropMse"),
@@ -103,7 +104,8 @@ public func Sgp4PropMse(_ satKey: Int64, _ mse: Double, _ ds50UTC: UnsafeMutable
 // -------------------------------- SGP4PROPDS50UTC
 // ORIGINAL:     int Sgp4PropDs50UTC((in-Long) satKey, (in-Double) ds50UTC, (out-Double) mse, (out-Double[3]) pos, (out-Double[3]) vel, (out-Double[3]) llh)
 
-public func Sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: UnsafeMutablePointer<Double>, _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>, _ llh: UnsafeMutablePointer<Double>) -> Int32 {
+public func Sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: UnsafeMutablePointer<Double>,
+                            _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>, _ llh: UnsafeMutablePointer<Double>) -> Int32 {
     
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "Sgp4PropDs50UTC"),

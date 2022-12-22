@@ -8,7 +8,7 @@
 import Foundation
 import obj_c
 
-// ================================================ MAIN ================================================
+//MARK: MAIN
 
 /// This is the most important function call of the *Standardized Astrodynamic Algorithms library*.
 /// It returns a handle which can be used to access the static global data set needed by the
@@ -36,7 +36,7 @@ public func dllMainGetInfo() -> String {
 
     var infoString = nullCharacterArray(size: INFOSTRLEN)
     DllMainGetInfo(&infoString)
-    return characterArrayToString(infoString, size: INFOSTRLEN)
+    return stringFromCharacterArray(infoString, size: INFOSTRLEN)
 
 }
 
@@ -49,7 +49,7 @@ public func getInitDllNames() -> String {
 
     var getNamesString = nullCharacterArray(size: GETSETSTRLEN)
     GetInitDllNames(&getNamesString)
-    return characterArrayToString(getNamesString, size: GETSETSTRLEN)
+    return stringFromCharacterArray(getNamesString, size: GETSETSTRLEN)
 
 }
 
@@ -65,7 +65,7 @@ public func getLastErrMsg() -> String {
 
     var messageString = nullCharacterArray(size: LOGMSGLEN)
     GetLastErrMsg(&messageString)
-    return characterArrayToString(messageString, size: LOGMSGLEN)
+    return stringFromCharacterArray(messageString, size: LOGMSGLEN)
 
 }
 
@@ -89,7 +89,7 @@ public func GetLastInfoMsg() -> String {
 
     var messageString = nullCharacterArray(size: LOGMSGLEN)
     GetLastInfoMsg(&messageString)
-    return characterArrayToString(messageString, size: LOGMSGLEN)
+    return stringFromCharacterArray(messageString, size: LOGMSGLEN)
 
 }
 
@@ -143,7 +143,7 @@ public func dllMainLoadFile(_ filePath: String) -> Int {
 
 }
 
-// ================================================ ENV ================================================
+//MARK: ENV
 
 /// Initializes the EnvInit DLL for use in the program. If this function returns an error,
 /// it is recommended that you stop the program immediately.
@@ -169,7 +169,7 @@ public func envGetInfo() -> String {
 
     var infoString = nullCharacterArray(size: GETSETSTRLEN)
     EnvGetInfo(&infoString)
-    return characterArrayToString(infoString, size: GETSETSTRLEN)
+    return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
 
 }
 
@@ -177,14 +177,15 @@ public func envGetInfo() -> String {
 ///
 /// The users can use NAME=VALUE pair to setup the GEO and FK models in the input file.
 ///
-/// For GEO model, the valid names are GEOCONST, BCONST and the valid values are WGS-72, WGS72,
-/// 72, WGS-84, WGS84, 84, EGM-96, EGM96, 96, EGM-08, EGM08, 08, JGM-2, JGM2, 2, SEM68R, 68, GEM5,
-/// 5, GEM9, and 9.
+/// For GEO model, the valid names are `GEOCONST`, `BCONST` and the valid values are
+/// `WGS-72`, `WGS72`, `72`, `WGS-84`, `WGS84`, `84`, `EGM-96`, `EGM96`, `96`,
+/// `EGM-08`, `EGM08`, `08`, `JGM-2`, `JGM2`, `2`, `SEM68R`, `68`, `GEM5`, `5`, `GEM9`, and `9`.
 ///
-/// For FK model, the valid name is FKCONST and the valid values are: FK4, 4, FK5, 5.
+/// For FK model, the valid name is `FKCONST` and the valid values are: `FK4`, `4`, `FK5`, `5`.
 ///
 /// All the string literals are case-insensitive.
-/// - Parameter filePath: The name of the input file.
+/// - Parameters:
+///   - filePath: The name of the input file.
 /// - Returns: zero indicating the input file has been loaded successfully. Other values indicate an error.
 public func envLoadFile(_ filePath: String) -> Int {
 
@@ -221,7 +222,7 @@ public func envGetGeoStr() -> String {
 
     var geoString = nullCharacterArray(size: 16)
     EnvGetGeoStr(&geoString)
-    return characterArrayToString(geoString, size: 16)
+    return stringFromCharacterArray(geoString, size: 16)
 
 }
 
@@ -254,7 +255,34 @@ public func envGetGeoStr() -> String {
 /// - Parameter geoStr: The GEO model to use, expressed as a string.
 public func envSetGeoStr(_ geoStr: String) { EnvSetGeoStr(makeCString(from: geoStr)) }
 
-// ================================================ TIME ================================================
+//MARK: TIME
+
+/// Initializes the TimeFunc DLL for use in the program.
+///
+/// If this function returns an error, it is recommended that you stop the
+/// program immediately.
+///
+/// An error will occur if you forget to load and initialize all the
+/// prerequisite DLLs, as listed in the DLL Prerequisites section of the
+/// accompanying documentation, before using this DLL.
+
+/// - Parameter dllHandle: The pointer that was returned from DllMain.DllMainInit
+/// - Returns: zero indicating the TimeFunc DLL has been initialized successfully. Other values indicate an error.
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
+public func timeFuncInit(_ dllHandle: Int64) -> Int { Int(TimeFuncInit(dllHandle)) }
+
+/// Returns the information about the TimeFunc DLL.
+///
+/// The information is placed in the string parameter you pass in. The returned string provides information
+/// about the version number, build date, and the platform of the TimeFunc DLL.
+/// - Returns: A string holding the information about TimeFunc.dll.
+public func timeFuncGetInfo() -> String {
+
+    var infoString = nullCharacterArray(size: GETSETSTRLEN)
+    TimeFuncGetInfo(&infoString)
+    return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
+
+}
 
 public func timeFuncLoadFile(_ filePath: String) -> Int {
 
@@ -284,28 +312,10 @@ public func tConLoadFile(_ filePath: String) -> Int {
 
 }
 
-/// Removes all the timing constants records in memory.
-/// - Returns: 0 if all timing constants records are successfully removed from memory,
-/// non-0 if there is an error.
-public func tConRemoveAll() -> Int { Int(TConRemoveAll()) }
-
-/// // Returns current prediction control parameters in form of a 6P-Card string.
-// card6PLine          (out-Character[512])
-
-/// - Parameter card6PLine: The resulting 6P-Card string.
-public func get6PCardLine() -> String {
-
-    var string512 = nullCharacterArray(size: GETSETSTRLEN)
-    Get6PCardLine(&string512)
-    return characterArrayToString(string512, size: GETSETSTRLEN)
-
-}
-
 /// Saves currently loaded timing constants data to a file.
 ///
 /// The data will be saved in the format specified by the form parameter, regardless of the format
 /// or method originally used to load it.
-
 /// - Parameters:
 ///   - envFilePath: The name of the file in which to save the timing constants data.
 ///   - saveMode: Specifies whether to create a new file or append to an existing one. (0 = create, 1= append)
@@ -317,30 +327,18 @@ public func tConSaveFile(_ tleFile: String, _ saveMode:Int, _ xf_tleForm:Int) ->
 
 }
 
-/// Initializes the TimeFunc DLL for use in the program.
-///
-/// If this function returns an error, it is recommended that you stop the
-/// program immediately.
-///
-/// An error will occur if you forget to load and initialize all the
-/// prerequisite DLLs, as listed in the DLL Prerequisites section of the
-/// accompanying documentation, before using this DLL.
+/// Removes all the timing constants records in memory.
+/// - Returns: 0 if all timing constants records are successfully removed from memory,
+/// non-0 if there is an error.
+public func tConRemoveAll() -> Int { Int(TConRemoveAll()) }
 
-/// - Parameter dllHandle: The pointer that was returned from DllMain.DllMainInit
-/// - Returns: zero indicating the TimeFunc DLL has been initialized successfully. Other values indicate an error.
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
-public func timeFuncInit(_ dllHandle: Int64) -> Int { Int(TimeFuncInit(dllHandle)) }
+/// Returns current prediction control parameters in form of a 6P-Card string.
+/// - Parameter card6PLine: The resulting 6P-Card string.
+public func get6PCardLine() -> String {
 
-/// Returns the information about the TimeFunc DLL.
-///
-/// The information is placed in the string parameter you pass in. The returned string provides information
-/// about the version number, build date, and the platform of the TimeFunc DLL.
-/// - Returns: A string holding the information about TimeFunc.dll.
-public func timeFuncGetInfo() -> String {
-
-    var infoString = nullCharacterArray(size: GETSETSTRLEN)
-    TimeFuncGetInfo(&infoString)
-    return characterArrayToString(infoString, size: GETSETSTRLEN)
+    var string512 = nullCharacterArray(size: GETSETSTRLEN)
+    Get6PCardLine(&string512)
+    return stringFromCharacterArray(string512, size: GETSETSTRLEN)
 
 }
 
@@ -489,7 +487,7 @@ public func utcToDTG20(_ ds50UTC: Double) -> String {
 
     var string24 = nullCharacterArray(size: 24)
     UTCToDTG20(ds50UTC, &string24)
-    return characterArrayToString(string24, size: 24)
+    return stringFromCharacterArray(string24, size: 24)
 
 }
 
@@ -505,7 +503,7 @@ public func utcToDTG19(_ ds50UTC: Double) -> String {
 
     var string24 = nullCharacterArray(size: 24)
     UTCToDTG19(ds50UTC, &string24)
-    return characterArrayToString(string24, size: 24)
+    return stringFromCharacterArray(string24, size: 24)
 
 }
 
@@ -523,7 +521,7 @@ public func utcToDTG17(_ ds50UTC: Double) -> String {
 
     var string24 = nullCharacterArray(size: 24)
     UTCToDTG17(ds50UTC, &string24)
-    return characterArrayToString(string24, size: 24)
+    return stringFromCharacterArray(string24, size: 24)
 
 }
 
@@ -539,11 +537,11 @@ public func utcToDTG15(_ ds50UTC: Double) -> String {
 
     var string24 = nullCharacterArray(size: 24)
     UTCToDTG15(ds50UTC, &string24)
-    return characterArrayToString(string24, size: 24)
+    return stringFromCharacterArray(string24, size: 24)
 
 }
 
-// ================================================ ASTRO ================================================
+//MARK: ASTRO
 
 /// Initializes AstroFunc DLL for use in the program.
 ///
@@ -563,7 +561,7 @@ public func astroFuncGetInfo() -> String {
 
     var infoString = nullCharacterArray(size: GETSETSTRLEN)
     AstroFuncGetInfo(&infoString)
-    return characterArrayToString(infoString, size: GETSETSTRLEN)
+    return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
 
 }
 
@@ -573,31 +571,60 @@ public func isPointSunlit(_ ds50ET: Double, _ ptECI: UnsafeMutablePointer<Double
 
 }
 
-// ================================================ TLE ================================================
+//MARK: TLE
 
-public func tleSetField(_ satKey: Int64, _ xf_Tle:Int) -> String? {
+/// Initializes Tle DLL for use in the program. If this function returns an error,
+/// it is recommended that you stop the program immediately.
+///
+/// - Parameter dllHandle: The handle that was returned from DllMainInit
+/// - Returns: 0 if Tle.dll is initialized successfully, non-0 if there is an error.
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
+public func tleInit(_ dllHandle: Int64) -> Int { Int(TleInit(dllHandle)) }
 
-    var infoString = nullCharacterArray(size: GETSETSTRLEN)
-    guard 0 == TleSetField(satKey, Int32(xf_Tle), &infoString) else { return nil }
-    return characterArrayToString(infoString, size: GETSETSTRLEN)
+/// Returns the information about the Tle DLL.
+///
+/// - Returns: A `String` of information about the DLL version number, build date, and platform.
+public func tleGetInfo() -> String {
+
+    var infoString = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
+    TleGetInfo(&infoString)
+    infoString[Int(GETSETSTRLEN)] = 0
+    return String(cString: infoString).trimRight()
 
 }
 
 /// Parses GP data from the input first and second lines of a two line element set or a
 /// CSV tle and store that data back into the output parameters.
 ///
-/// This function only parses data from the input TLE but DOES NOT load/add the input TLE to memory.
+/// This function only parses data from the input TLE but DOES NOT load/add the
+/// input TLE to memory. The following table lists the offsets of the individual
+/// strings in the XS_TLE string:
+///
+///  |  name  |  index |  index interpretation  |
+///  |  ----  |  :----: | ---- |
+///  |  XS_TLE_SECCLASS_1     |  0 | Security classification of line 1 and line 2  |
+///  |  XS_TLE_SATNAME_12     |  1 | Satellite name  |
+///  |  XS_TLE_SECCLASSL3_1   | 13 | Security classification of line 3  |
+///  |  XS_TLE_DISTMARKING_4  | 14 | Distribution marking  |
+///  |  XS_TLE_OBJSTAT_1      | 18 | Object status: 'A'=Active, 'D'=Dead, 'U'=Unknown  |
+///  |  XS_TLE_MSSNCODE_2     | 19 | Primary payload mission code  |
+///  |  XS_TLE_MSSNSTAT_1     | 21 | Primary mission status (table lookup)  |
+///  |  XS_TLE_MANEUV_1       | 22 | Maneuverability 'Y'=Yes, 'N'=No, 'U'=Unknown  |
+///  |  XS_TLE_OOCNTRY_4      | 23 | Payload Owner/Operator  |
+///  |  XS_TLE_FREQBAND_1     | 27 | Frequency Band of the RCS: U=UHF, C=C-Band, L=L-Band, S=S-Band, X=X-Band  |
+///  |  XS_TLE_TBLERATE_1     | 28 | Tumble rate  |
+///  |  XS_TLE_SIZE           | 512 |  |
 /// - Parameters:
 ///   - line1: The first line of the two line element set or a CSV tle
 ///   - line2: The second line of the two line element set or an empty string for a CVS tle
 ///   - xa_tle: Array containing TLE's numerical fields, see XA_TLE_? for array arrangement
-/// - Returns: Output string that contains all TLE's text fields, see XS_TLE_? for column arrangement
-public func tleLinesToArray(_ line1: String, _ line2: String, _ xa_tle: inout Double) -> String? {
+/// - Returns: Output string of all the TLE's text fields, with column arrangement as in above table
+public func tleLinesToArray(_ line1: String, _ line2: String, _ xa_tle: UnsafeMutablePointer<Double>) -> String? {
 
     var infoString = nullCharacterArray(size: GETSETSTRLEN)
     guard 0 == Int(TleLinesToArray(makeCString(from: line1), makeCString(from: line2),
-                                   &xa_tle, &infoString)) else { return nil }
-    return characterArrayToString(infoString, size: GETSETSTRLEN)
+                                   xa_tle, &infoString)) else { return nil }
+    return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
 
 
 }
@@ -610,11 +637,11 @@ public func tleGetCsv(_ satKey: Int64) -> String? {
 
     var infoArray = nullCharacterArray(size: GETSETSTRLEN)
     guard 0 == Int(TleGetCsv(satKey, &infoArray)) else { return nil }
-    return characterArrayToString(infoArray, size: GETSETSTRLEN)
+    return stringFromCharacterArray(infoArray, size: GETSETSTRLEN)
 
 }
 
- /// Constructs a TLE from individually provided GP data fields.
+/// Constructs a TLE from individually provided GP data fields.
 /// - Parameters:
 ///   - satNum: Satellite number
 ///   - secClass: Security classification
@@ -646,7 +673,7 @@ public func tleGPFieldsToCsv(_ satNum: Int, _ secClass: String, _ satName: Strin
                           Int32(epochYr), epochDays, nDotO2, n2DotO6, bstar, Int32(ephType),
                           Int32(elsetNum), incli, node, eccen, omega, mnMotion, mnMotion, Int32(revNum), &returnString)
 
-    return characterArrayToString(returnString, size: GETSETSTRLEN)
+    return stringFromCharacterArray(returnString, size: GETSETSTRLEN)
 
 }
 
@@ -665,33 +692,34 @@ public func tleGPArrayToLines(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: 
 
     TleGPArrayToLines(xa_tle, makeCString(from: xs_tle), &_line1, &_line2)
 
-    line1 = characterArrayToString(_line1, size: INPUTCARDLEN)
-    line2 = characterArrayToString(_line2, size: INPUTCARDLEN)
+    line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
+    line2 = stringFromCharacterArray(_line2, size: INPUTCARDLEN)
 
 }
 
-// Constructs a TLE from individually provided SP data fields.
-// Only applies to SP propagator.
-// This function only parses data from the input fields but DOES NOT load/add the TLE to memory.
-// Returned line1 and line2 will be empty if the function fails to construct the lines as requested.
-// satNum             Satellite number (in-Integer)
-// secClass           Security classification (in-Character)
-// satName            Satellite international designator (in-Character[8])
-// epochYr            Element epoch time - year, [YY]YY (in-Integer)
-// epochDays          Element epoch time - day of year, DDD.DDDDDDDD (in-Double)
-// bTerm              Ballistic coefficient (m^2/kg) (in-Double)
-// ogParm             Outgassing parameter/Thrust Acceleration (km/s^2) (in-Double)
-// agom               Agom (m^2/kg) (in-Double)
-// elsetNum           Element set number (in-Integer)
-// incli              Orbit inclination (degrees) (in-Double)
-// node               Right ascension of ascending node (degrees) (in-Double)
-// eccen              Eccentricity (in-Double)
-// omega              Argument of perigee (degrees) (in-Double)
-// mnAnomaly          Mean anomaly (degrees) (in-Double)
-// mnMotion           Mean motion (rev/day) (in-Double)
-// revNum             Revolution number at epoch (in-Integer)
-// line1              Returned first line of a TLE. (out-Character[512])
-// line2              Returned second line of a TLE. (out-Character[512])
+/// Constructs a TLE from individually provided SP data fields. Only applies to SP propagator.
+///
+/// This function only parses data from the input fields but DOES NOT load/add the TLE to
+/// memory. Returned line1 and line2 will be empty if the function fails to construct the
+/// lines as requested.
+///   - satNum: Satellite number
+///   - secClass: Security classification
+///   - satName: Satellite international designator
+///   - epochYr: Element epoch time - year,, [YY]YY
+///   - epochDays: Element epoch time - day of year, DDD.DDDDDDDD
+///   - bTerm: Ballistic coefficient (m^2/kg) (in-Double)
+///   - ogParm: Outgassing parameter/Thrust Acceleration (km/s^2) (in-Double)
+///   - agom: Agom (m^2/kg) (in-Double)
+///   - elsetNum: Element set number
+///   - incli: Orbit inclination (degrees)
+///   - node: Right ascension of ascending node (degrees)
+///   - eccen: Eccentricity
+///   - omega: Argument of perigee (degrees)
+///   - mnAnomaly: Mean anomaly (degrees)
+///   - mnMotion: Mean motion (rev/day) (ephType = 0: Kozai mean motion, ephType = 2 or 4: Brouwer mean motion)
+///   - revNum: Revolution number at epoch
+///   - line1: Returned first line of a TLE. (out-Character[512])
+///   - line2: Returned second line of a TLE. (out-Character[512])
 public func tleSPFieldsToLines(_ satNum: Int32, _ secClass: String, _ satName: String,
                                _ epochYr: Int32, _ epochDays: Double,
                                _ bterm: Double, _ ogParm: Double, _ agom: Double,
@@ -706,8 +734,8 @@ public func tleSPFieldsToLines(_ satNum: Int32, _ secClass: String, _ satName: S
                        epochYr, epochDays, bterm, ogParm, agom,
                        elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, &_line1, &_line2)
 
-    line1 = characterArrayToString(_line1, size: INPUTCARDLEN)
-    line2 = characterArrayToString(_line2, size: INPUTCARDLEN)
+    line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
+    line2 = stringFromCharacterArray(_line2, size: INPUTCARDLEN)
 
 }
 
@@ -721,7 +749,7 @@ public func tleGPArrayToCsv(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: St
 
     var csvString = nullCharacterArray(size: INPUTCARDLEN)
     TleGPArrayToCsv(xa_tle, makeCString(from: xs_tle), &csvString)
-    return characterArrayToString(csvString, size: INPUTCARDLEN)
+    return stringFromCharacterArray(csvString, size: INPUTCARDLEN)
 
 }
 
@@ -814,7 +842,7 @@ public func tleDataToArray(_ satKey: Int64, _ xa_tle: inout Double) -> String? {
 
     var info = nullCharacterArray(size: INPUTCARDLEN)
     guard 0 == TleDataToArray(satKey, &xa_tle, &info) else { return nil }
-    return characterArrayToString(info, size: INPUTCARDLEN)
+    return stringFromCharacterArray(info, size: INPUTCARDLEN)
 
 }
 
@@ -827,7 +855,7 @@ public func tleLinesToCsv(_ line1: String, _ line2: String) -> String? {
 
     var info = nullCharacterArray(size: INPUTCARDLEN)
     guard 0 == TleLinesToCsv(makeCString(from: line1), makeCString(from: line2), &info) else { return nil }
-    return characterArrayToString(info, size: INPUTCARDLEN)
+    return stringFromCharacterArray(info, size: INPUTCARDLEN)
 
 }
 
@@ -845,29 +873,10 @@ public func tleCsvToLines(_ csvLine: String, _ newSatno: Int32,
 
     let errorCode = Int(TleCsvToLines(makeCString(from: csvLine), newSatno, &_line1, &_line2))
 
-    line1 = characterArrayToString(_line1, size: INPUTCARDLEN)
-    line2 = characterArrayToString(_line2, size: INPUTCARDLEN)
+    line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
+    line2 = stringFromCharacterArray(_line2, size: INPUTCARDLEN)
 
     return errorCode
-
-}
-
-/// Initializes Tle DLL for use in the program. If this function returns an error, it is recommended that you stop the program immediately.
-///
-/// - Parameter dllHandle: The handle that was returned from DllMainInit
-/// - Returns: 0 if Tle.dll is initialized successfully, non-0 if there is an error.
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
-public func tleInit(_ dllHandle: Int64) -> Int { Int(TleInit(dllHandle)) }
-
-/// Returns the information about the Tle DLL.
-///
-/// - Returns: A `String` of information about the DLL version number, build date, and platform.
-public func tleGetInfo() -> String {
-
-    var infoString = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
-    TleGetInfo(&infoString)
-    infoString[Int(GETSETSTRLEN)] = 0
-    return String(cString: infoString).trimRight()
 
 }
 
@@ -966,8 +975,8 @@ public func tleGetLines(_ satKey: Int64, _ line1: inout String, _ line2: inout S
 
     let errorCode = TleGetLines(satKey, &_line1, &_line2)
 
-    line1 = characterArrayToString(_line1, size: INPUTCARDLEN)
-    line2 = characterArrayToString(_line2, size: INPUTCARDLEN)
+    line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
+    line2 = stringFromCharacterArray(_line2, size: INPUTCARDLEN)
 
     return Int(errorCode)
 }
@@ -1012,8 +1021,8 @@ public func tleGPFieldsToLines(_ satNum:Int, _ secClass: String, _ satName: Stri
                        Int32(elsetNum), incli, node, eccen, omega, mnMotion, mnMotion, Int32(revNum),
                        &_line1, &_line2)
 
-    line1 = characterArrayToString(_line1, size: INPUTCARDLEN)
-    line2 = characterArrayToString(_line2, size: INPUTCARDLEN)
+    line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
+    line2 = stringFromCharacterArray(_line2, size: INPUTCARDLEN)
 
 }
 
@@ -1368,7 +1377,8 @@ public func tleRemoveSat(_ satKey: Int64) -> Int { Int(TleRemoveSat(satKey)) }
 ///  |   2  |  Security classification  |
 ///  |   3  |  Satellite international designator  |
 ///  |   4  |  Epoch  |
-///  |   5  |  Ephemeris type: 0,2→B* drag term (1/er); 6→SP radiation pressure coefficient agom (m2/kg)  |
+///  |   5  |  Ephemeris type: 0,2 → B* drag term (1/er)
+///  |      | Ephemeris type: 6 → SP radiation pressure coefficient agom (m2/kg)  |
 ///  |   6  |  Ephemeris type  |
 ///  |   7  |  Element set number  |
 ///  |   8  |  Orbit inclination (degrees)  |
@@ -1378,8 +1388,10 @@ public func tleRemoveSat(_ satKey: Int64) -> Int { Int(TleRemoveSat(satKey)) }
 ///  |   12  |  Mean anomaly (degrees)  |
 ///  |   13  |  Mean motion (rev/day)  |
 ///  |   14  |  Revolution number at epoch  |
-///  |   15  |  Ephemeris type: 0→SGP mean motion derivative (rev/day÷2); 6→SP ballistic coefficient (m2/kg)   |
-///  |   16  |  Ephemeris type: 0→SGP mean motion second derivative (rev/day²÷6); 6→SP Outgassing parameter/Thrust Acceleration (km/s2)  |
+///  |   15  |  Ephemeris type: 0 → SGP mean motion derivative (rev/day÷2)
+///  |       | Ephemeris type: 6 → SP ballistic coefficient (m2/kg)   |
+///  |   16  |  Ephemeris type: 0 → SGP mean motion second derivative (rev/day²÷6)
+///  |       | Ephemeris type: 6 → SP Outgassing parameter/Thrust Acceleration (km/s2)  |
 /// - Parameters:
 ///   - satKey: The satellite's unique key.
 ///   - xf_Tle: Predefined number specifying which field to retrieve.
@@ -1388,11 +1400,51 @@ public func tleGetField(_ satKey: Int64, _ xf_Tle: Int32) -> String? {
 
     var valueStr = nullCharacterArray(size: GETSETSTRLEN)
     guard 0  == TleGetField(satKey, xf_Tle, &valueStr) else { return nil }
-    return characterArrayToString(valueStr, size: GETSETSTRLEN)
+    return stringFromCharacterArray(valueStr, size: GETSETSTRLEN)
 
 }
 
-// ================================================ SGP4 ================================================
+/// Updates the value of a field of a TLE. This function can be used for both GP and SP satellites.
+///
+/// The table below indicates which index values correspond to which fields.
+/// Make sure to use the appropriate field index for GP TLEs and SP TLEs.
+/// For indexes 5, 15 and 16, the interpretation depends on the ephemeris type of the TLE.
+///
+/// satNum (1), Epoch (4), and Ephemeris Type (5) cannot be altered.
+///
+/// |  index  |  index Interpretation  |
+/// | :----: | :----: |
+/// | 1 | Satellite number |
+/// | 2 | Security classification |
+/// | 3 | Satellite international designator |
+/// | 4 | Epoch |
+/// | 5 | B* drag term (1/er) for Ephemeris types = 0,2;
+/// |   | SP radiation pressure coefficient agom (m2/kg) for Ephemeris type = 6
+/// | 6 | Ephemeris type |
+/// | 7 | Element set number |
+/// | 8 | Orbit inclination (degrees) |
+/// | 9 | Right ascension of ascending node (degrees) |
+/// | 10 | Eccentricity |
+/// | 11 | Argument of perigee (degrees) |
+/// | 12 | Mean anomaly (degrees) |
+/// | 13 | Mean motion (rev/day) |
+/// | 14 | Revolution number at epoch |
+/// | 15 | SGP mean motion derivative (rev/day÷2) for Ephemeris type = 0
+/// |    | SP ballistic coefficient (m2/kg) for Ephemeris type = 6 |
+/// | 16 | SGP mean motion second derivative (rev/day²÷6) for Ephemeris type = 0;
+/// |   | SP outgassing parameter/Thrust Acceleration (km/s2) for Ephemeris type = 6 |
+/// - Parameters:
+///   - satKey: The satellite's unique key.
+///   - xf_Tle: Predefined number specifying which field to set. See remarks.
+///   - valueStr: The new value of the specified field, expressed as a string.
+/// - Returns: 0 if the TLE is successfully updated, non-0 if there is an error
+public func tleSetField(_ satKey: Int64, _ xf_Tle: Int, _ valueStr: String) -> Int {
+
+    Int(TleSetField(satKey, Int32(xf_Tle), makeCString(from: valueStr)))
+
+}
+
+//MARK: SGP4
 
 /// Initializes the Sgp4 DLL for use in the program.
 ///
@@ -1424,10 +1476,9 @@ public func sgp4GetInfo() -> String {
 @available(*, deprecated, message: "This function has been deprecated since v8.2")
 public func Sgp4GetLicFilePath() -> String {
 
-    var licFilePath = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
+    var licFilePath = nullCharacterArray(size: GETSETSTRLEN)
     Sgp4GetLicFilePath(&licFilePath)
-    licFilePath[Int(GETSETSTRLEN)] = 0
-    return String(cString: licFilePath).trimRight()
+    return stringFromCharacterArray(licFilePath, size: GETSETSTRLEN)
 
 }
 
@@ -1644,8 +1695,8 @@ public func sgp4ReepochTLE(_ satKey: Int64, _ newEpoch: Double, _ line1: inout S
 
     let errorCode = Sgp4ReepochTLE(satKey, newEpoch, &_line1, &_line2)
 
-    line1 = characterArrayToString(_line1, size: INPUTCARDLEN)
-    line2 = characterArrayToString(_line2, size: INPUTCARDLEN)
+    line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
+    line2 = stringFromCharacterArray(_line2, size: INPUTCARDLEN)
 
     return Int(errorCode)
 }
@@ -1659,6 +1710,6 @@ public func sgp4ReepochCsv(_ satKey: Int64, _ reepochDs50UTC: Double) -> String?
 
     var _csvLine = nullCharacterArray(size: INPUTCARDLEN)
     guard 0 == Sgp4ReepochCsv(satKey, reepochDs50UTC, &_csvLine) else { return nil }
-    return characterArrayToString(_csvLine, size: INPUTCARDLEN)
+    return stringFromCharacterArray(_csvLine, size: INPUTCARDLEN)
 
 }
