@@ -13,14 +13,14 @@ public var libHandles = [UnsafeMutableRawPointer]()
 //MARK: Dynamic Library Services
 //
 public func loadAllDlls() {
-    if libHandles.isEmpty {
-        let globalHandle = DllMainInit()
-        guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
-        guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
-        guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
-        guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
-        guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
-    }
+
+    let globalHandle = DllMainInit()
+    guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
+    guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
+    guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
+    guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
+    guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
+
 }
 
 public func loadDll(_ dllName: String) -> UnsafeMutableRawPointer {
@@ -91,7 +91,7 @@ extension String {
 
     func stringToTmpFile(_ fileName: String) -> String {
 
-        let urlForString = createFile(fileName, inURL: FileManager.default.temporaryDirectory)
+        let urlForString = createFile(fileName, inside: FileManager.default.temporaryDirectory)
         do {
             try self.write(to: urlForString, atomically: false, encoding: .ascii)
         } catch {
@@ -189,37 +189,39 @@ public func printWarning(_ softwareName: String) {
     )
 }
 
-/// Obtains the URL of the directory created at the URL `inURL`
+/// Obtains the URL of the directory created at `dirPath`
 /// - Parameters:
-///   - inURL: the URL of the target folder.
-///   - called: the name of the directory.
+///   - dirPath: absolute path of the directory to create.
 /// - Returns: the URL of the directory.
-public func createDirectory(_ directory: String, at: URL) -> URL {
+public func createDirectory(_ dirPath: String) -> URL {
 
     do {
-        try FileManager.default.createDirectory(atPath: directory,
+        try FileManager.default.createDirectory(atPath: dirPath,
                                                 withIntermediateDirectories: true)
     } catch {
-        print("creation of directory \(at) failed: \(error)")
+        print("creation of directory \(dirPath) failed: \(error)")
     }
 
-    return URL(fileURLWithPath: directory, isDirectory: true, relativeTo: at)
+    return URL(fileURLWithPath: dirPath, isDirectory: true)
 
 }
 
-/// Obtains the URL of the directory created at the URL `inURL`
+/// Creates a file at `filePath` inside the directory URL and returns its URL
 /// - Parameters:
-///   - inURL: the URL of the target folder.
-///   - called: the name of the (existing) file.
+///   - filePath: the name of the file.
+///   - inside: the URL of the directory to create it in.
 /// - Returns: the URL of the file
-public func createFile(_ called: String, inURL: URL) -> URL {
+public func createFile(_ filePath: String, inside: URL) -> URL {
 
-    let fileURL = URL(fileURLWithPath: called, relativeTo: inURL)
+    let fileURL = URL(fileURLWithPath: filePath, relativeTo: inside)
+    let _ = createDirectory(fileURL.deletingLastPathComponent().path)
 
-    do {
-        try Data().write(to: fileURL)
-    } catch {
-        print("creation of file \(called) failed: \(error)")
+    if !fileURL.hasDirectoryPath {
+        do {
+            try Data().write(to: fileURL)
+        } catch {
+            print("creation of file \(filePath) in \(inside.path) failed: \(error)")
+        }
     }
 
     return fileURL
@@ -231,9 +233,9 @@ public func createFile(_ called: String, inURL: URL) -> URL {
 ///   - inURL: the URL of the target folder.
 ///   - called: the name of the (existing) file.
 /// - Returns: the URL of the file
-public func selectFile(_ called: String, inURL: URL) -> URL {
+public func selectFile(_ filePath: String, inside: URL) -> URL {
 
-    URL(fileURLWithPath: called, relativeTo: inURL)
+    URL(fileURLWithPath: filePath, relativeTo: inside)
 
 }
 
@@ -244,7 +246,7 @@ public func writeString(_ string: String, toURL: URL, appending: Bool = true, te
         fileHandle.write((string + terminator).data(using: .utf8)!)            // adding content
         fileHandle.closeFile()                                  // closing the file
     } else {
-        print("data not written")
+        print("text not written to \(toURL.path)")
     }
 
 }

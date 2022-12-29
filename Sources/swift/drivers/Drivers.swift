@@ -1,6 +1,6 @@
 //
 //  Drivers.swift
-//  
+//  Sgp4Swift
 //
 //  Created by Gavin Eadie on 12/4/22.
 //
@@ -432,9 +432,9 @@ public func utcToTimeComps1(_ ds50UTC: Double,
 
 public func timeComps2ToUTC(_ year:Int, _ month:Int, _ dayOfMonth:Int,
                             _ hh:Int, _ mm:Int, _ sss: Double) -> Double {
-    
+
     TimeComps2ToUTC(Int32(year), Int32(month), Int32(dayOfMonth), Int32(hh), Int32(mm), sss)
-    
+
 }
 
 /// Converts a time in ds50UTC to its individual components (year, day of year, hour, minute, second).
@@ -669,9 +669,9 @@ public func tleGPFieldsToCsv(_ satNum: Int, _ secClass: String, _ satName: Strin
 
     var returnString = nullCharacterArray(size: GETSETSTRLEN)
 
-         TleGPFieldsToCsv(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
-                          Int32(epochYr), epochDays, nDotO2, n2DotO6, bstar, Int32(ephType),
-                          Int32(elsetNum), incli, node, eccen, omega, mnMotion, mnMotion, Int32(revNum), &returnString)
+    TleGPFieldsToCsv(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
+                     Int32(epochYr), epochDays, nDotO2, n2DotO6, bstar, Int32(ephType),
+                     Int32(elsetNum), incli, node, eccen, omega, mnMotion, mnMotion, Int32(revNum), &returnString)
 
     return stringFromCharacterArray(returnString, size: GETSETSTRLEN)
 
@@ -1018,7 +1018,7 @@ public func tleGPFieldsToLines(_ satNum:Int, _ secClass: String, _ satName: Stri
 
     TleGPFieldsToLines(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
                        Int32(epochYr), epochDays, nDotO2, n2DotO6, bstar, Int32(ephType),
-                       Int32(elsetNum), incli, node, eccen, omega, mnMotion, mnMotion, Int32(revNum),
+                       Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum),
                        &_line1, &_line2)
 
     line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
@@ -1459,7 +1459,7 @@ public func tleSetField(_ satKey: Int64, _ xf_Tle: Int, _ valueStr: String) -> I
 public func sgp4Init(_ dllHandle: Int64) -> Int { Int(Sgp4Init(dllHandle)) }
 
 /// Returns information about the current version of Sgp4Prop.dll.
-/// 
+///
 /// - Returns: A `String` of information about the DLL version number, build date, and platform.
 public func sgp4GetInfo() -> String {
 

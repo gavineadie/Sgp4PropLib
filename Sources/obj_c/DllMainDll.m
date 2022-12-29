@@ -1,6 +1,6 @@
 //
 //  DllMainDll.m
-//  sgp4command
+//  Sgp4Swift
 //
 //  Created by Gavin Eadie on 11/7/22.
 //

@@ -1,59 +1,47 @@
-# Sgp4Prop
+# The Sgp4Prop Package
 
-This Package contains two approaches to implementing the SGP4 functions in Swift.
-One approach depends on the other.  One is a complete
-implementation of all the functions in the SGP4 library, and the libraries it
-depends on; the other offers a more idiomatic version of certain functions.
+The best way to incorporate the Swift interface to the SGP4 libraries in your Swift program is by using a Package.  The [Swift Package Manager](https://www.swift.org/package-manager/) (SPM) is designed to ease the distribution and use of a collection of files like is contained here.
 
-The complete version of the Swift Sgp4 libraries is an automatically generated,
-one-to-one, direct equivalent of the C functions.
-Since the Swift compiler
-can interpret C header (\*.h) files, those headers are 'ground truth' for Swift.
-Creating a complete thin Swift interface over the C-style functions that the libraries
-offer is a simple process.  These Swift functions are provided in the 'wrappers' directory.
+## The Swift development environment
 
-Swift was designed with three core aims, to be **Safe**
-in terms of minimizing developer mistakes, **Fast** when it comes to speed of
-execution, and **Expressive**, to be as clear and as easy
-to understand as possible.  That's given Swift a certain 'feel' just
-as formula translation influeced the 'feel' of Fortan, so calling one from the
-other involves some friction.
+On Apple's platforms (Mac, iPhone, iPad and Apple Watch) the most used development environment is Xcode which is a complete IDE designed to cater for multiple computer languages and multiple target products, kernel extensions, plug-ins, libraries (static or dynamic) all the way to complete applications.
 
-Swift's _safety_ is provided, in part, by rigorous type-checking and as little use
-of pointers as possible.  There is a lot of pointer use in there libraries, so the Swift
-versions of the library functions look unnatural.  Swift also
-doesn't use null-terminated byte arrays to represent strings - strings in Swift are their
-own type.  Swift's _expressivity_ is, in one small part, that the result of a Swift function
-is returned as the function's value, multiple values would be returned in single `struct`.
-There is nothing prohiting returning results via parameter pointers, indeed it is necessary
-for this work to be possible, it's just not normal.
+Xcode is a tool aimed at producing software for Apple's hardware.  However, Swift is not limited to Apple products, so where Xcode doesn't go, another mechanism  is required.  The Swift compiler runs on some varieties of Linux, and on Windows, and will build products for those platforms.  The Swift Package Manager operates across all these platforms too.
 
-To cope with some of these differences and provide functions that would be more familiar to
-a Swift user's eyes, a second thin layer of code is laid over the first one.  That's in the
-'drivers' dictionary.
-It's far from perfect lubrication for the inter-language friction but it helps a little.
-To do a 'complete' job of this would make the Swift interface very different from the
-existing one and, maybe, add friction of its own.
-
-So, an example.  The raw translation of:
+In the presence of the SPM, on Mac, Linux or Windows, building and running an application can be as simple as
 ```
-    void DllMainGetInfo(char infoStr[128]);
+    cd Application
+    swift run
 ```
-is, still passing the string out via the char* reference, as follows:
-```
-    func DllMainGetInfo(_ infoStr: UnsafeMutablePointer<CChar>)
-```
-Notice that worrying `UnsafeMutablePointer<CChar>` usage.  It's not really `Unsafe`
-in the dangerous meaning, it's just that Swift has lost some control.  However
-that pointer (just an address in memory) can, from Swift's point of view point
-to nothing other than a `CChar` (C character), a signed 8-bit number.
+This capability relies on a manifest file which describes the necessary libraries and Swift settings for success.  Any libraries that are necessary for linking external functionality and completing the creating of the runnable application are described within that manifest (in the file `Package.swift`) in, essentially, a single line.
 
-The 'Swifty' version would pass the string back as the function value.
-It's a major imperfection that the two versions are only distinct in the
-case of their first letter, but the compiler will catch mistaken use:
-```
-    func dllMainGetInfo() -> String
-```
-The reader familiar with Swift has learned nothing from the above!
+## The SGP4 Package
 
-(https://www.swiftbysundell.com/articles/what-makes-code-swifty/)
+The directory 'package' is such a Package and the four sample applications all make use of it to incorporate the Swift interface to the SGP4 dynamic libraries.  The Package.swift manifests are of the form:
+
+```
+import PackageDescription
+
+let package = Package(
+    name: "Sgp4Prop-Simple",
+    dependencies: [
+//	.package(url: "https://github.com/gavineadie/Sgp4PropLib.git", from: "0.0.1"),
+       	.package(name: "Sgp4PropLib", path: "../package/"),
+    ],
+    targets: [
+        .executableTarget(name: "Sgp4Prop-Simple",
+                          dependencies: ["Sgp4PropLib"]),
+    ]
+)
+```
+This is actually some Swift code which, in human-readable terms, specifies the name of the application (`Sgp4Prop-Simple`) and that it depends a Package (`.package`).  The attributes of the `.package` describe its location, which can be a set of local files, or on a `git` server on the Internet.
+
+The `.targets` parameter can describe one or more products related to the `Sgp4Prop-Simple` package.  In this case, there in only one: an executable (a runnable program) called `Sgp4Prop-Simple` that depends on the previously described dependency.  It may seem that there is some redundancy in this package manifest (the target name is repeated, as is what it depends on) and that is because this is the simplest possible manifest.  More complex ones might have multiple dependencies (perhaps a logging library, perhaps a high precision trigonometry library), and might have multiple targets (a unit testing suite, for example).
+
+Note that there are two `.package` definitions .. one (commented out) relates to a package on the Internet, the other refers to the local file system (in this case the `Sgp4PropLib` package is in the "DriverExamples" directory alongside the four sample applications).
+
+In short, we have each sample application described by a Package and in that Package is a reference to a needed library (which is also a Package).  At the time of the release of this Swift interface, the SGP4 Package contained in the distribution is the same as the one on the Internet, but with the passage of time bug fixes and other improvements will be applied to the Internet version.
+
+In order to keep some control over such changes, the Internet versions are numbered with a 'semantic version' an increasingly common mechanism.  Briefly, this involves a version of the form `P.Q.R` where `R` increments with minor changes, `Q` increments with a functional change, and `P` increments with a major, new  release.  `P` equals zero during development and testing and this Swift release neither tested exhaustively nor, I expect, bug free as I write this, so the version is `0.1.7`
+
+Version increments are seen by the [Swift Package Manager](https://www.swift.org/package-manager/) so improvements can be incorporated automatically or on demand.

@@ -1,3 +1,10 @@
+//
+//  Tests.swift
+//  Sgp4Swift
+//
+//  Created by Gavin Eadie on 10/17/22.
+//
+
 import XCTest
 @testable import swift
 @testable import obj_c
@@ -273,7 +280,7 @@ final class Sgp4App2Tests: XCTestCase {
     func test_tleSetField() {
 
         let satKey: Int64 = 514756810000900211
-        
+
         let _ = tleSetField(satKey, Int(XF_TLE_SATNUM), "90021")
         _ = tleSetField(satKey, Int(XF_TLE_CLASS), "U")
         _ = tleSetField(satKey, Int(XF_TLE_SATNAME), "RELEAS14")
@@ -288,7 +295,7 @@ final class Sgp4App2Tests: XCTestCase {
         _ = tleSetField(satKey, Int(XF_TLE_MNANOM), "131.882200000000012")
         _ = tleSetField(satKey, Int(XF_TLE_MNMOTN), "1.002713280000000")
         _ = tleSetField(satKey, Int(XF_TLE_REVNUM), "1199")
-        
+
         let epoch = dtgToUTC("22346.21636301")
         var line1 = ""
         var line2 = ""
