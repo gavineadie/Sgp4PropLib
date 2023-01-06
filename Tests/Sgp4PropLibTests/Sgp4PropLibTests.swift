@@ -6,8 +6,9 @@
 //
 
 import XCTest
-@testable import swift
-@testable import obj_c
+
+@testable import Sgp4PropLib
+@testable import Sgp4Prop_c
 
 final class Sgp4App2Tests: XCTestCase {
 

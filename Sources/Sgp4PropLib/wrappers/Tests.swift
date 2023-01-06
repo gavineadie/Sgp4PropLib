@@ -1,12 +1,12 @@
 //
 //  Tests.swift
-//  Sgp4Swift
+//  
 //
 //  Created by Gavin Eadie on 12/8/22.
 //
 
 import Foundation
-import obj_c
+import Sgp4Prop_c
 
 #if os(Linux)
 fileprivate let libHandle = loadDll("libsgp4prop.so")
@@ -23,7 +23,7 @@ public func TestInterface(_ cIn: CChar, _ cOut: UnsafeMutablePointer<CChar>, _ i
 
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "TestInterface"),
-                                 to: fnPtrTestInterface.self)
+                          to: fnPtrTestInterface.self)
 
     function(cIn, cOut, intIn, intOut, longIn, longOut, realIn, realOut, strIn, strOut, int1DIn, int1DOut, long1DIn, long1DOut, real1DIn, real1DOut, int2DIn, int2DOut, long2DIn, long2DOut, real2DIn, real2DOut)
 }
@@ -35,7 +35,7 @@ public func TestInterface2(_ cInOut: UnsafeMutablePointer<CChar>, _ intInOut: Un
 
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "TestInterface2"),
-                                 to: fnPtrTestInterface2.self)
+                          to: fnPtrTestInterface2.self)
 
     function(cInOut, intInOut, longInOut, realInOut, strInOut, int1DInOut, long1DInOut, real1DInOut, int2DInOut, long2DInOut, real2DInOut)
 }
@@ -47,7 +47,7 @@ public func TestInterface3(_ Unk1DIn: UnsafeMutablePointer<Int32>, _ Unk1DOut: U
 
     let function = unsafeBitCast(getFunctionPointer(libHandle,
                                                     "TestInterface3"),
-                                 to: fnPtrTestInterface3.self)
+                          to: fnPtrTestInterface3.self)
 
     function(Unk1DIn, Unk1DOut, Unk2DIn, Unk2DOut)
 }
