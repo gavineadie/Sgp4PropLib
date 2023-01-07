@@ -1,6 +1,6 @@
 //
 //  Drivers.swift
-//  
+//
 //
 //  Created by Gavin Eadie on 12/4/22.
 //
@@ -321,7 +321,7 @@ public func tConLoadFile(_ filePath: String) -> Int {
 ///   - saveMode: Specifies whether to create a new file or append to an existing one. (0 = create, 1= append)
 ///   - saveForm: Specifies the mode in which to save the file. (0 = SPECTER Print Record format, 1 = XML format (future implementation))
 /// - Returns: zero indicating the GEO and FK settings have been successfully saved to the file. Other values indicate an error.
-public func tConSaveFile(_ tleFile: String, _ saveMode:Int, _ xf_tleForm:Int) -> Int {
+public func tConSaveFile(_ tleFile: String, _ saveMode: Int, _ xf_tleForm: Int) -> Int {
 
     Int(TConSaveFile(makeCString(from: tleFile), Int32(saveMode), Int32(xf_tleForm)))
 
@@ -384,7 +384,7 @@ public func utcToET(_ ds50UTC: Double) -> Double { UTCToET(ds50UTC) }
 ///   - year: Two or four digit years are accepted.
 ///   - dayOfYear: The day of year. Partial days can be specified.
 /// - Returns: returns The number of days since 1950, UTC. Partial days may be returned.
-public func yrDaysToUTC(_ year:Int, _ dayOfYear: Double) -> Double {
+public func yrDaysToUTC(_ year: Int, _ dayOfYear: Double) -> Double {
 
     YrDaysToUTC(Int32(year), dayOfYear)
 
@@ -401,8 +401,8 @@ public func yrDaysToUTC(_ year:Int, _ dayOfYear: Double) -> Double {
 ///   - mm: The minute.
 ///   - sss: The second, including partial seconds if desired.
 /// - Returns: The number of Days since 1950, UTC. Partial days may be returned.
-public func timeComps1ToUTC(_ year:Int, _ dayOfYear:Int,
-                            _ hh:Int, _ mm:Int, _ sss: Double) -> Double {
+public func timeComps1ToUTC(_ year: Int, _ dayOfYear: Int,
+                            _ hh: Int, _ mm: Int, _ sss: Double) -> Double {
 
     TimeComps1ToUTC(Int32(year), Int32(dayOfYear), Int32(hh), Int32(mm), sss)
 
@@ -430,11 +430,11 @@ public func utcToTimeComps1(_ ds50UTC: Double,
 
 }
 
-public func timeComps2ToUTC(_ year:Int, _ month:Int, _ dayOfMonth:Int,
-                            _ hh:Int, _ mm:Int, _ sss: Double) -> Double {
-    
+public func timeComps2ToUTC(_ year: Int, _ month: Int, _ dayOfMonth: Int,
+                            _ hh: Int, _ mm: Int, _ sss: Double) -> Double {
+
     TimeComps2ToUTC(Int32(year), Int32(month), Int32(dayOfMonth), Int32(hh), Int32(mm), sss)
-    
+
 }
 
 /// Converts a time in ds50UTC to its individual components (year, day of year, hour, minute, second).
@@ -565,6 +565,11 @@ public func astroFuncGetInfo() -> String {
 
 }
 
+/// Determines if a point in space is sunlit at the input time ds50ET
+/// - Parameters:
+///   - ds50ET: The number of days since 1950, ET
+///   - ptECI: a position in ECI (km)
+/// - Returns: `false` if the specified point isn't sunlit, `true` if the specified point is sunlit
 public func isPointSunlit(_ ds50ET: Double, _ ptECI: UnsafeMutablePointer<Double> ) -> Bool {
 
     (IsPointSunlit(ds50ET, ptECI) != 0)
@@ -572,6 +577,19 @@ public func isPointSunlit(_ ds50ET: Double, _ ptECI: UnsafeMutablePointer<Double
 }
 
 //MARK: TLE
+
+public typealias SatNum = Int
+public typealias SatKey = Int64
+
+public struct satElements {
+    var time: Double                // The number of days since 1950
+    var incli: Double               // degrees
+    var node: Double                // degrees
+    var eccen: Double
+    var omega: Double               // degrees
+    var mnAnomaly: Double           // degrees
+    var mnMotion: Double
+}
 
 /// Initializes Tle DLL for use in the program. If this function returns an error,
 /// it is recommended that you stop the program immediately.
@@ -586,10 +604,9 @@ public func tleInit(_ dllHandle: Int64) -> Int { Int(TleInit(dllHandle)) }
 /// - Returns: A `String` of information about the DLL version number, build date, and platform.
 public func tleGetInfo() -> String {
 
-    var infoString = Array(repeating: Int8(0), count: Int(GETSETSTRLEN+1))
+    var infoString = nullCharacterArray(size: GETSETSTRLEN)
     TleGetInfo(&infoString)
-    infoString[Int(GETSETSTRLEN)] = 0
-    return String(cString: infoString).trimRight()
+    return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
 
 }
 
@@ -633,7 +650,7 @@ public func tleLinesToArray(_ line1: String, _ line2: String, _ xa_tle: UnsafeMu
 /// - Parameters:
 ///   - satKey: The satellite's unique key.
 /// - Returns: A string to hold the TLE in csv format..
-public func tleGetCsv(_ satKey: Int64) -> String? {
+public func tleGetCsv(_ satKey: SatKey) -> String? {
 
     var infoArray = nullCharacterArray(size: GETSETSTRLEN)
     guard 0 == Int(TleGetCsv(satKey, &infoArray)) else { return nil }
@@ -661,7 +678,7 @@ public func tleGetCsv(_ satKey: Int64) -> String? {
 ///   - mnMotion: Mean motion (rev/day) (ephType = 0: Kozai mean motion, ephType = 2 or 4: Brouwer mean motion)
 ///   - revNum: Revolution number at epoch
 /// - Returns: A string to hold the TLE in csv format.
-public func tleGPFieldsToCsv(_ satNum: Int, _ secClass: String, _ satName: String,
+public func tleGPFieldsToCsv(_ satNum: SatNum, _ secClass: String, _ satName: String,
                              _ epochYr: Int, _ epochDays: Double,
                              _ nDotO2: Double, _ n2DotO6: Double, _ bstar: Double, _ ephType: Int,
                              _ elsetNum: Int, _ incli: Double, _ node: Double, _ eccen: Double,
@@ -720,7 +737,7 @@ public func tleGPArrayToLines(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: 
 ///   - revNum: Revolution number at epoch
 ///   - line1: Returned first line of a TLE. (out-Character[512])
 ///   - line2: Returned second line of a TLE. (out-Character[512])
-public func tleSPFieldsToLines(_ satNum: Int32, _ secClass: String, _ satName: String,
+public func tleSPFieldsToLines(_ satNum: SatNum, _ secClass: String, _ satName: String,
                                _ epochYr: Int32, _ epochDays: Double,
                                _ bterm: Double, _ ogParm: Double, _ agom: Double,
                                _ elsetNum: Int32, _ incli: Double, _ node: Double, _ eccen: Double,
@@ -730,7 +747,7 @@ public func tleSPFieldsToLines(_ satNum: Int32, _ secClass: String, _ satName: S
     var _line1 = nullCharacterArray(size: INPUTCARDLEN)
     var _line2 = nullCharacterArray(size: INPUTCARDLEN)
 
-    TleSPFieldsToLines(satNum, secClass.utf8CString[0], makeCString(from: satName),
+    TleSPFieldsToLines(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
                        epochYr, epochDays, bterm, ogParm, agom,
                        elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, &_line1, &_line2)
 
@@ -758,7 +775,7 @@ public func tleGPArrayToCsv(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: St
 ///   - xa_tle: Array containing TLE's numerical fields, see XA_TLE_? for array arrangement
 ///   - xs_tle: Input string that contains all TLE's text fields, see XS_TLE_? for column arrangement
 /// - Returns: The satKey of the newly added TLE on success, a negative value on error.
-public func tleAddSatFrArray(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String) -> Int64 {
+public func tleAddSatFrArray(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String) -> SatKey {
 
     TleAddSatFrArray(xa_tle, makeCString(from: xs_tle))
 
@@ -775,7 +792,7 @@ public func tleAddSatFrArray(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: S
 ///   - xa_tle: Array containing TLE's numerical fields, see XA_TLE_? for array arrangement
 ///   - xs_tle: Input string that contains all TLE's text fields, see XS_TLE_? for column arrangement
 /// - Returns: 0 if the TLE is successfully updated, non-0 if there is an error
-public func tleUpdateSatFrArray(_ satKey: Int64, _ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String) -> Int {
+public func tleUpdateSatFrArray(_ satKey: SatKey, _ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String) -> Int {
 
     Int(TleUpdateSatFrArray(satKey, xa_tle, makeCString(from: xs_tle)))
 
@@ -838,7 +855,7 @@ public func tleUpdateSatFrArray(_ satKey: Int64, _ xa_tle: UnsafeMutablePointer<
 ///   - satKey: The satellite's unique key
 ///   - xa_tle: Array containing TLE's numerical fields, see XA_TLE_? for array arrangement
 /// - Returns: Output string that contains all TLE's text fields, see XS_TLE_? for column arrangement
-public func tleDataToArray(_ satKey: Int64, _ xa_tle: inout Double) -> String? {
+public func tleDataToArray(_ satKey: SatKey, _ xa_tle: inout Double) -> String? {
 
     var info = nullCharacterArray(size: INPUTCARDLEN)
     guard 0 == TleDataToArray(satKey, &xa_tle, &info) else { return nil }
@@ -880,13 +897,13 @@ public func tleCsvToLines(_ csvLine: String, _ newSatno: Int32,
 
 }
 
-public func tleAddSatFrLines (_ line1: String, _ line2: String) -> Int64 {
+public func tleAddSatFrLines (_ line1: String, _ line2: String) -> SatKey {
 
     TleAddSatFrLines(makeCString(from: line1), makeCString(from: line2))
 
 }
 
-public func tleAddSatFrCsv (_ csvLine: String) -> Int64 {
+public func tleAddSatFrCsv (_ csvLine: String) -> SatKey {
 
     TleAddSatFrCsv(makeCString(from: csvLine))
 
@@ -935,7 +952,7 @@ public func tleGetCount() -> Int { Int(TleGetCount()) }
 ///   - saveMode: Specifies whether to create a new file or append to an existing file. (0 = create new file, 1= append to existing file)
 ///   - xf_tleForm: Specifies the format in which to save the file. (0 = two-line element set format, 1 =  CSV, others = future implementation)
 /// - Returns: 0 if the data is successfully saved to the file, non-0 if there is an error.
-public func tleSaveFile(_ tleFile: String, _ saveMode:Int, _ xf_tleForm:Int) -> Int {
+public func tleSaveFile(_ tleFile: String, _ saveMode: Int, _ xf_tleForm: Int) -> Int {
 
     Int(TleSaveFile(makeCString(from: tleFile), Int32(saveMode), Int32(xf_tleForm)))
 
@@ -954,11 +971,15 @@ public func tleSaveFile(_ tleFile: String, _ saveMode:Int, _ xf_tleForm:Int) -> 
 ///     - 0 = sort in ascending order of satKeys,
 ///     - 1 = sort in descending order of satKeys,
 ///     - 2 = sort in the order in which the satKeys were loaded in memory,
-///     - 9 = Quickest: sort in the order in which the satKeys were stored in the tree
-///   - satKeys: The array in which to store the satKeys.
-public func tleGetLoaded(_ order:Int, _ satKeys: UnsafeMutablePointer<Int64> ) {
+///     - 9 = Quickest: sort in the order in which the satKeys were stored in the tree [default]
+/// - Returns: an optional array of satKeys (nil if none).
+public func tleGetLoaded(_ order: Int = 9) -> [SatKey]? {
 
-    TleGetLoaded(Int32(order), satKeys)
+    let satKeyCount = tleGetCount()
+    if satKeyCount == 0 { return nil }
+    var satKeyArray = Array(repeating: SatKey(), count: satKeyCount)
+    TleGetLoaded(Int32(order), &satKeyArray)
+    return satKeyArray
 
 }
 
@@ -968,7 +989,7 @@ public func tleGetLoaded(_ order:Int, _ satKeys: UnsafeMutablePointer<Int64> ) {
 ///   - line1: A string to hold the first line of the TLE
 ///   - line2: A string to hold the second line of the TLE
 /// - Returns: 0 if successful, non-0 on error.
-public func tleGetLines(_ satKey: Int64, _ line1: inout String, _ line2: inout String) -> Int {
+public func tleGetLines(_ satKey: SatKey, _ line1: inout String, _ line2: inout String) -> Int {
 
     var _line1 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
     var _line2 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
@@ -1004,12 +1025,11 @@ public func tleGetLines(_ satKey: Int64, _ line1: inout String, _ line2: inout S
 ///   - mnMotion: Mean motion (rev/day) (ephType = 0: Kozai mean motion, ephType = 2 or 4: Brouwer mean motion)
 ///   - revNum: Revolution number at epoch
 ///   - line1: Returned first line of a TLE
-///   - line2: Returned second line of a TLE
-/// - Returns: line1 and line2 will be empty if the function fails to construct the lines as requested.
-public func tleGPFieldsToLines(_ satNum:Int, _ secClass: String, _ satName: String, _ epochYr:Int,
+///   - line2: Returned second line of a TLE (`line1` and `line2` will be empty if the function fails to construct the lines as requested).
+public func tleGPFieldsToLines(_ satNum: SatNum, _ secClass: String, _ satName: String, _ epochYr: Int,
                                _ epochDays: Double, _ nDotO2: Double, _ n2DotO6: Double, _ bstar: Double,
-                               _ ephType:Int, _ elsetNum:Int, _ incli: Double, _ node: Double,
-                               _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int,
+                               _ ephType: Int, _ elsetNum: Int, _ incli: Double, _ node: Double,
+                               _ eccen: Double, _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int,
                                _ line1: inout String, _ line2: inout String) {
 
 
@@ -1026,13 +1046,14 @@ public func tleGPFieldsToLines(_ satNum:Int, _ secClass: String, _ satName: Stri
 
 }
 
-/// // Adds a GP TLE using its individually provided field values.
-/// The function will indicate an error if the specified two line element set corresponds to a satellite that is already in memory.
+/// Adds a GP TLE using its individually provided field values.
+/// The function will indicate an error if the specified two line element set corresponds
+/// to a satellite that is already in memory.
 ///
 /// This function can be called repeatedly to add many satellites (one satellite at a time).
 ///
 /// SGP satellites (ephType = 0) use Kozai mean motion. SGP4 satellites (ephType = 2) use Brouwer mean motion.
-// returns The satKey of the newly added TLE on success, a negative value on error.
+/// returns The satKey of the newly added TLE on success, a negative value on error.
 
 /// - Parameters:
 ///   - satNum: Satellite number
@@ -1051,11 +1072,11 @@ public func tleGPFieldsToLines(_ satNum:Int, _ secClass: String, _ satName: Stri
 ///   - mnMotion: Mean motion (rev/day) (ephType = 0: Kozai mean motion, ephType = 2 or 4: Brouwer mean motion)
 ///   - revNum: Revolution number at epoch
 /// - Returns: returns The satKey of the newly added TLE on success, a negative value on error.
-public func tleAddSatFrFieldsGP(_ satNum:Int, _ secClass: String, _ satName: String,
-                                _ epochYr:Int, _ epochDays: Double, _ bstar: Double,
-                                _ ephType:Int, _ elsetNum:Int, _ incli: Double,
+public func tleAddSatFrFieldsGP(_ satNum: SatNum, _ secClass: String, _ satName: String,
+                                _ epochYr: Int, _ epochDays: Double, _ bstar: Double,
+                                _ ephType: Int, _ elsetNum: Int, _ incli: Double,
                                 _ node: Double, _ eccen: Double, _ omega: Double,
-                                _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int) -> Int64 {
+                                _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int) -> SatKey {
 
     TleAddSatFrFieldsGP(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
                         Int32(epochYr), epochDays, bstar, Int32(ephType),
@@ -1063,11 +1084,11 @@ public func tleAddSatFrFieldsGP(_ satNum:Int, _ secClass: String, _ satName: Str
 
 }
 
-public func tleAddSatFrFieldsGP2(_ satNum:Int, _ secClass: String, _ satName: String,
-                                 _ epochYr:Int, _ epochDays: Double, _ bstar: Double,
-                                 _ ephType:Int, _ elsetNum:Int, _ incli: Double,
+public func tleAddSatFrFieldsGP2(_ satNum: SatNum, _ secClass: String, _ satName: String,
+                                 _ epochYr: Int, _ epochDays: Double, _ bstar: Double,
+                                 _ ephType: Int, _ elsetNum: Int, _ incli: Double,
                                  _ node: Double, _ eccen: Double, _ omega: Double,
-                                 _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int,
+                                 _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int,
                                  _ nDotO2: Double, _ n2DotO6: Double) -> Int64 {
 
     TleAddSatFrFieldsGP2(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
@@ -1077,12 +1098,12 @@ public func tleAddSatFrFieldsGP2(_ satNum:Int, _ secClass: String, _ satName: St
 
 }
 
-public func tleAddSatFrFieldsSP(_ satNum:Int, _ secClass: String, _ satName: String,
-                                _ epochYr:Int, _ epochDays: Double, _ bterm: Double,
+public func tleAddSatFrFieldsSP(_ satNum: SatNum, _ secClass: String, _ satName: String,
+                                _ epochYr: Int, _ epochDays: Double, _ bterm: Double,
                                 _ ogParm: Double, _ agom: Double,
-                                _ elsetNum:Int, _ incli: Double,
+                                _ elsetNum: Int, _ incli: Double,
                                 _ node: Double, _ eccen: Double, _ omega: Double,
-                                _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int) -> Int64 {
+                                _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int) -> Int64 {
 
     TleAddSatFrFieldsSP(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
                         Int32(epochYr), epochDays, bterm, ogParm, agom,
@@ -1090,10 +1111,10 @@ public func tleAddSatFrFieldsSP(_ satNum:Int, _ secClass: String, _ satName: Str
 
 }
 
-public func tleUpdateSatFrFieldsGP(_ satKey: Int64, _ secClass: String, _ satName: String,
-                                   _ bstar: Double, _ elsetNum:Int, _ incli: Double,
+public func tleUpdateSatFrFieldsGP(_ satKey: SatKey, _ secClass: String, _ satName: String,
+                                   _ bstar: Double, _ elsetNum: Int, _ incli: Double,
                                    _ node: Double, _ eccen: Double, _ omega: Double,
-                                   _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int) -> Int {
+                                   _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int) -> Int {
 
     Int(TleUpdateSatFrFieldsGP(satKey, secClass.utf8CString[0], makeCString(from: satName),
                                bstar,
@@ -1101,10 +1122,10 @@ public func tleUpdateSatFrFieldsGP(_ satKey: Int64, _ secClass: String, _ satNam
 
 }
 
-public func tleUpdateSatFrFieldsGP2(_ satKey: Int64, _ secClass: String, _ satName: String,
-                                    _ bstar: Double, _ elsetNum:Int, _ incli: Double,
+public func tleUpdateSatFrFieldsGP2(_ satKey: SatKey, _ secClass: String, _ satName: String,
+                                    _ bstar: Double, _ elsetNum: Int, _ incli: Double,
                                     _ node: Double, _ eccen: Double, _ omega: Double,
-                                    _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int,
+                                    _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int,
                                     _ nDotO2: Double, _ n2DotO6: Double) -> Int {
 
     Int(TleUpdateSatFrFieldsGP2(satKey, secClass.utf8CString[0], makeCString(from: satName),
@@ -1113,11 +1134,11 @@ public func tleUpdateSatFrFieldsGP2(_ satKey: Int64, _ secClass: String, _ satNa
                                 nDotO2, n2DotO6))
 }
 
-public func tleUpdateSatFrFieldsSP(_ satKey: Int64, _ secClass: String, _ satName: String,
+public func tleUpdateSatFrFieldsSP(_ satKey: SatKey, _ secClass: String, _ satName: String,
                                    _ bterm: Double, _ ogParm: Double,
-                                   _ agom: Double, _ elsetNum:Int, _ incli: Double,
+                                   _ agom: Double, _ elsetNum: Int, _ incli: Double,
                                    _ node: Double, _ eccen: Double, _ omega: Double,
-                                   _ mnAnomaly: Double, _ mnMotion: Double, _ revNum:Int) -> Int {
+                                   _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int) -> Int {
 
     Int(TleUpdateSatFrFieldsSP(satKey, secClass.utf8CString[0], makeCString(from: satName),
                                bterm, ogParm, agom,
@@ -1147,7 +1168,7 @@ public func tleUpdateSatFrFieldsSP(_ satKey: Int64, _ secClass: String, _ satNam
 ///   - mnMotion: Mean motion (rev/day) (ephType = 0: Kozai mean motion, ephType = 2 or 4: Brouwer mean motion)
 ///   - revNum: Revolution number at epoch
 /// - Returns: 0 if all values are retrieved successfully, non-0 if there is an error.
-public func  tleGetAllFieldsGP(_ satKey: Int64,
+public func  tleGetAllFieldsGP(_ satKey: SatKey,
                                _ satNum: inout Int32, _ secClass: inout String, _ satName: inout String,
                                _ epochYr: inout Int32, _ epochDays: inout Double,
                                _ bStar: inout Double, _ ephType: inout Int32,
@@ -1157,17 +1178,14 @@ public func  tleGetAllFieldsGP(_ satKey: Int64,
                                _ mnMotion: inout Double, _ revNum: inout Int32) -> Int {
 
     var _secClass = CChar(0)
-
-    var _satName = Array(repeating: CChar(0), count: 10)                // satName is 8 characters
+    var _satName = nullCharacterArray(size: 8)                // satName is 8 characters
 
     let errorCode = TleGetAllFieldsGP(satKey, &satNum, &_secClass, &_satName,
                                       &epochYr, &epochDays, &bStar, &ephType,
                                       &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum)
 
-    secClass = String(_secClass)
-
-    _satName[9] = 0
-    satName = String(cString: _satName).trimRight()
+    secClass = String(UnicodeScalar(UInt8(bitPattern: _secClass)))
+    satName = stringFromCharacterArray(_satName, size: 8)
 
     return Int(errorCode)
 
@@ -1197,7 +1215,7 @@ public func  tleGetAllFieldsGP(_ satKey: Int64,
 ///   - nDotO2: Mean motion derivative (rev/day /2)
 ///   - n2DotO6: Mean motion second derivative (rev/day**2 /6) or agom (ephType = 4, XP) (m2/kg)
 /// - Returns: 0 if all values are retrieved successfully, non-0 if there is an error.
-public func tleGetAllFieldsGP2(_ satKey: Int64,
+public func tleGetAllFieldsGP2(_ satKey: SatKey,
                                _ satNum: inout Int32, _ secClass: inout String, _ satName: inout String,
                                _ epochYr: inout Int32, _ epochDays: inout Double,
                                _ bstar: inout Double, _ ephType: inout Int32,
@@ -1214,9 +1232,8 @@ public func tleGetAllFieldsGP2(_ satKey: Int64,
                                        &epochYr, &epochDays, &bstar, &ephType,
                                        &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum, &nDotO2, &n2DotO6)
 
-    secClass = String(_secClass)
-    _satName[9] = 0
-    satName = String(cString: _satName).trimRight()
+    secClass = String(UnicodeScalar(UInt8(bitPattern: _secClass)))
+    satName = stringFromCharacterArray(_satName, size: 8)
 
     return Int(errorCode)
 
@@ -1244,7 +1261,7 @@ public func tleGetAllFieldsGP2(_ satKey: Int64,
 ///   - mnMotion: Mean motion (rev/day) (ephType = 0: Kozai mean motion, ephType = 2 or 4: Brouwer mean motion)
 ///   - revNum: Revolution number at epoch
 /// - Returns: 0 if all values are retrieved successfully, non-0 if there is an error.
-public func  tleGetAllFieldsSP(_ satKey: Int64,
+public func  tleGetAllFieldsSP(_ satKey: SatKey,
                                _ satNum: inout Int32, _ secClass: inout String, _ satName: inout String,
                                _ epochYr: inout Int32, _ epochDays: inout Double,
                                _ bterm: inout Double, _ ogParm: inout Double, _ agom: inout Double,
@@ -1254,15 +1271,14 @@ public func  tleGetAllFieldsSP(_ satKey: Int64,
                                _ mnMotion: inout Double, _ revNum: inout Int32) -> Int {
 
     var _secClass = CChar(0)
-    var _satName = Array(repeating: CChar(0), count: 10)                // satName is 8 characters
+    var _satName = nullCharacterArray(size: 8)                // satName is 8 characters
 
     let errorCode = TleGetAllFieldsSP(satKey, &satNum, &_secClass, &_satName,
                                       &epochYr, &epochDays, &bterm, &ogParm, &agom,
                                       &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum)
 
-    secClass = String(_secClass)
-    _satName[9] = 0
-    satName = String(cString: _satName).trimRight()
+    secClass = String(UnicodeScalar(UInt8(bitPattern: _secClass)))
+    satName = stringFromCharacterArray(_satName, size: 8)
 
     return Int(errorCode)
 
@@ -1302,15 +1318,14 @@ public func tleParseGP(_ line1: String, _ line2: String,
                        _ mnMotion: inout Double, _ revNum: inout Int32) -> Int {
 
     var _secClass = CChar(0)
-    var _satName = Array(repeating: CChar(0), count: 10)                // satName is 8 characters
+    var _satName = nullCharacterArray(size: 8)                // satName is 8 characters
 
     let errorCode = TleParseGP(makeCString(from: line1), makeCString(from: line2), &satNum, &_secClass, &_satName,
                                &epochYr, &epochDays, &nDotO2, &n2DotO6, &bstar, &ephType,
                                &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum)
 
-    secClass = String(_secClass)
-    _satName[9] = 0
-    satName = String(cString: _satName).trimRight()
+    secClass = String(UnicodeScalar(UInt8(bitPattern: _secClass)))
+    satName = stringFromCharacterArray(_satName, size: 8)
 
     return Int(errorCode)
 
@@ -1349,21 +1364,20 @@ public func tleParseSP(_ line1: String, _ line2: String,
                        _ mnMotion: inout Double, _ revNum: inout Int32) -> Int {
 
     var _secClass = CChar(0)
-    var _satName = Array(repeating: CChar(0), count: 10)                // satName is 8 characters
+    var _satName = nullCharacterArray(size: 8)                // satName is 8 characters
 
     let errorCode = TleParseSP(makeCString(from: line1), makeCString(from: line2), &satNum, &_secClass, &_satName,
                                &epochYr, &epochDays, &bterm, &ogParm, &agom,
                                &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum)
 
-    secClass = String(_secClass)
-    _satName[9] = 0
-    satName = String(cString: _satName).trimRight()
+    secClass = String(UnicodeScalar(UInt8(bitPattern: _secClass)))
+    satName = stringFromCharacterArray(_satName, size: 8)
 
     return Int(errorCode)
 
 }
 
-public func tleRemoveSat(_ satKey: Int64) -> Int { Int(TleRemoveSat(satKey)) }
+public func tleRemoveSat(_ satKey: SatKey) -> Int { Int(TleRemoveSat(satKey)) }
 
 /// Retrieves the value of a specific field of a TLE.
 ///
@@ -1395,8 +1409,8 @@ public func tleRemoveSat(_ satKey: Int64) -> Int { Int(TleRemoveSat(satKey)) }
 /// - Parameters:
 ///   - satKey: The satellite's unique key.
 ///   - xf_Tle: Predefined number specifying which field to retrieve.
-/// - Returns: A string to contain the value of the requested field (null if failure).
-public func tleGetField(_ satKey: Int64, _ xf_Tle: Int32) -> String? {
+/// - Returns: A string to contain the value of the requested field (nil if failure).
+public func tleGetField(_ satKey: SatKey, _ xf_Tle: Int32) -> String? {
 
     var valueStr = nullCharacterArray(size: GETSETSTRLEN)
     guard 0  == TleGetField(satKey, xf_Tle, &valueStr) else { return nil }
@@ -1438,7 +1452,7 @@ public func tleGetField(_ satKey: Int64, _ xf_Tle: Int32) -> String? {
 ///   - xf_Tle: Predefined number specifying which field to set. See remarks.
 ///   - valueStr: The new value of the specified field, expressed as a string.
 /// - Returns: 0 if the TLE is successfully updated, non-0 if there is an error
-public func tleSetField(_ satKey: Int64, _ xf_Tle: Int, _ valueStr: String) -> Int {
+public func tleSetField(_ satKey: SatKey, _ xf_Tle: Int, _ valueStr: String) -> Int {
 
     Int(TleSetField(satKey, Int32(xf_Tle), makeCString(from: valueStr)))
 
@@ -1459,7 +1473,7 @@ public func tleSetField(_ satKey: Int64, _ xf_Tle: Int, _ valueStr: String) -> I
 public func sgp4Init(_ dllHandle: Int64) -> Int { Int(Sgp4Init(dllHandle)) }
 
 /// Returns information about the current version of Sgp4Prop.dll.
-/// 
+///
 /// - Returns: A `String` of information about the DLL version number, build date, and platform.
 public func sgp4GetInfo() -> String {
 
@@ -1511,13 +1525,13 @@ public func sgp4SetLicFilePath(_ licFilePath: String) {
 /// This key will have been returned by one of the routines in Tle.dll.
 /// - Returns: 0 if the satellite is successfully initialized and added to
 /// Sgp4Prop.dll's set of satellites, non-0 if there is an error.
-public func sgp4InitSat(_ satKey: Int64) -> Int { Int(Sgp4InitSat(satKey)) }
+public func sgp4InitSat(_ satKey: SatKey) -> Int { Int(Sgp4InitSat(satKey)) }
 
 /// Removing a satellite from the propagator's set of satellites does not affect the
 /// corresponding TLE data loaded by calls to routines in Tle.dll.
 /// - Parameter satKey: The satellite's unique key.
 /// - Returns: 0 if the satellite is removed successfully, non-0 if there is an error
-public func sgp4RemoveSat(_ satKey: Int64) -> Int { Int(Sgp4RemoveSat(satKey)) }
+public func sgp4RemoveSat(_ satKey: SatKey) -> Int { Int(Sgp4RemoveSat(satKey)) }
 
 /// Removes all currently loaded satellites from memory.
 ///
@@ -1553,7 +1567,7 @@ public func sgp4RemoveAllSats() -> Int { Int(Sgp4RemoveAllSats()) }
 ///   - vel: Resulting ECI velocity vector (km/s) in True Equator and Mean Equinox of Epoch.
 ///   - llh: Resulting geodetic latitude (deg), longitude(deg), and height (km).
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
-public func sgp4PropMse(_ satKey: Int64, _ mse: Double, _ ds50UTC: UnsafeMutablePointer<Double>,
+public func sgp4PropMse(_ satKey: SatKey, _ mse: Double, _ ds50UTC: UnsafeMutablePointer<Double>,
                         _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>,
                         _ llh: UnsafeMutablePointer<Double>) -> Int {
 
@@ -1576,13 +1590,12 @@ public func sgp4PropMse(_ satKey: Int64, _ mse: Double, _ ds50UTC: UnsafeMutable
 /// - Parameters:
 ///   - satkey: The unique key of the satellite to propagate.
 ///   - time: The time to propagate to, expressed in days since 1950, UTC.
-///   - minutesSinceEpoch: Resulting time in minutes since the satellite's
-///   epoch time. (out-Double)
+///   - minutesSinceEpoch: Resulting time in minutes since the satellite's epoch time. (out-Double)
 ///   - pos: Resulting ECI position vector (km) in True Equator and Mean Equinox of Epoch.
 ///   - vel: Resulting ECI velocity vector (km/s) in True Equator and Mean Equinox of Epoch.
 ///   - llh: Resulting geodetic latitude (deg), longitude(deg), and height (km).
 /// - Returns: returns 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
-public func sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: UnsafeMutablePointer<Double>,
+public func sgp4PropDs50UTC(_ satKey: SatKey, _ ds50UTC: Double, _ mse: UnsafeMutablePointer<Double>,
                             _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>,
                             _ llh: UnsafeMutablePointer<Double>) -> Int {
 
@@ -1614,9 +1627,13 @@ public func sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: UnsafeMut
 ///   - ds50UTC: The time to propagate to, expressed in days since 1950, UTC.
 ///   - llh: Resulting geodetic latitude (deg), longitude(deg), and height (km).
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
-public func sgp4PropDs50UtcLLH(_ satKey: Int64,
+public func sgp4PropDs50UtcLLH(_ satKey: SatKey,
                                _ ds50UTC: Double,
-                               _ llh: UnsafeMutablePointer<Double>) -> Int { Int(Sgp4PropDs50UtcLLH(satKey, ds50UTC, llh)) }
+                               _ llh: UnsafeMutablePointer<Double>) -> Int {
+
+    Int(Sgp4PropDs50UtcLLH(satKey, ds50UTC, llh))
+
+}
 
 /// Propagates a satellite, represented by the satKey, to the time expressed in days since 1950, UTC.
 /// Only the ECI position vector is returned by this function. It is the users' responsibility to decide what
@@ -1638,9 +1655,13 @@ public func sgp4PropDs50UtcLLH(_ satKey: Int64,
 ///   - ds50UTC: The time to propagate to, expressed in days since 1950, UTC.
 ///   - pos: Resulting ECI position vector (km) in True Equator and Mean Equinox of Epoch.
 /// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?).
-public func sgp4PropDs50UtcPos(_ satKey: Int64,
+public func sgp4PropDs50UtcPos(_ satKey: SatKey,
                                _ ds50UTC: Double,
-                               _ pos: UnsafeMutablePointer<Double>) -> Int { Int(Sgp4PropDs50UtcPos(satKey, ds50UTC, pos)) }
+                               _ pos: UnsafeMutablePointer<Double>) -> Int {
+
+    Int(Sgp4PropDs50UtcPos(satKey, ds50UTC, pos))
+
+}
 
 /// Retrieves propagator's precomputed results. This function can be used to obtain results from a
 /// propagation which are not made available through calls to the propagation functions themselves.
@@ -1674,7 +1695,7 @@ public func sgp4PropDs50UtcPos(_ satKey: Int64,
 ///   - xf_SgpOut: Specifies which propagator outputs to retrieve.
 ///   - destArr: Array to receive the resulting propagator outputs.
 /// - Returns: 0 if the requested information is retrieved successfully, non-0 if there is an error
-public func sgp4GetPropOut(_ satKey: Int64, _ xf_SgpOut:Int, _ destArr: UnsafeMutablePointer<Double>)  -> Int {
+public func sgp4GetPropOut(_ satKey: SatKey, _ xf_SgpOut: Int, _ destArr: UnsafeMutablePointer<Double>)  -> Int {
 
     Int(Sgp4GetPropOut(satKey, Int32(xf_SgpOut), destArr))
 
@@ -1688,7 +1709,7 @@ public func sgp4GetPropOut(_ satKey: Int64, _ xf_SgpOut:Int, _ destArr: UnsafeMu
 ///   - line1: A string to hold the first line of the reepoched TLE.
 ///   - line2: A string to hold the second line of the reepoched TLE.
 /// - Returns: 0 if the reepoch is successful, non-0 if there is an error.
-public func sgp4ReepochTLE(_ satKey: Int64, _ newEpoch: Double, _ line1: inout String, _ line2: inout String) -> Int {
+public func sgp4ReepochTLE(_ satKey: SatKey, _ newEpoch: Double, _ line1: inout String, _ line2: inout String) -> Int {
 
     var _line1 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
     var _line2 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
@@ -1706,7 +1727,7 @@ public func sgp4ReepochTLE(_ satKey: Int64, _ newEpoch: Double, _ line1: inout S
 ///   - satKey: The unique key of the satellite to reepoch.
 ///   - reepochDs50UTC: A string to hold the reepoched CSV.
 /// - Returns: A string to hold the reepoched CSV.
-public func sgp4ReepochCsv(_ satKey: Int64, _ reepochDs50UTC: Double) -> String? {
+public func sgp4ReepochCsv(_ satKey: SatKey, _ reepochDs50UTC: Double) -> String? {
 
     var _csvLine = nullCharacterArray(size: INPUTCARDLEN)
     guard 0 == Sgp4ReepochCsv(satKey, reepochDs50UTC, &_csvLine) else { return nil }

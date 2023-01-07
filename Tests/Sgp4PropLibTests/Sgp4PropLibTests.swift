@@ -154,12 +154,13 @@ final class Sgp4App2Tests: XCTestCase {
     //
     func testTLE() {
 
-//         load a TLE using strings (see TLE dll document)
+        Sgp4RemoveAllSats()
+        TleRemoveAllSats()
+
         let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
                                       "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
 
-//        let satKey = tleAddSatFrLines("1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999x",
-//                                      "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468x")
+        print(getLastErrMsg())
 
         print("\(satKey)")
 
@@ -197,6 +198,85 @@ final class Sgp4App2Tests: XCTestCase {
                                   &mnMotion,
                                   &revNum)
 
+        XCTAssertEqual(satNum, 90021)
+        XCTAssertEqual(secClass, "U")                //TODO: want ASCII, not Int8
+        XCTAssertEqual(satName, "RELEAS14")
+        XCTAssertEqual(epochYear, 2000)
+        XCTAssertEqual(epochDays, 51.47568104)
+        XCTAssertEqual(bstar, 0.0)
+        XCTAssertEqual(ephType, 0)
+        XCTAssertEqual(elsetNum, 814)
+        XCTAssertEqual(incli, 0.0222)
+        XCTAssertEqual(node, 182.4923)
+        XCTAssertEqual(eccen, 7.2e-05)
+        XCTAssertEqual(omega, 45.6036)
+        XCTAssertEqual(mnAnom, 131.8822)
+        XCTAssertEqual(mnMotion, 1.00271328)
+
+    }
+
+    func testTleParseSP() {
+
+        Sgp4RemoveAllSats()
+        TleRemoveAllSats()
+
+        var satNum: Int32 = 0
+        var secClass: String = ""
+        var satName: String = ""
+        var epochYear: Int32 = 0
+        var epochDays = 0.0
+
+        var nDotO2 = 0.0
+        var n2DotO6 = 0.0
+
+        var bstar = 0.0
+        var ephType: Int32 = 0
+        var elsetNum: Int32 = 0
+        var incli = 0.0
+        var node = 0.0
+        var eccen = 0.0
+        var omega = 0.0
+        var mnAnom = 0.0
+        var mnMotion = 0.0
+        var revNum: Int32 = 0
+
+        tleParseGP("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
+                   "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199",
+                   &satNum,          //TODO: pad with zero ?
+                   &secClass,        //TODO: want ASCII, not Int8
+                   &satName,
+                   &epochYear,
+                   &epochDays,
+                   &bstar,
+                   &nDotO2,
+                   &n2DotO6,
+                   &ephType,
+                   &elsetNum,
+                   &incli,
+                   &node,
+                   &eccen,
+                   &omega,
+                   &mnAnom,
+                   &mnMotion,
+                   &revNum)
+
+        XCTAssertEqual(satNum, 90021)
+        XCTAssertEqual(secClass, "U")                //TODO: want ASCII, not Int8
+        XCTAssertEqual(satName, "RELEAS14")
+        XCTAssertEqual(epochYear, 2000)
+        XCTAssertEqual(epochDays, 51.47568104)
+        XCTAssertEqual(bstar, 1.84e-06)
+        XCTAssertEqual(nDotO2, 0.0)
+        XCTAssertEqual(n2DotO6, 0.0)
+        XCTAssertEqual(ephType, 0)
+        XCTAssertEqual(elsetNum, 814)
+        XCTAssertEqual(incli, 0.0222)
+        XCTAssertEqual(node, 182.4923)
+        XCTAssertEqual(eccen, 7.2e-05)
+        XCTAssertEqual(omega, 45.6036)
+        XCTAssertEqual(mnAnom, 131.8822)
+        XCTAssertEqual(mnMotion, 1.00271328)
+
     }
 
     func testTLEs() {
@@ -205,6 +285,9 @@ final class Sgp4App2Tests: XCTestCase {
         XCTAssertEqual(tleLoadFile(tleFilePath), 0)
 
         print("tleGetCount: \(tleGetCount())")
+
+        print(tleGetLoaded()!)
+
     }
 
     func testDllVersion() {
@@ -214,6 +297,9 @@ final class Sgp4App2Tests: XCTestCase {
     }
 
     func testTleLineToArray() {
+
+        Sgp4RemoveAllSats()
+        TleRemoveAllSats()
 
         var tleArray: [Double] = Array(repeating: Double(0.0), count: Int(XA_TLE_SIZE))
 
@@ -243,6 +329,9 @@ final class Sgp4App2Tests: XCTestCase {
     func test_tleGetField() {
 
         loadAllDlls()
+
+        Sgp4RemoveAllSats()
+        TleRemoveAllSats()
 
         let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
                                       "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
