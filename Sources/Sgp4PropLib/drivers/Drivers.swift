@@ -591,6 +591,39 @@ public struct satElements {
     var mnMotion: Double
 }
 
+//TODO: when there's time .. this pair of functions is NOT rigorous
+/// The following table lists the offsets of the individual strings in the XS_TLE string:
+///
+///  |  name  |  length | index |  index interpretation  |
+///  |  ----  | ---- |  :----: | ---- |
+///  |  XS_TLE_SECCLASS | 1     |  0 | Security classification of line 1 and line 2  |
+///  |  XS_TLE_SATNAME | 12     |  1 | Satellite name  |
+///  |  XS_TLE_SECCLASSL3 | 1   | 13 | Security classification of line 3  |
+///  |  XS_TLE_DISTMARKING | 4  | 14 | Distribution marking  |
+///  |  XS_TLE_OBJSTAT | 1      | 18 | Object status: 'A'=Active, 'D'=Dead, 'U'=Unknown  |
+///  |  XS_TLE_MSSNCODE | 2     | 19 | Primary payload mission code  |
+///  |  XS_TLE_MSSNSTAT | 1     | 21 | Primary mission status (table lookup)  |
+///  |  XS_TLE_MANEUV | 1       | 22 | Maneuverability 'Y'=Yes, 'N'=No, 'U'=Unknown  |
+///  |  XS_TLE_OOCNTRY | 4      | 23 | Payload Owner/Operator  |
+///  |  XS_TLE_FREQBAND | 1     | 27 | Frequency Band of the RCS: U=UHF, C=C-Band, L=L-Band, S=S-Band, X=X-Band  |
+///  |  XS_TLE_TBLERATE | 1     | 28 | Tumble rate  |
+///  |  XS_TLE_SIZE          | 512 |  | |
+public func xsTleDecode(_ text: String) -> [String:String] {
+    precondition(!text.isEmpty)
+
+    var result: [String:String] = [:]
+    result["XS_TLE_SECCLASS"] = String(text.prefix(1))
+    result["XS_TLE_SATNAME"] = String(text.dropFirst())
+
+    return result
+}
+
+public func xsTleEncode(_ dict: [String:String]) -> String {
+    precondition(!dict.isEmpty)
+
+    return "\(dict["XS_TLE_SECCLASS"]!)\(dict["XS_TLE_SATNAME"]!)"
+}
+
 /// Initializes Tle DLL for use in the program. If this function returns an error,
 /// it is recommended that you stop the program immediately.
 ///
@@ -642,7 +675,6 @@ public func tleLinesToArray(_ line1: String, _ line2: String, _ xa_tle: UnsafeMu
     guard 0 == Int(TleLinesToArray(makeCString(from: line1), makeCString(from: line2),
                                    xa_tle, &infoString)) else { return nil }
     return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
-
 
 }
 

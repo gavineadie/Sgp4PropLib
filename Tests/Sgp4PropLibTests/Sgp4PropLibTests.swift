@@ -154,8 +154,8 @@ final class Sgp4App2Tests: XCTestCase {
     //
     func testTLE() {
 
-        Sgp4RemoveAllSats()
-        TleRemoveAllSats()
+        _ = Sgp4RemoveAllSats()
+        _ = TleRemoveAllSats()
 
         let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
                                       "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
@@ -217,8 +217,8 @@ final class Sgp4App2Tests: XCTestCase {
 
     func testTleParseSP() {
 
-        Sgp4RemoveAllSats()
-        TleRemoveAllSats()
+        _ = Sgp4RemoveAllSats()
+        _ = TleRemoveAllSats()
 
         var satNum: Int32 = 0
         var secClass: String = ""
@@ -240,28 +240,28 @@ final class Sgp4App2Tests: XCTestCase {
         var mnMotion = 0.0
         var revNum: Int32 = 0
 
-        tleParseGP("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-                   "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199",
-                   &satNum,          //TODO: pad with zero ?
-                   &secClass,        //TODO: want ASCII, not Int8
-                   &satName,
-                   &epochYear,
-                   &epochDays,
-                   &bstar,
-                   &nDotO2,
-                   &n2DotO6,
-                   &ephType,
-                   &elsetNum,
-                   &incli,
-                   &node,
-                   &eccen,
-                   &omega,
-                   &mnAnom,
-                   &mnMotion,
-                   &revNum)
+        XCTAssert(0 == tleParseGP("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
+                                  "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199",
+                                  &satNum,          //TODO: pad with zero ?
+                                  &secClass,
+                                  &satName,
+                                  &epochYear,
+                                  &epochDays,
+                                  &bstar,
+                                  &nDotO2,
+                                  &n2DotO6,
+                                  &ephType,
+                                  &elsetNum,
+                                  &incli,
+                                  &node,
+                                  &eccen,
+                                  &omega,
+                                  &mnAnom,
+                                  &mnMotion,
+                                  &revNum))
 
         XCTAssertEqual(satNum, 90021)
-        XCTAssertEqual(secClass, "U")                //TODO: want ASCII, not Int8
+        XCTAssertEqual(secClass, "U")
         XCTAssertEqual(satName, "RELEAS14")
         XCTAssertEqual(epochYear, 2000)
         XCTAssertEqual(epochDays, 51.47568104)
@@ -290,24 +290,28 @@ final class Sgp4App2Tests: XCTestCase {
 
     }
 
-    func testDllVersion() {
-
-        XCTAssert(dllVersion() == 9.0, "dllVersion failure")
-
-    }
-
     func testTleLineToArray() {
 
-        Sgp4RemoveAllSats()
-        TleRemoveAllSats()
+        _ = Sgp4RemoveAllSats()
+        _ = TleRemoveAllSats()
 
         var tleArray: [Double] = Array(repeating: Double(0.0), count: Int(XA_TLE_SIZE))
 
-        print(tleLinesToArray("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-                              "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199",
-                              &tleArray) as Any)
+        let txtArray = tleLinesToArray(
+            "1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
+            "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199", &tleArray)
 
+        print(txtArray!)
         print(tleArray)
+
+    }
+
+    func testXS() {
+
+        let text = "URELEAS14"
+        let dict = xsTleDecode(text)
+        XCTAssert(dict.count == 2)
+        XCTAssertEqual(text, xsTleEncode(dict))
 
     }
 
@@ -330,15 +334,14 @@ final class Sgp4App2Tests: XCTestCase {
 
         loadAllDlls()
 
-        Sgp4RemoveAllSats()
-        TleRemoveAllSats()
+        _ = Sgp4RemoveAllSats()
+        _ = TleRemoveAllSats()
 
         let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
                                       "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
 
-        XCTAssert(tleGetField(satKey, XF_TLE_SATNUM)! == "90021")
+        XCTAssert(tleGetField(satKey, XF_TLE_SATNUM)! == "90021")   // "as Any" shows quoted ("4321")
 
-        // "as Any" shows the string with quote marks ("4321")
         print(tleGetField(satKey, XF_TLE_SATNUM) as Any)    // SATELLITE NUMBER
         print(tleGetField(satKey, XF_TLE_CLASS) as Any)     // SECURITY CLASSIFICATION
         print(tleGetField(satKey, XF_TLE_SATNAME) as Any)   // SATELLITE NAME A8
@@ -355,7 +358,7 @@ final class Sgp4App2Tests: XCTestCase {
         print(tleGetField(satKey, XF_TLE_MNMOTN) as Any)    // MEAN MOTION (REV/DAY)
         print(tleGetField(satKey, XF_TLE_REVNUM) as Any)    // REVOLUTION NUMBER AT EPOCH
 
-        XCTAssertEqual(sgp4InitSat(satKey), 0)
+        XCTAssert(0 == sgp4InitSat(satKey))
 
         let epoch = dtgToUTC("22346.21636301")
         var line1 = ""
@@ -407,14 +410,12 @@ final class Sgp4App2Tests: XCTestCase {
         let satKey = tleAddSatFrLines(line1import, line2import)
 
         let csvString = tleGetCsv(satKey)!
-        print(csvString)
+        XCTAssertEqual(csvString, "U,694,1963-047A,2022,346.21636301000001,1.226E-5,0,1.4598000000000001E-4,,999,30.356300000000001,289.07420000000002,5.7961199999999997E-2,154.20310000000001,208.86959999999999,14.041288290000001,96468,,0,0,0,0,0,0,0,UNKNOWN")
 
         var line1export = ""
         var line2export = ""
 
-        guard 0 == tleCsvToLines(csvString, 0, &line1export, &line2export) else {
-            fatalError("tleCsvToLines failure")
-        }
+        XCTAssert(0 == tleCsvToLines(csvString, 0, &line1export, &line2export))
 
         XCTAssert(line1import == line1export)
         XCTAssert(line2import == line2export)
@@ -424,17 +425,15 @@ final class Sgp4App2Tests: XCTestCase {
     //
     //MARK: Other Tests
     //
-    func testWarning() {
+    func testDllVersion() { XCTAssert(dllVersion() == 9.0, "dllVersion failure") }
 
-        printWarning("\"Swift Port of Sgp4Prop\"")
-
-    }
+    func testWarning() { printWarning("\"Swift Port of Sgp4Prop\"") }
 
     func testStringArrayConversion() {
 
-        let array = nullCharacterArray(size: 24)                // make an empty array
-
-        _ = stringFromCharacterArray(array, size: 24)             // make a String from array
+        let arrayCount = Int32(24)
+        XCTAssert(0 == stringFromCharacterArray(nullCharacterArray(size: arrayCount),
+                                                size: arrayCount).count)
 
     }
 
