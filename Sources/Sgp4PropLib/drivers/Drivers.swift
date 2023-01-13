@@ -1766,3 +1766,123 @@ public func sgp4ReepochCsv(_ satKey: SatKey, _ reepochDs50UTC: Double) -> String
     return stringFromCharacterArray(_csvLine, size: INPUTCARDLEN)
 
 }
+
+//MARK: TESTS
+
+/// Tests different input/output data types that are supported by the Astrodynamic Standards library.
+/// - Parameters:
+///   - cIn:       an input character (in-Character)
+///   - cOut:      an output character - should return the same value as the input cIn (out-Character)
+///   - intIn:     an input 32-bit integer (in-Integer)
+///   - intOut:    an output 32-bit integer - should return the same value as the input intIn (out-Integer)
+///   - longIn:    an input 64-bit integer (in-Long)
+///   - longOut:   an output 64-bit integer - should return the same value as the input longIn (out-Long)
+///   - realIn:    an input 64-bit real (in-Double)
+///   - realOut:   an output 64-bit real - should return the same value as the input realIn (out-Double)
+///   - strIn:     input string (in-Character[512])
+///   - strOut:    output string - should return the same value as the input strIn (out-Character[512])
+///   - int1DIn:   an input array of 32-bit integers (in-Integer[3])
+///   - int1DOut:  an output array of 32-bit integers - should return the same values as the input int1DIn (out-Integer[3])
+///   - long1DIn:  an input array of 64-bit integers (in-Long[3])
+///   - long1DOut: an output array of 64-bit integers - should return the same values as the input long1DIn (out-Long[3])
+///   - real1DIn:  an input array of 64-bit reals (in-Double[3])
+///   - real1DOut: an output array of 64-bit reals - should return the same values as the input real1DIn (out-Double[3])
+///   - int2DIn:   an input 2D-array of 32-bit integers (2 rows, 3 columns) - for column-major order language, reverse the order (in-Integer[2, 3])
+///   - int2DOut:  an output 2D-array of 32-bit integers - should return the same values as the input int2DIn (out-Integer[2, 3])
+///   - long2DIn:  an input 2D-array of 64-bit integers (2 rows, 3 columns) - for column-major order language, reverse the order (in-Long[2, 3])
+///   - long2DOut: an output 2D-array of 64-bit integers - should return the same values as the input long2DIn (out-Long[2, 3])
+///   - real2DIn:  an input 2D-array of 64-bit reals (2 rows, 3 columns) - for column-major order language, reverse the order (in-Double[2, 3])
+///   - real2DOut: an output 2D-array of 64-bit reals - should return the same values as the input real2DIn (out-Double[2, 3])
+public func testInterface1(_ cIn: String, _ cOut: inout String,
+                           _ intIn: Int32, _ intOut: UnsafeMutablePointer<Int32>,
+                           _ longIn: Int64, _ longOut: UnsafeMutablePointer<Int64>,
+                           _ realIn: Double, _ realOut: UnsafeMutablePointer<Double>,
+                           _ strIn: String, _ strOut: inout String,
+                           _ int1DIn: UnsafeMutablePointer<Int32>, _ int1DOut: UnsafeMutablePointer<Int32>,
+                           _ long1DIn: UnsafeMutablePointer<Int64>, _ long1DOut: UnsafeMutablePointer<Int64>,
+                           _ real1DIn: UnsafeMutablePointer<Double>, _ real1DOut: UnsafeMutablePointer<Double>,
+                           _ int2DIn: UnsafeMutablePointer<(Int32, Int32, Int32)>, _ int2DOut: UnsafeMutablePointer<(Int32, Int32, Int32)>,
+                           _ long2DIn: UnsafeMutablePointer<(Int64, Int64, Int64)>, _ long2DOut: UnsafeMutablePointer<(Int64, Int64, Int64)>,
+                           _ real2DIn: UnsafeMutablePointer<(Double, Double, Double)>, _ real2DOut: UnsafeMutablePointer<(Double, Double, Double)>) {
+
+    let _cIn = cIn.utf8CString[0]
+    var _cOut = CChar(0)
+    let _strIn = makeCString(from: strIn)
+    var _strOut = nullCharacterArray(size: INPUTCARDLEN)            //[INPUTCARDLEN = 512]
+
+    TestInterface(_cIn, &_cOut,
+                  intIn, intOut,
+                  longIn, longOut,
+                  realIn, realOut,
+                  _strIn, &_strOut,
+                  int1DIn, int1DOut,
+                  long1DIn, long1DOut,
+                  real1DIn, real1DOut,
+                  int2DIn, int2DOut,
+                  long2DIn, long2DOut,
+                  real2DIn, real2DOut)
+
+    cOut = String(UnicodeScalar(UInt8(bitPattern: _cOut)))
+    strOut = stringFromCharacterArray(_strOut, size: INPUTCARDLEN)
+
+}
+
+/// Tests different input/output data types that are supported by the Astrodynamic Standards library.
+/// - Parameters:
+///   - char_InOut:   Output should return 'Z' (inout-Character)
+///   - int_InOut:    Output should return Input + 1 (inout-Integer)
+///   - long_InOut:   Output should return Input + 2 (inout-Long)
+///   - real_InOut:   Output should return Input + 42.123456 (inout-Double)
+///   - str_InOut:    Output should return "It doesn't matter what your string was." (inout-Character[512])
+///   - int1D_InOut:  Output should return Input + 1 (inout-Integer[3])
+///   - long1D_InOut: Output should return Input + 1234567890123456789 (inout-Long[3])
+///   - real1D_InOut: Output should return Input + 42.0 (inout-Double[3])
+///   - int2D_InOut:  Output should return Input + 1 (inout-Integer[2, 3])
+///   - long2D_InOut: Output should return Input + 6 (inout-Long[2, 3])
+///   - real2D_InOut: Output should return Input + 7.6 (inout-Double[2, 3])
+public func testInterface2(_ char_InOut: inout String,
+                           _ int_InOut: UnsafeMutablePointer<Int32>,
+                           _ long_InOut: UnsafeMutablePointer<Int64>,
+                           _ real_InOut: UnsafeMutablePointer<Double>,
+                           _ str_InOut: inout String,
+                           _ int1D_InOut: UnsafeMutablePointer<Int32>,
+                           _ long1D_InOut: UnsafeMutablePointer<Int64>,
+                           _ real1D_InOut: UnsafeMutablePointer<Double>,
+                           _ int2D_InOut: UnsafeMutablePointer<(Int32, Int32, Int32)>,
+                           _ long2D_InOut: UnsafeMutablePointer<(Int64, Int64, Int64)>,
+                           _ real2D_InOut: UnsafeMutablePointer<(Double, Double, Double)>) {
+
+    var _char_inOut = char_InOut.utf8CString[0]
+//    var _str_InOut = nullCharacterArray(size: INPUTCARDLEN)            //[INPUTCARDLEN = 512]
+    var _str_InOut = stringToLongArray(str_InOut)
+//    var _str_InOut = makeCString(from: str_InOut)
+
+    TestInterface2(&_char_inOut, int_InOut, long_InOut, real_InOut, &_str_InOut,
+                   int1D_InOut, long1D_InOut, real1D_InOut,
+                   int2D_InOut, long2D_InOut, real2D_InOut)
+
+    char_InOut = String(UnicodeScalar(UInt8(bitPattern: _char_inOut)))
+    str_InOut = stringFromCharacterArray(_str_InOut, size: INPUTCARDLEN)
+
+}
+
+// Tests input and output arrays with unknown length that are supported by the Astrodynamic Standards library.
+// Unk1DIn            Unknown dimension should be length (3) (in-Integer[*])
+// Unk1DOut           Unknown dimension should be length (3), Unk1DOut should return same as Unk1DIn * 4 (out-Integer[*])
+// Unk2DIn            Unknown dimension should be length (2) (in-Integer[*, 3])
+// Unk2DOut           Unknown dimension should be length (2), Unk2DOut should return same as Unk2DIn * 5 (out-Integer[*, 3])
+
+/// Tests input and output arrays with unknown length that are supported by the Astrodynamic Standards library.
+/// - Parameters:
+///   - int1DIn: Unknown dimension should be length (3) (in-Integer[*])
+///   - int1DOut: Unknown dimension should be length (3), Unk1DOut should return same as Unk1DIn * 4 (out-Integer[*])
+///   - int2DIn: Unknown dimension should be length (2) (in-Integer[*, 3])
+///   - int2DOut: Unknown dimension should be length (2), Unk2DOut should return same as Unk2DIn * 5 (out-Integer[*, 3])
+public func testInterface3(_ int1DIn: UnsafeMutablePointer<Int32>,
+                           _ int1DOut: UnsafeMutablePointer<Int32>,
+                           _ int2DIn: UnsafeMutablePointer<(Int32, Int32, Int32)>,
+                           _ int2DOut: UnsafeMutablePointer<(Int32, Int32, Int32)>) {
+
+    TestInterface3(int1DIn, int1DOut, int2DIn, int2DOut)
+
+}

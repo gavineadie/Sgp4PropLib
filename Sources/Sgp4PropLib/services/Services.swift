@@ -36,6 +36,7 @@ public func loadDll(_ dllName: String) -> UnsafeMutableRawPointer {
 //
 //TODO: I'm not too proud of this .. I need a better way
 //
+
 func getDylibPath() -> String {
     if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
         return dylibDirectory + "/"
@@ -83,6 +84,7 @@ public func verifyDLLs() {
 //
 //MARK: String Extension
 //
+
 extension String {
 
     public func trimRight() -> String {
@@ -103,13 +105,13 @@ extension String {
 
 }
 
-// -----
+// ----------------
 
 // There is a UInt8(ascii:) initialiser but not one for CChar.
 // If you need to do this a lot, add one yourself:
 // Then you can do CChar(ascii: "A").
 
-extension CChar {
+extension CChar {                       // Extend CChar's functionality for shortcut ..
     public init(ascii v: Unicode.Scalar) {
         self = CChar(bitPattern: UInt8(ascii: v))
     }
@@ -122,19 +124,6 @@ extension RangeReplaceableCollection {
     public mutating func pad(toLength count: Int, with element: Element) {
         append(contentsOf: repeatElement(element, count: Swift.max(0, count - self.count)))
     }
-}
-
-// ----------------
-
-// https://developer.apple.com/documentation/swift/string/init(cstring:)-2p84k
-
-public func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
-    let count = str.utf8.count + 1
-    let result = UnsafeMutablePointer<Int8>.allocate(capacity: count)
-    str.withCString { (baseAddress) in
-        result.initialize(from: baseAddress, count: count)
-    }
-    return result
 }
 
 //
@@ -264,6 +253,25 @@ public func stringFromCharacterArray(_ array: [Int8], size: Int32) -> String {
     _array[Int(size)] = 0
     return String(cString: _array).trimRight()
 
+}
+
+func stringToLongArray(_ string: String) -> [Int8] {
+    let arrayBase = Array(repeating: CChar(0), count: 513 - string.count)
+    let arrayChar = string.utf8.map { Int8(bitPattern: $0) }
+    return arrayChar + arrayBase
+}
+
+// ----------------
+
+// https://developer.apple.com/documentation/swift/string/init(cstring:)-2p84k
+
+public func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
+    let count = str.utf8.count + 1
+    let result = UnsafeMutablePointer<Int8>.allocate(capacity: count)
+    str.withCString { (baseAddress) in
+        result.initialize(from: baseAddress, count: count)
+    }
+    return result
 }
 
 public func dllVersion() -> Double {

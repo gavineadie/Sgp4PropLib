@@ -1,3 +1,9 @@
+### Change Notes
+
+Change notes are accumulated in the CHANGES.md file.
+
+* Lastest change: 2023 Jan 07 : v0.1.11
+___
 # The Sgp4Prop Package
 
 The best way to incorporate the Swift interface to the SGP4 libraries in your Swift program is by using a Package.  The [Swift Package Manager](https://www.swift.org/package-manager/) (SPM) is designed to ease the distribution and use of a collection of files like that contained here.
@@ -54,7 +60,7 @@ Once the Swift directory is downloaded and unzip'd, change directory to that of 
 
     cd   .. /Swift/DriverExamples/Sgp4Prop_Simple
 
-If the Swift development environment is available on your computer (on Macs, it is a part of Xcode, on Linux see [scroll down to "Linux"](https://www.swift.org/download/#using-downloads)], on Windows (not tested by this author) [scroll further down to "Windows"](https://www.swift.org/download/#using-downloads)]) the command line invocation `swift build` will read, compile and interpret the `Package.swift` file, contained in the current directory, to gather any dependencies, then the Swift compiler will compile everything and link it into a runnable application.
+If the Swift development environment is available on your computer (on Macs, it is a part of Xcode, on Linux see [scroll down to "Linux"](https://www.swift.org/download/#using-downloads), on Windows (not tested by this author) [scroll further down to "Windows"](https://www.swift.org/download/#using-downloads)) the command line invocation `swift build` will read, compile and interpret the `Package.swift` file, contained in the current directory, to gather any dependencies, then the Swift compiler will compile everything and link it into a runnable application.
 
 Since some of the sample applications require parameters and/or input/output files, each application can be built and run with in a prepared environment by executing a script (examining the script will reveal more detail):
 
