@@ -592,22 +592,10 @@ public struct satElements {
 }
 
 //TODO: when there's time .. this pair of functions is NOT rigorous
-/// The following table lists the offsets of the individual strings in the XS_TLE string:
-///
-///  |  name  |  length | index |  index interpretation  |
-///  |  ----  | ---- |  :----: | ---- |
-///  |  XS_TLE_SECCLASS | 1     |  0 | Security classification of line 1 and line 2  |
-///  |  XS_TLE_SATNAME | 12     |  1 | Satellite name  |
-///  |  XS_TLE_SECCLASSL3 | 1   | 13 | Security classification of line 3  |
-///  |  XS_TLE_DISTMARKING | 4  | 14 | Distribution marking  |
-///  |  XS_TLE_OBJSTAT | 1      | 18 | Object status: 'A'=Active, 'D'=Dead, 'U'=Unknown  |
-///  |  XS_TLE_MSSNCODE | 2     | 19 | Primary payload mission code  |
-///  |  XS_TLE_MSSNSTAT | 1     | 21 | Primary mission status (table lookup)  |
-///  |  XS_TLE_MANEUV | 1       | 22 | Maneuverability 'Y'=Yes, 'N'=No, 'U'=Unknown  |
-///  |  XS_TLE_OOCNTRY | 4      | 23 | Payload Owner/Operator  |
-///  |  XS_TLE_FREQBAND | 1     | 27 | Frequency Band of the RCS: U=UHF, C=C-Band, L=L-Band, S=S-Band, X=X-Band  |
-///  |  XS_TLE_TBLERATE | 1     | 28 | Tumble rate  |
-///  |  XS_TLE_SIZE          | 512 |  | |
+
+/// Splits the output from `tleLinesToArray`
+/// - Parameter text: a string of output from `tleLinesToArray`
+/// - Returns: a dictionary with the keys `XS_TLE_SECCLASS` and `XS_TLE_SATNAME` and values from thr input string
 public func xsTleDecode(_ text: String) -> [String:String] {
     precondition(!text.isEmpty)
 
@@ -726,13 +714,12 @@ public func tleGPFieldsToCsv(_ satNum: SatNum, _ secClass: String, _ satName: St
 
 }
 
-// Constructs a TLE from GP data stored in the input parameters.
-// This function only parses data from the input data but DOES NOT load/add the TLE to memory.
-// Returned line1 and line2 will be empty if the function fails to construct the lines as requested.
-// xa_tle             Array containing TLE's numerical fields, see XA_TLE_? for array arrangement (in-Double[64])
-// xs_tle             Input string that contains all TLE's text fields, see XS_TLE_? for column arrangement (in-Character[512])
-// line1              Returned first line of a TLE (out-Character[512])
-// line2              Returned second line of a TLE (out-Character[512])
+/// Constructs a TLE from GP data stored in the input parameters.
+/// - Parameters:
+///   - xa_tle: Inout array containing TLE's numerical fields, see XA_TLE_? for array arrangement
+///   - xs_tle: Input string that contains all TLE's text fields, see XS_TLE_? for column arrangement
+///   - line1: Returned first line of a TLE
+///   - line2: Returned second line of a TLE
 public func tleGPArrayToLines(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String,
                               _ line1: inout String, _ line2: inout String) {
 
@@ -849,7 +836,7 @@ public func tleUpdateSatFrArray(_ satKey: SatKey, _ xa_tle: UnsafeMutablePointer
 /// | XS_TLE_TBLERATE_1    | 28 | Tumble rate  |
 /// | XS_TLE_SIZE          | 512 |  |
 ///
-///
+
 ///
 /// The following table lists the values for the XA_TLE array:
 ///
@@ -882,10 +869,40 @@ public func tleUpdateSatFrArray(_ satKey: SatKey, _ xa_tle: UnsafeMutablePointer
 /// | XA_TLE_SP_OGPARM |     3 | SP outgassing parameter (km/s2)  |
 /// | XA_TLE_SP_AGOM   |     4 | SP Radiation Pressure Coefficient  |
 /// | XA_TLE_SIZE      |     64 |  |
+public enum XA_KEYS: Int {
+    case xa_TLE_SATNUM = 0
+    case xa_TLE_EPOCH
+    case xa_TLE_NDOT
+    case xa_TLE_NDOTDOT
+    case xa_TLE_BSTAR
+    case xa_TLE_EPHTYPE
+    case xa_TLE_OBJTYPE
+    case xa_TLE_EXTRPLTNTYPE
+    case xa_TLE_RCSBIN
+    case xa_TLE_INCLI = 20
+    case xa_TLE_NODE
+    case xa_TLE_ECCEN
+    case xa_TLE_OMEGA
+    case xa_TLE_MNANOM
+    case xa_TLE_MNMOTN
+    case xa_TLE_REVNUM
+    case xa_TLE_ELSETNUM = 30
+    case xa_TLE_ERRGRWRATE
+    case xa_TLE_LSTOBSTIME
+    case xa_TLE_RADARXSECT
+    case xa_TLE_VISMAG
+    case xa_TLE_DRAGCOEFF
+    case xa_TLE_AGOMGP
+    case xa_TLE_SP_BTERM
+    case xa_TLE_SP_OGPARM
+    case xa_TLE_SP_AGOM
+    case xa_TLE_SIZE
+}
+
 ///
 /// - Parameters:
 ///   - satKey: The satellite's unique key
-///   - xa_tle: Array containing TLE's numerical fields, see XA_TLE_? for array arrangement
+///   - xa_tle: Input array containing TLE's numerical fields, see XA_TLE_? for array arrangement
 /// - Returns: Output string that contains all TLE's text fields, see XS_TLE_? for column arrangement
 public func tleDataToArray(_ satKey: SatKey, _ xa_tle: inout Double) -> String? {
 

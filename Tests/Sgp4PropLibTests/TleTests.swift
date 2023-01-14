@@ -1,8 +1,7 @@
 //
-//  Tests.swift
-//  Sgp4Swift
+//  TleTests.swift
 //
-//  Created by Gavin Eadie on 10/17/22.
+//  Created by Gavin Eadie on 14 Jan 23.
 //
 
 import XCTest
@@ -10,166 +9,26 @@ import XCTest
 @testable import Sgp4PropLib
 @testable import Sgp4Prop_c
 
-final class Sgp4App2Tests: XCTestCase {
-
-    //
-    //MARK: Time Tests
-    //
-    func testUTCtoDTGxx() throws {
-
-        XCTAssertEqual(utcToDTG20(0.0), "1956/001 0000 00.000")         // (below limit)
-        XCTAssertEqual(utcToDTG20(2000.0), "1956/001 0000 00.000")      // (below limit)
-        XCTAssertEqual(utcToDTG20(2192.0), "1956/001 0000 00.000")      // (equals limit)
-        XCTAssertEqual(utcToDTG20(2192.0), "1956/001 0000 00.000")      // (equals limit)
-        XCTAssertEqual(utcToDTG20(10000.0), "1977/138 0000 00.000")     //
-        XCTAssertEqual(utcToDTG20(30000.0), "2032/050 0000 00.000")     //
-        XCTAssertEqual(utcToDTG20(50000.0), "2086/326 0000 00.000")     // (above limit?)
-        XCTAssertEqual(utcToDTG20(90000.0), "2196/149 0000 00.000")     // (above limit?)
-
-        XCTAssertEqual(utcToDTG19(0.0), "1956Jan01000000.000")
-        XCTAssertEqual(utcToDTG19(2000.0), "1956Jan01000000.000")
-        XCTAssertEqual(utcToDTG19(2192.0), "1956Jan01000000.000")
-        XCTAssertEqual(utcToDTG19(10000.0), "1977May18000000.000")      //
-        XCTAssertEqual(utcToDTG19(30000.0), "2032Feb19000000.000")      //
-
-        XCTAssertEqual(utcToDTG17(0.0), "1956/001.00000000")
-        XCTAssertEqual(utcToDTG17(2000.0), "1956/001.00000000")
-        XCTAssertEqual(utcToDTG17(2192.0), "1956/001.00000000")
-        XCTAssertEqual(utcToDTG17(10000.0), "1977/138.00000000")        // 1977/138.00000000
-        XCTAssertEqual(utcToDTG17(30000.0), "2032/050.00000000")        //
-
-        XCTAssertEqual(utcToDTG15(0.0), "56001000000.000")
-        XCTAssertEqual(utcToDTG15(2000.0), "56001000000.000")
-        XCTAssertEqual(utcToDTG15(2192.0), "56001000000.000")
-        XCTAssertEqual(utcToDTG15(10000.0), "77138000000.000")          // 77138000000.000
-        XCTAssertEqual(utcToDTG15(30000.0), "32050000000.000")          // 32050000000.000
-
-        XCTAssertEqual(dtgToUTC("1977May18000000.000"), 10000.0)        // "YYYYMonDDHHMMSS.SSS" (20)
-        XCTAssertEqual(dtgToUTC("77 138 00 00 00.000"), 10000.0)        // "YY DDD HH MM SS.SSS" (20)
-        XCTAssertEqual(dtgToUTC("77 138 0000 00.000"), 10000.0)         // "YY DDD HHMM SS.SSS"  (19)
-        XCTAssertEqual(dtgToUTC("1977/138.00000000"), 10000.0)          // "YYYY/DDD.DDDDDDD"    (17)
-        XCTAssertEqual(dtgToUTC("77138000000.000"), 10000.0)            // "YYDDDHHMMSS.SSS"     (15)
-
-        XCTAssertEqual(dtgToUTC("77138"), 10000.0)                      // Just wrong! (5)
-
-        XCTAssertEqual(dtgToUTC(utcToDTG19(0.0)), 2192.0, accuracy: 0.0000001)
-
-    }
-
-    func testUTCToTimeComps() {
-
-        let ds50 = TimeComps1ToUTC(1956, 1, 0, 0, 0.0)
-        print("  TimeComps1ToUTC(1956) = \(ds50)")
-
-        var year = Int32(0)
-        var dayOfYear = Int32(0)
-        var hh = Int32(0)
-        var mm = Int32(0)
-        var sss = Double(0.0)
-
-        //TODO: Some rounding of seconds
-        UTCToTimeComps1(10000.2, &year, &dayOfYear, &hh, &mm, &sss)
-        XCTAssertEqual("\(year) \(dayOfYear) \(hh) \(mm)", "1977 138 4 48")
-
-        var month = Int32(0)
-        var dayOfMonth = Int32(0)
-
-        //TODO: Some rounding of seconds
-        UTCToTimeComps2(10000.2, &year, &month, &dayOfMonth, &hh, &mm, &sss)
-        XCTAssertEqual("\(year) \(month) \(dayOfMonth) \(hh) \(mm)", "1977 5 18 4 48")
-
-    }
-
-    /// Note that `utcToTimeComps1` conversion, and `timeComps1ToUTC` back may
-    /// have about a 10 mSec difference
-    func testTimeConversions() {
-
-        let dateTimeGroupUTC = dateToUTC(Date())
-        var year: Int32 = 0
-        var dayOfYear: Int32 = 0
-        var month: Int32 = 0
-        var dayOfMonth: Int32 = 0
-        var hh: Int32 = 0
-        var mm: Int32 = 0
-        var sss = 0.1
-        utcToTimeComps1(dateTimeGroupUTC, &year, &dayOfYear, &hh, &mm, &sss)
-        print("Now: \(year) \(dayOfYear) \(hh) \(mm) \(sss)")
-
-        print(timeComps1ToUTC(Int(year), Int(dayOfYear), Int(hh), Int(mm), sss))
-
-        utcToTimeComps2(dateTimeGroupUTC, &year, &month, &dayOfMonth, &hh, &mm, &sss)
-        print("Now: \(year) \(month) \(dayOfMonth) \(hh) \(mm) \(sss)")
-
-        print(timeComps2ToUTC(Int(year), Int(month), Int(dayOfMonth), Int(hh), Int(mm), sss))
-
-        var dayOfYearDouble: Double = 0
-        utcToYrDays(dateTimeGroupUTC, &year, &dayOfYearDouble)
-        print("Now: \(year) \(dayOfYearDouble)")
-
-    }
-
-    func testTime() {
-
-        let dateTimeGroupUTC = dateToUTC(Date())
-        print("time now: \(dateTimeGroupUTC)")
-        print("reversed: \(utcToDTG20(dateTimeGroupUTC))")
-
-    }
-
-    func testDates() {
-
-        let now = Date()
-        print("                  (now) = \(now)")
-
-        let nowFrom1950 = dateToUTC(now)
-        print("      daysFrom1950(now) = \(nowFrom1950)")
-
-        print("        utcToDTG17(now) = \(utcToDTG17(nowFrom1950))")
-
-        var year = Int32(0)
-        var dayOfYear = Int32(0)
-        var hh = Int32(0)
-        var mm = Int32(0)
-        var sss = Double(0.0)
-
-        UTCToTimeComps1(nowFrom1950, &year, &dayOfYear, &hh, &mm, &sss)
-        print("   TimeComps1ToUTC(now) = \(year) \(dayOfYear) \(hh) \(mm) \(sss)")
-
-        var month = Int32(0)
-        var dayOfMonth = Int32(0)
-
-        UTCToTimeComps2(nowFrom1950, &year, &month, &dayOfMonth, &hh, &mm, &sss)
-        print("   TimeComps2ToUTC(now) = \(year) \(month) \(dayOfMonth) \(hh) \(mm) \(sss)")
-
-        let tleDate = YrDaysToUTC(2022, 323.89725341)                 // "22323.89725341
-        UTCToTimeComps1(tleDate, &year, &dayOfYear, &hh, &mm, &sss)
-        print("   TimeComps1ToUTC(tle) = \(year) \(dayOfYear) \(hh) \(mm) \(sss)")
-        UTCToTimeComps2(tleDate, &year, &month, &dayOfMonth, &hh, &mm, &sss)
-        print("   TimeComps2ToUTC(tle) = \(year) \(month) \(dayOfMonth) \(hh) \(mm) \(sss)")
-
-    }
-
-    //
-    //MARK: TLE Tests
-    //
+final class TleTests: XCTestCase {
+    
     func testTLE() {
-
+        
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
-
+        
         let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
                                       "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
-
+        
         print(getLastErrMsg())
-
+        
         print("\(satKey)")
-
+        
         var satNum: Int32 = 0
         var secClass: String = ""
         var satName: String = ""
         var epochYear: Int32 = 0
         var epochDays = 0.0
-
+        
         var bstar = 0.0
         var ephType: Int32 = 0
         var elsetNum: Int32 = 0
@@ -180,7 +39,7 @@ final class Sgp4App2Tests: XCTestCase {
         var mnAnom = 0.0
         var mnMotion = 0.0
         var revNum: Int32 = 0
-
+        
         let _ = tleGetAllFieldsGP(satKey,
                                   &satNum,          //TODO: pad with zero ?
                                   &secClass,        //TODO: want ASCII, not Int8
@@ -197,7 +56,7 @@ final class Sgp4App2Tests: XCTestCase {
                                   &mnAnom,
                                   &mnMotion,
                                   &revNum)
-
+        
         XCTAssertEqual(satNum, 90021)
         XCTAssertEqual(secClass, "U")                //TODO: want ASCII, not Int8
         XCTAssertEqual(satName, "RELEAS14")
@@ -212,23 +71,23 @@ final class Sgp4App2Tests: XCTestCase {
         XCTAssertEqual(omega, 45.6036)
         XCTAssertEqual(mnAnom, 131.8822)
         XCTAssertEqual(mnMotion, 1.00271328)
-
+        
     }
-
+    
     func testTleParseSP() {
-
+        
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
-
+        
         var satNum: Int32 = 0
         var secClass: String = ""
         var satName: String = ""
         var epochYear: Int32 = 0
         var epochDays = 0.0
-
+        
         var nDotO2 = 0.0
         var n2DotO6 = 0.0
-
+        
         var bstar = 0.0
         var ephType: Int32 = 0
         var elsetNum: Int32 = 0
@@ -239,7 +98,7 @@ final class Sgp4App2Tests: XCTestCase {
         var mnAnom = 0.0
         var mnMotion = 0.0
         var revNum: Int32 = 0
-
+        
         XCTAssert(0 == tleParseGP("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
                                   "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199",
                                   &satNum,          //TODO: pad with zero ?
@@ -259,7 +118,7 @@ final class Sgp4App2Tests: XCTestCase {
                                   &mnAnom,
                                   &mnMotion,
                                   &revNum))
-
+        
         XCTAssertEqual(satNum, 90021)
         XCTAssertEqual(secClass, "U")
         XCTAssertEqual(satName, "RELEAS14")
@@ -276,60 +135,48 @@ final class Sgp4App2Tests: XCTestCase {
         XCTAssertEqual(omega, 45.6036)
         XCTAssertEqual(mnAnom, 131.8822)
         XCTAssertEqual(mnMotion, 1.00271328)
-
+        
     }
-
+    
     func testTLEs() {
-
+        
         let tleFilePath = tleString.stringToTmpFile("brightest.2le")
         XCTAssertEqual(tleLoadFile(tleFilePath), 0)
-
+        
         print("tleGetCount: \(tleGetCount())")
-
+        
         print(tleGetLoaded()!)
-
+        
     }
-
+    
     func testTleLineToArray() {
-
+        
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
-
+        
         var tleArray: [Double] = Array(repeating: Double(0.0), count: Int(XA_TLE_SIZE))
-
+        
         let txtArray = tleLinesToArray(
             "1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
             "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199", &tleArray)
+        
+        XCTAssertEqual(txtArray!, "URELEAS14")
+        XCTAssertEqual(tleArray.count, 64)
 
-        print(txtArray!)
+        XCTAssertEqual(tleArray[0], 90021.0)
         print(tleArray)
-
+        
     }
-
+    
     func testXS() {
-
+        
         let text = "URELEAS14"
         let dict = xsTleDecode(text)
         XCTAssert(dict.count == 2)
         XCTAssertEqual(text, xsTleEncode(dict))
-
+        
     }
-
-    //
-    //MARK: SGP4 Tests
-    //
-    func testDuplicates() {
-
-        let _ = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-                                 "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
-
-        let _ = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-                                 "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
-
-        print(getLastErrMsg())  // "AddRecToMem: Duplicated record/key  514756_810000_900211 found."
-
-    }
-
+    
     func test_tleGetField() {
 
         loadAllDlls()
@@ -422,24 +269,8 @@ final class Sgp4App2Tests: XCTestCase {
 
     }
 
-    //
-    //MARK: Other Tests
-    //
-    func testDllVersion() { XCTAssert(dllVersion() == 9.0, "dllVersion failure") }
-
-    func testWarning() { printWarning("\"Swift Port of Sgp4Prop\"") }
-
-    func testStringArrayConversion() {
-
-        let arrayCount = Int32(24)
-        XCTAssert(0 == stringFromCharacterArray(nullCharacterArray(size: arrayCount),
-                                                size: arrayCount).count)
-
-    }
 
 }
-
-
 
 let tleString = """
 1 00694U 63047A   22351.76071400  .00001289  00000+0  15209-3 0  9996

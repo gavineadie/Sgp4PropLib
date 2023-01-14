@@ -7,8 +7,7 @@ let package = Package(
     name: "Sgp4PropLib",
     platforms: [.macOS(.v10_13)],
     products: [
-        .library(name: "Sgp4PropLib", targets: ["Sgp4PropLib",
-                                                "Sgp4Prop_c"]),
+        .library(name: "Sgp4PropLib", targets: ["Sgp4PropLib", "Sgp4Prop_c"]),
     ],
     dependencies: [ ],
     targets: [
