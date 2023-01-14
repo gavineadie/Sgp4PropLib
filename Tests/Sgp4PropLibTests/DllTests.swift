@@ -1,7 +1,7 @@
 //
 //  DllTests.swift
 //
-//  Created by Gavin Eadie on 1/14/23.
+//  Created by Gavin Eadie on 14 Jan 2023.
 //
 
 import XCTest
@@ -10,7 +10,7 @@ import XCTest
 
 final class DllTests: XCTestCase {
 
-    func testDllVersion() { XCTAssert(dllVersion() == 9.0, "dllVersion failure") }
+    func testDllVersion() { XCTAssertEqual(dllVersion(), 9.0, "dllVersion failure") }
 
     func testLastErrMsg() {
 

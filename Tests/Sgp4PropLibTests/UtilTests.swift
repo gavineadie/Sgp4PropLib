@@ -7,12 +7,9 @@
 import XCTest
 
 @testable import Sgp4PropLib
+@testable import Sgp4Prop_c              // for "GETSETSTRLEN"
 
 final class UtilTests: XCTestCase {
-
-    //
-    //MARK: Other Tests
-    //
 
     func testWarning() { printWarning("\"Swift Port of Sgp4Prop\"") }
 
@@ -21,6 +18,13 @@ final class UtilTests: XCTestCase {
         let arrayCount = Int32(24)
         XCTAssert(0 == stringFromCharacterArray(nullCharacterArray(size: arrayCount),
                                                 size: arrayCount).count)
+
+    }
+
+    func testStringToLongArray() {
+
+        let charArray = stringToLongArray("123456789")
+        XCTAssertEqual(charArray.count, Int(GETSETSTRLEN)+1)    // room for a null-termination
 
     }
 

@@ -16,13 +16,10 @@ final class TleTests: XCTestCase {
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
         
-        let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-                                      "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
+        let satKey = tleAddSatFrLines(testLine1, testLine2)     // defined in UtilTests
         
         print(getLastErrMsg())
-        
-        print("\(satKey)")
-        
+
         var satNum: Int32 = 0
         var secClass: String = ""
         var satName: String = ""
@@ -99,8 +96,7 @@ final class TleTests: XCTestCase {
         var mnMotion = 0.0
         var revNum: Int32 = 0
         
-        XCTAssert(0 == tleParseGP("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-                                  "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199",
+        XCTAssert(0 == tleParseGP(testLine1, testLine2,
                                   &satNum,          //TODO: pad with zero ?
                                   &secClass,
                                   &satName,
@@ -156,9 +152,7 @@ final class TleTests: XCTestCase {
         
         var tleArray: [Double] = Array(repeating: Double(0.0), count: Int(XA_TLE_SIZE))
         
-        let txtArray = tleLinesToArray(
-            "1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-            "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199", &tleArray)
+        let txtArray = tleLinesToArray(testLine1, testLine2, &tleArray)
         
         XCTAssertEqual(txtArray!, "URELEAS14")
         XCTAssertEqual(tleArray.count, 64)
@@ -184,8 +178,7 @@ final class TleTests: XCTestCase {
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
 
-        let satKey = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-                                      "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
+        let satKey = tleAddSatFrLines(testLine1, testLine2)
 
         XCTAssert(tleGetField(satKey, XF_TLE_SATNUM)! == "90021")   // "as Any" shows quoted ("4321")
 
@@ -271,6 +264,9 @@ final class TleTests: XCTestCase {
 
 
 }
+
+public let testLine1 = "1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814"
+public let testLine2 = "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199"
 
 let tleString = """
 1 00694U 63047A   22351.76071400  .00001289  00000+0  15209-3 0  9996

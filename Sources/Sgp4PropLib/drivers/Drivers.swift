@@ -591,13 +591,13 @@ public struct satElements {
     var mnMotion: Double
 }
 
-//TODO: when there's time .. this pair of functions is NOT rigorous
+//TODO: when there's time .. this pair of UTILITY functions is NOT rigorous
 
 /// Splits the output from `tleLinesToArray`
 /// - Parameter text: a string of output from `tleLinesToArray`
-/// - Returns: a dictionary with the keys `XS_TLE_SECCLASS` and `XS_TLE_SATNAME` and values from thr input string
+/// - Returns: a dictionary with the keys `XS_TLE_SECCLASS` and `XS_TLE_SATNAME` and values from the input string
 public func xsTleDecode(_ text: String) -> [String:String] {
-    precondition(!text.isEmpty)
+    assert(!text.isEmpty, "xsTleDecode: empty input")
 
     var result: [String:String] = [:]
     result["XS_TLE_SECCLASS"] = String(text.prefix(1))
@@ -845,7 +845,7 @@ public func tleUpdateSatFrArray(_ satKey: SatKey, _ xa_tle: UnsafeMutablePointer
 /// | XA_TLE_SATNUM     |     0 | Satellite number  |
 /// | XA_TLE_EPOCH      |     1 | Satellite's epoch time in DS50UTC  |
 /// | XA_TLE_NDOT       |     2 | GP Mean motion derivative (rev/day /2)  |
-/// | XA_TLE_NDOTDOT    |     3 | GP Mean motion second derivative (rev/day**2 /6)  |
+/// | XA_TLE_NDOTDOT    |     3 | GP Mean motion second derivative (rev/day²/6)  |
 /// | XA_TLE_BSTAR      |     4 | GP B* drag term (1/er)  |
 /// | XA_TLE_EPHTYPE    |     5 | Satellite ephemeris type: 0=SGP, 2=SGP4, 6=SP  |
 /// | XA_TLE_OBJTYPE    |     6 | Object type; 0=unknown, 1=payload, 2=rocket body, 3=platform, 4=debris, 5=manned  |
@@ -1441,7 +1441,7 @@ public func tleRemoveSat(_ satKey: SatKey) -> Int { Int(TleRemoveSat(satKey)) }
 ///  |   3  |  Satellite international designator  |
 ///  |   4  |  Epoch  |
 ///  |   5  |  Ephemeris type: 0,2 → B* drag term (1/er)
-///  |      | Ephemeris type: 6 → SP radiation pressure coefficient agom (m2/kg)  |
+///  |      | Ephemeris type: 6 → SP radiation pressure coefficient agom (m²/kg)  |
 ///  |   6  |  Ephemeris type  |
 ///  |   7  |  Element set number  |
 ///  |   8  |  Orbit inclination (degrees)  |
@@ -1452,9 +1452,9 @@ public func tleRemoveSat(_ satKey: SatKey) -> Int { Int(TleRemoveSat(satKey)) }
 ///  |   13  |  Mean motion (rev/day)  |
 ///  |   14  |  Revolution number at epoch  |
 ///  |   15  |  Ephemeris type: 0 → SGP mean motion derivative (rev/day÷2)
-///  |       | Ephemeris type: 6 → SP ballistic coefficient (m2/kg)   |
+///  |       | Ephemeris type: 6 → SP ballistic coefficient (m²/kg)   |
 ///  |   16  |  Ephemeris type: 0 → SGP mean motion second derivative (rev/day²÷6)
-///  |       | Ephemeris type: 6 → SP Outgassing parameter/Thrust Acceleration (km/s2)  |
+///  |       | Ephemeris type: 6 → SP Outgassing parameter/Thrust Acceleration (km/s²)  |
 /// - Parameters:
 ///   - satKey: The satellite's unique key.
 ///   - xf_Tle: Predefined number specifying which field to retrieve.

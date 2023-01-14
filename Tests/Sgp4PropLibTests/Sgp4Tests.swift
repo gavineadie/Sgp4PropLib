@@ -13,6 +13,7 @@ final class Sgp4Tests: XCTestCase {
     func testInitSat() {
 
         _ = Sgp4RemoveAllSats()                         // clear the satellite store
+        _ = TleRemoveAllSats()
 
         let satKey = tleAddSatFrLines("1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999",
                                       "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468")
@@ -31,11 +32,9 @@ final class Sgp4Tests: XCTestCase {
 
         loadAllDlls()
 
-        let _ = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-                                 "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
+        let _ = tleAddSatFrLines(testLine1, testLine2)
 
-        let _ = tleAddSatFrLines("1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814",
-                                 "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199")
+        let _ = tleAddSatFrLines(testLine1, testLine2)
 
         XCTAssert(getLastErrMsg().hasPrefix("AddRecToMem: Duplicated record/key "))
 

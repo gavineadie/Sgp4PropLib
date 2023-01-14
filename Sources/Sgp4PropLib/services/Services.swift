@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Sgp4Prop_c
 
 public var libHandles = [UnsafeMutableRawPointer]()
 
@@ -256,9 +257,13 @@ public func stringFromCharacterArray(_ array: [Int8], size: Int32) -> String {
 }
 
 func stringToLongArray(_ string: String) -> [Int8] {
-    let arrayBase = Array(repeating: CChar(0), count: 513 - string.count)
+    assert(!string.isEmpty)
+    assert(string.count < GETSETSTRLEN+1)
+
+    let arrayBase = Array(repeating: CChar(0), count: Int(GETSETSTRLEN)+1 - string.count)
     let arrayChar = string.utf8.map { Int8(bitPattern: $0) }
     return arrayChar + arrayBase
+
 }
 
 // ----------------
