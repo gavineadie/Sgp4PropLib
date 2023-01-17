@@ -12,6 +12,8 @@ final class Sgp4Tests: XCTestCase {
 
     func testInitSat() {
 
+        loadAllDlls()
+        
         _ = Sgp4RemoveAllSats()                         // clear the satellite store
         _ = TleRemoveAllSats()
 

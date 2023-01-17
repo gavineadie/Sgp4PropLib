@@ -143,6 +143,41 @@ public func dllMainLoadFile(_ filePath: String) -> Int {
 
 }
 
+//MARK: ASTRO
+
+/// Initializes AstroFunc DLL for use in the program.
+///
+/// If this function returns an error, it is recommended that you stop the program immediately.
+///
+/// An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in
+/// the DLL Prerequisites section of the accompanying documentation, before using this DLL.
+/// - Parameter dllHandle: The handle that was returned from DllMainInit(). See the documentation for DllMain.dll for details.
+/// - Returns: 0 if AstroFunc.dll is initialized successfully, non-0 if there is an error.
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
+public func astroFuncInit(_ dllHandle: Int64) -> Int { Int(AstroFuncInit(dllHandle)) }
+
+/// Retrieves information about the current version of AstroFunc.dll.
+///
+/// - Returns: A `String` of information about the DLL version number, build date, and platform.
+public func astroFuncGetInfo() -> String {
+
+    var infoString = nullCharacterArray(size: GETSETSTRLEN)
+    AstroFuncGetInfo(&infoString)
+    return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
+
+}
+
+/// Determines if a point in space is sunlit at the input time ds50ET
+/// - Parameters:
+///   - ds50ET: The number of days since 1950, ET
+///   - ptECI: a position in ECI (km)
+/// - Returns: `false` if the specified point isn't sunlit, `true` if the specified point is sunlit
+public func isPointSunlit(_ ds50ET: Double, _ ptECI: UnsafeMutablePointer<Double> ) -> Bool {
+
+    IsPointSunlit(ds50ET, ptECI) == 1
+
+}
+
 //MARK: ENV
 
 /// Initializes the EnvInit DLL for use in the program. If this function returns an error,
@@ -541,41 +576,6 @@ public func utcToDTG15(_ ds50UTC: Double) -> String {
 
 }
 
-//MARK: ASTRO
-
-/// Initializes AstroFunc DLL for use in the program.
-///
-/// If this function returns an error, it is recommended that you stop the program immediately.
-///
-/// An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in
-/// the DLL Prerequisites section of the accompanying documentation, before using this DLL.
-/// - Parameter dllHandle: The handle that was returned from DllMainInit(). See the documentation for DllMain.dll for details.
-/// - Returns: 0 if AstroFunc.dll is initialized successfully, non-0 if there is an error.
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
-public func astroFuncInit(_ dllHandle: Int64) -> Int { Int(AstroFuncInit(dllHandle)) }
-
-/// Retrieves information about the current version of AstroFunc.dll.
-///
-/// - Returns: A `String` of information about the DLL version number, build date, and platform.
-public func astroFuncGetInfo() -> String {
-
-    var infoString = nullCharacterArray(size: GETSETSTRLEN)
-    AstroFuncGetInfo(&infoString)
-    return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
-
-}
-
-/// Determines if a point in space is sunlit at the input time ds50ET
-/// - Parameters:
-///   - ds50ET: The number of days since 1950, ET
-///   - ptECI: a position in ECI (km)
-/// - Returns: `false` if the specified point isn't sunlit, `true` if the specified point is sunlit
-public func isPointSunlit(_ ds50ET: Double, _ ptECI: UnsafeMutablePointer<Double> ) -> Bool {
-
-    (IsPointSunlit(ds50ET, ptECI) != 0)
-
-}
-
 //MARK: TLE
 
 public typealias SatNum = Int
@@ -589,6 +589,12 @@ public struct satElements {
     var omega: Double               // degrees
     var mnAnomaly: Double           // degrees
     var mnMotion: Double
+}
+
+public func tleGetSatKey(_ satNum: Int) -> Int64 {
+
+    TleGetSatKey(Int32(satNum))
+
 }
 
 //TODO: when there's time .. this pair of UTILITY functions is NOT rigorous
@@ -1507,6 +1513,52 @@ public func tleSetField(_ satKey: SatKey, _ xf_Tle: Int, _ valueStr: String) -> 
 
 }
 
+//---------
+
+/// returns the Sun's lat/lon for the time (days after 1950)
+/// - Parameter ds1950: days after 1950
+/// - Returns: a tuple carrying (solarLat, solarLon)
+public func solarLLH(_ ds1950: Double) -> (Double, Double) {
+
+    var solarPos = [0.0, 0.0, 0.0]
+    var solarMag = 0.0
+
+    CompSunPos(ds1950, &solarPos, &solarMag)
+
+    solarPos[0] = solarPos[0] * solarMag
+    solarPos[1] = solarPos[1] * solarMag
+    solarPos[2] = solarPos[2] * solarMag
+
+    var earthLLH = [0.0, 0.0, 0.0]
+
+    XYZToLLHTime(ds1950, &solarPos, &earthLLH)
+
+    return (earthLLH[0], earthLLH[1])
+
+}
+
+/// returns the Moon's lat/lon for the time (days after 1950)
+/// - Parameter ds1950: days after 1950
+/// - Returns: a tuple carrying (lunarLat, lunarLon)
+public func lunarLLH(_ ds1950: Double) -> (Double, Double) {
+
+    var lunarPos = [0.0, 0.0, 0.0]
+    var lunarMag = 0.0
+
+    CompMoonPos(ds1950, &lunarPos, &lunarMag)
+
+    lunarPos[0] = lunarPos[0] * lunarMag
+    lunarPos[1] = lunarPos[1] * lunarMag
+    lunarPos[2] = lunarPos[2] * lunarMag
+
+    var earthLLH = [0.0, 0.0, 0.0]
+
+    XYZToLLHTime(ds1950, &lunarPos, &earthLLH)
+
+    return (earthLLH[0], earthLLH[1])
+
+}
+
 //MARK: SGP4
 
 /// Initializes the Sgp4 DLL for use in the program.
@@ -1709,6 +1761,34 @@ public func sgp4PropDs50UtcPos(_ satKey: SatKey,
                                _ pos: UnsafeMutablePointer<Double>) -> Int {
 
     Int(Sgp4PropDs50UtcPos(satKey, ds50UTC, pos))
+
+}
+
+//TODO: <Int> to <Int32>
+/// Generates ephemerides for the input satellite, represented by its **satKey**, for the specified time span and step size.
+///
+/// Notes:
+/// - if `arrSize` isn't big enough to store all the ephemeris points, the function will exit when the `ephemArr` reaches
+/// that many points and the `errCode` is set to `IDX_ERR_WARN`
+/// - Parameters:
+///   - satKey:     The unique key of the satellite to generate ephemerides.
+///   - startTime:  Start time expressed in days since 1950, UTC.
+///   - endTime:    End time expressed in days since 1950, UTC.
+///   - stepSize:   Step size in minutes (static); enter predefine negative values (DYN_SS_?) to request dynamic step size.
+///   - sgp4_ephem: Output ephemeris type 1=ECI, 2=J2K.
+///   - arrSize:    Size of input ephemArr
+///   - ephemArr:   Output ephemerides
+///     - 0: time in days since 1950 UTC,
+///     - 1-3: pos (km),
+///     - 4-6: vel (km/sec)
+///   - genEphemPts:Actual number of ephemeris points generated (always <= arrSize)
+/// - Returns: 0 if the propagation is successful, non-0 if there is an error (see error decoder in GP_ERR_?)
+public func sgp4GenEphems(_ satKey: Int64, _ startTime: Double, _ endTime: Double, _ stepSize: Double,
+                          _ sgp4_ephem: Int, _ arrSize: Int,
+                          _ ephemArr: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double)>,
+                          _ genEphemPts: UnsafeMutablePointer<Int32>) -> Int {
+
+    Int(Sgp4GenEphems(satKey, startTime, endTime, stepSize, Int32(sgp4_ephem), Int32(arrSize), ephemArr, genEphemPts))
 
 }
 

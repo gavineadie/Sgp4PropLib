@@ -214,7 +214,7 @@ final class TleTests: XCTestCase {
 
         let satKey: Int64 = 514756810000900211
 
-        let _ = tleSetField(satKey, Int(XF_TLE_SATNUM), "90021")
+        _ = tleSetField(satKey, Int(XF_TLE_SATNUM), "90021")
         _ = tleSetField(satKey, Int(XF_TLE_CLASS), "U")
         _ = tleSetField(satKey, Int(XF_TLE_SATNAME), "RELEAS14")
         _ = tleSetField(satKey, Int(XF_TLE_EPOCH), "2000051.47568104")
@@ -265,8 +265,8 @@ final class TleTests: XCTestCase {
 
 }
 
-public let testLine1 = "1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814"
-public let testLine2 = "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199"
+let testLine1 = "1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814"
+let testLine2 = "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199"
 
 let tleString = """
 1 00694U 63047A   22351.76071400  .00001289  00000+0  15209-3 0  9996
