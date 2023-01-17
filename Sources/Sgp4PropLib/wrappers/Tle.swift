@@ -1,6 +1,6 @@
 // This wrapper file was generated automatically by the GenDllWrappers program.
 import Foundation
-import Sgp4Prop_c
+import AstroStds_c
 
 #if os(Linux)
 fileprivate let libHandle = loadDll("libtle.so")
