@@ -7,7 +7,7 @@
 import XCTest
 
 @testable import Sgp4PropLib
-@testable import Sgp4Prop_c              // for "GETSETSTRLEN"
+@testable import AstroStds_c              // for "GETSETSTRLEN"
 
 final class UtilTests: XCTestCase {
 

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Sgp4Prop_c
+import AstroStds_c
 
 public var libHandles = [UnsafeMutableRawPointer]()
 
@@ -229,7 +229,7 @@ public func selectFile(_ filePath: String, inside: URL) -> URL {
 
 }
 
-public func writeString(_ string: String, toURL: URL, appending: Bool = false, terminator: String = "\n") {
+public func writeString(_ string: String, toURL: URL, appending: Bool = true, terminator: String = "\n") {
 
     if let fileHandle = try? FileHandle(forWritingTo: toURL) {
         if appending { fileHandle.seekToEndOfFile() }           // moving pointer to the end
