@@ -10,14 +10,14 @@ import XCTest
 @testable import Sgp4Prop_c
 
 final class TleTests: XCTestCase {
-    
+
     func testTLE() {
-        
+
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
-        
+
         let satKey = tleAddSatFrLines(testLine1, testLine2)     // defined in UtilTests
-        
+
         print(getLastErrMsg())
 
         var satNum: Int32 = 0
@@ -25,7 +25,7 @@ final class TleTests: XCTestCase {
         var satName: String = ""
         var epochYear: Int32 = 0
         var epochDays = 0.0
-        
+
         var bstar = 0.0
         var ephType: Int32 = 0
         var elsetNum: Int32 = 0
@@ -36,7 +36,7 @@ final class TleTests: XCTestCase {
         var mnAnom = 0.0
         var mnMotion = 0.0
         var revNum: Int32 = 0
-        
+
         let _ = tleGetAllFieldsGP(satKey,
                                   &satNum,          //TODO: pad with zero ?
                                   &secClass,        //TODO: want ASCII, not Int8
@@ -53,7 +53,7 @@ final class TleTests: XCTestCase {
                                   &mnAnom,
                                   &mnMotion,
                                   &revNum)
-        
+
         XCTAssertEqual(satNum, 90021)
         XCTAssertEqual(secClass, "U")                //TODO: want ASCII, not Int8
         XCTAssertEqual(satName, "RELEAS14")
@@ -68,23 +68,23 @@ final class TleTests: XCTestCase {
         XCTAssertEqual(omega, 45.6036)
         XCTAssertEqual(mnAnom, 131.8822)
         XCTAssertEqual(mnMotion, 1.00271328)
-        
+
     }
-    
+
     func testTleParseSP() {
-        
+
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
-        
+
         var satNum: Int32 = 0
         var secClass: String = ""
         var satName: String = ""
         var epochYear: Int32 = 0
         var epochDays = 0.0
-        
+
         var nDotO2 = 0.0
         var n2DotO6 = 0.0
-        
+
         var bstar = 0.0
         var ephType: Int32 = 0
         var elsetNum: Int32 = 0
@@ -95,7 +95,7 @@ final class TleTests: XCTestCase {
         var mnAnom = 0.0
         var mnMotion = 0.0
         var revNum: Int32 = 0
-        
+
         XCTAssert(0 == tleParseGP(testLine1, testLine2,
                                   &satNum,          //TODO: pad with zero ?
                                   &secClass,
@@ -114,7 +114,7 @@ final class TleTests: XCTestCase {
                                   &mnAnom,
                                   &mnMotion,
                                   &revNum))
-        
+
         XCTAssertEqual(satNum, 90021)
         XCTAssertEqual(secClass, "U")
         XCTAssertEqual(satName, "RELEAS14")
@@ -131,46 +131,46 @@ final class TleTests: XCTestCase {
         XCTAssertEqual(omega, 45.6036)
         XCTAssertEqual(mnAnom, 131.8822)
         XCTAssertEqual(mnMotion, 1.00271328)
-        
+
     }
-    
+
     func testTLEs() {
-        
+
         let tleFilePath = tleString.stringToTmpFile("brightest.2le")
-        XCTAssertEqual(tleLoadFile(tleFilePath), 0)
-        
+        XCTAssertEqual(0, tleLoadFile(tleFilePath))
+
         print("tleGetCount: \(tleGetCount())")
-        
+
         print(tleGetLoaded()!)
-        
+
     }
-    
+
     func testTleLineToArray() {
-        
+
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
-        
+
         var tleArray: [Double] = Array(repeating: Double(0.0), count: Int(XA_TLE_SIZE))
-        
+
         let txtArray = tleLinesToArray(testLine1, testLine2, &tleArray)
-        
+
         XCTAssertEqual(txtArray!, "URELEAS14")
         XCTAssertEqual(tleArray.count, 64)
 
         XCTAssertEqual(tleArray[0], 90021.0)
         print(tleArray)
-        
+
     }
-    
+
     func testXS() {
-        
+
         let text = "URELEAS14"
         let dict = xsTleDecode(text)
         XCTAssert(dict.count == 2)
         XCTAssertEqual(text, xsTleEncode(dict))
-        
+
     }
-    
+
     func test_tleGetField() {
 
         loadAllDlls()
@@ -198,13 +198,13 @@ final class TleTests: XCTestCase {
         print(tleGetField(satKey, XF_TLE_MNMOTN) as Any)    // MEAN MOTION (REV/DAY)
         print(tleGetField(satKey, XF_TLE_REVNUM) as Any)    // REVOLUTION NUMBER AT EPOCH
 
-        XCTAssert(0 == sgp4InitSat(satKey))
+        XCTAssertEqual(0, sgp4InitSat(satKey))
 
         let epoch = dtgToUTC("22346.21636301")
         var line1 = ""
         var line2 = ""
 
-        XCTAssertEqual(sgp4ReepochTLE(satKey, epoch, &line1, &line2), 0)
+        XCTAssertEqual(0, sgp4ReepochTLE(satKey, epoch, &line1, &line2))
 
         print("\nGET:\n\(line1)\n\(line2)\n")
 
@@ -232,11 +232,11 @@ final class TleTests: XCTestCase {
         let epoch = dtgToUTC("22346.21636301")
         var line1 = ""
         var line2 = ""
-        XCTAssertEqual(sgp4ReepochTLE(satKey, epoch, &line1, &line2), 0)
+        XCTAssertEqual(0, sgp4ReepochTLE(satKey, epoch, &line1, &line2))
 
         print("\nSET:\n\(line1)\n\(line2)\n")
 
-        XCTAssertEqual(sgp4RemoveSat(satKey), 0)
+        XCTAssertEqual(0, sgp4RemoveSat(satKey))
 
     }
 
