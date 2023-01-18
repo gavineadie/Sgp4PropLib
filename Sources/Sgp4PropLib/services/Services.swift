@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Sgp4Prop_c
+import AstroStds_c
 
 public var libHandles = [UnsafeMutableRawPointer]()
 

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Sgp4Prop_c
+import AstroStds_c
 
 //MARK: MAIN
 
@@ -602,6 +602,22 @@ public func tleGetSatKey(_ satNum: Int) -> Int64 {
 /// Splits the output from `tleLinesToArray`
 /// - Parameter text: a string of output from `tleLinesToArray`
 /// - Returns: a dictionary with the keys `XS_TLE_SECCLASS` and `XS_TLE_SATNAME` and values from the input string
+/// The following table lists the offsets of the individual strings in the XS_TLE string:
+///
+///  |  name  |  length | index |  index interpretation  |
+///  |  ----  | ---- |  :----: | ---- |
+///  |  XS_TLE_SECCLASS | 1     |  0 | Security classification of line 1 and line 2  |
+///  |  XS_TLE_SATNAME | 12     |  1 | Satellite name  |
+///  |  XS_TLE_SECCLASSL3 | 1   | 13 | Security classification of line 3  |
+///  |  XS_TLE_DISTMARKING | 4  | 14 | Distribution marking  |
+///  |  XS_TLE_OBJSTAT | 1      | 18 | Object status: 'A'=Active, 'D'=Dead, 'U'=Unknown  |
+///  |  XS_TLE_MSSNCODE | 2     | 19 | Primary payload mission code  |
+///  |  XS_TLE_MSSNSTAT | 1     | 21 | Primary mission status (table lookup)  |
+///  |  XS_TLE_MANEUV | 1       | 22 | Maneuverability 'Y'=Yes, 'N'=No, 'U'=Unknown  |
+///  |  XS_TLE_OOCNTRY | 4      | 23 | Payload Owner/Operator  |
+///  |  XS_TLE_FREQBAND | 1     | 27 | Frequency Band of the RCS: U=UHF, C=C-Band, L=L-Band, S=S-Band, X=X-Band  |
+///  |  XS_TLE_TBLERATE | 1     | 28 | Tumble rate  |
+///  |  XS_TLE_SIZE          | 512 |  | |
 public func xsTleDecode(_ text: String) -> [String:String] {
     assert(!text.isEmpty, "xsTleDecode: empty input")
 
@@ -875,6 +891,7 @@ public func tleUpdateSatFrArray(_ satKey: SatKey, _ xa_tle: UnsafeMutablePointer
 /// | XA_TLE_SP_OGPARM |     3 | SP outgassing parameter (km/s2)  |
 /// | XA_TLE_SP_AGOM   |     4 | SP Radiation Pressure Coefficient  |
 /// | XA_TLE_SIZE      |     64 |  |
+
 public enum XA_KEYS: Int {
     case xa_TLE_SATNUM = 0
     case xa_TLE_EPOCH

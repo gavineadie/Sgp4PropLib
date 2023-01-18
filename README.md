@@ -70,7 +70,7 @@ If you are an Xcode user, these sample applications can be opened up, worked on,
 
 ## Your application
 
-To use the Swift interface to the SGP4 libraries in your program, you will need to import the namespace to the source code.  There are two such imports .. one, `Sgp4PropLib`, is for pure Swift use and the other, `Sgp4Prop_c`, provides access to values defined in the C header files (mostly in `DllMainDll.h`) that accompany the Swift interface.
+To use the Swift interface to the SGP4 libraries in your program, you will need to import the namespace to the source code.  There are two such imports .. one, `Sgp4PropLib`, is for pure Swift use and the other, `AstroStds_c`, provides access to values defined in the C header files (mostly in `DllMainDll.h`) that accompany the Swift interface.
 
 The values in the header files are all uppercase so complaints about missing symbols that are all-caps is a good hint that you need to import the C headers.  There is no harm in including both.
 
@@ -80,7 +80,7 @@ For example, the `Sgp4Prop` sample application's Swift source (reduced to essent
 import Foundation
 
 import Sgp4PropLib              // make all the Swift functions available
-import Sgp4Prop_c               // make enums in "DllMainDll.h" available
+import AstroStds_c              // make enums in "DllMainDll.h" available
                                 // .. specifically "IDX_ORDER_READ" below
 
 @main

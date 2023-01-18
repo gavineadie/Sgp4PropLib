@@ -7,7 +7,7 @@
 import XCTest
 
 @testable import Sgp4PropLib
-@testable import Sgp4Prop_c
+@testable import AstroStds_c
 
 final class EnvTests: XCTestCase {
 
