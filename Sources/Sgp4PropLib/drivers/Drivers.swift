@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AstroStds_c
 
 //MARK: MAIN
 
@@ -552,6 +551,7 @@ public func utcToDTG19(_ ds50UTC: Double) -> String {
 /// - Returns: A string to hold the result of the conversion. (out-Character[19])
 public func utcToDTG17(_ ds50UTC: Double) -> String {
 
+    print("              utcToDTG17| .. loadAllDlls")
     loadAllDlls()                       // test run before libraries loaded (ouch!)
 
     var string24 = nullCharacterArray(size: 24)
@@ -1482,10 +1482,10 @@ public func tleRemoveSat(_ satKey: SatKey) -> Int { Int(TleRemoveSat(satKey)) }
 ///   - satKey: The satellite's unique key.
 ///   - xf_Tle: Predefined number specifying which field to retrieve.
 /// - Returns: A string to contain the value of the requested field (nil if failure).
-public func tleGetField(_ satKey: SatKey, _ xf_Tle: Int32) -> String? {
+public func tleGetField(_ satKey: SatKey, _ xf_Tle: Int) -> String? {
 
     var valueStr = nullCharacterArray(size: GETSETSTRLEN)
-    guard 0  == TleGetField(satKey, xf_Tle, &valueStr) else { return nil }
+    guard 0  == TleGetField(satKey, Int32(xf_Tle), &valueStr) else { return nil }
     return stringFromCharacterArray(valueStr, size: GETSETSTRLEN)
 
 }

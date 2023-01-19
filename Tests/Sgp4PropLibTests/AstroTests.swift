@@ -6,8 +6,7 @@
 
 import XCTest
 
-//@testable import Sgp4PropLib
-//@testable import Sgp4Prop_c
+@testable import Sgp4PropLib
 
 final class AstroTests: XCTestCase {
 

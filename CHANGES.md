@@ -1,6 +1,8 @@
 # Change Note Summary
 
-### 2023 Jan 14 : v0.1.12 • _First public release (corresponds to Space-Track v9)_
+### 2023 Jan 18 : v0.1.13 • _First public release (corresponds to Space-Track v9)_
+
+### 2023 Jan 14 : v0.1.12
 
 - TestInterfaces driver and sample application added ..
 - Unit Tests spilt into dynamic library related files ..

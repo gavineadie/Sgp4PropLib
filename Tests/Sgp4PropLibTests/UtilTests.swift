@@ -7,7 +7,6 @@
 import XCTest
 
 @testable import Sgp4PropLib
-@testable import AstroStds_c             // for "GETSETSTRLEN"
 
 final class UtilTests: XCTestCase {
 
@@ -15,7 +14,7 @@ final class UtilTests: XCTestCase {
 
     func testStringArrayConversion() {
 
-        let arrayCount = Int32(24)
+        let arrayCount = 24
         XCTAssert(0 == stringFromCharacterArray(nullCharacterArray(size: arrayCount),
                                                 size: arrayCount).count)
 

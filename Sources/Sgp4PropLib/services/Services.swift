@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import AstroStds_c
 
 public var libHandles = [UnsafeMutableRawPointer]()
 
@@ -242,16 +241,16 @@ public func writeString(_ string: String, toURL: URL, appending: Bool = false, t
 }
 
 
-public func nullCharacterArray(size: Int32) -> [Int8] {
+public func nullCharacterArray(size: Int) -> [Int8] {
 
-    Array(repeating: Int8(0), count: Int(size)+1)
+    Array(repeating: Int8(0), count: size+1)
 
 }
 
-public func stringFromCharacterArray(_ array: [Int8], size: Int32) -> String {
+public func stringFromCharacterArray(_ array: [Int8], size: Int) -> String {
 
     var _array = array
-    _array[Int(size)] = 0
+    _array[size] = 0
     return String(cString: _array).trimRight()
 
 }
