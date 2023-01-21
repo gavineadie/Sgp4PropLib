@@ -1907,37 +1907,37 @@ public func sgp4ReepochCsv(_ satKey: SatKey, _ reepochDs50UTC: Double) -> String
 ///   - long2DOut: an output 2D-array of 64-bit integers - should return the same values as the input long2DIn (out-Long[2, 3])
 ///   - real2DIn:  an input 2D-array of 64-bit reals (2 rows, 3 columns) - for column-major order language, reverse the order (in-Double[2, 3])
 ///   - real2DOut: an output 2D-array of 64-bit reals - should return the same values as the input real2DIn (out-Double[2, 3])
-public func testInterface1(_ cIn: String, _ cOut: inout String,
-                           _ intIn: Int32, _ intOut: UnsafeMutablePointer<Int32>,
-                           _ longIn: Int64, _ longOut: UnsafeMutablePointer<Int64>,
-                           _ realIn: Double, _ realOut: UnsafeMutablePointer<Double>,
-                           _ strIn: String, _ strOut: inout String,
-                           _ int1DIn: UnsafeMutablePointer<Int32>, _ int1DOut: UnsafeMutablePointer<Int32>,
-                           _ long1DIn: UnsafeMutablePointer<Int64>, _ long1DOut: UnsafeMutablePointer<Int64>,
-                           _ real1DIn: UnsafeMutablePointer<Double>, _ real1DOut: UnsafeMutablePointer<Double>,
-                           _ int2DIn: UnsafeMutablePointer<(Int32, Int32, Int32)>, _ int2DOut: UnsafeMutablePointer<(Int32, Int32, Int32)>,
-                           _ long2DIn: UnsafeMutablePointer<(Int64, Int64, Int64)>, _ long2DOut: UnsafeMutablePointer<(Int64, Int64, Int64)>,
-                           _ real2DIn: UnsafeMutablePointer<(Double, Double, Double)>, _ real2DOut: UnsafeMutablePointer<(Double, Double, Double)>) {
+public func testInterface1(_ char_In: String, _ char_Out: inout String,
+                           _ int_In: Int32, _ int_Out: UnsafeMutablePointer<Int32>,
+                           _ long_In: Int64, _ long_Out: UnsafeMutablePointer<Int64>,
+                           _ real_In: Double, _ real_Out: UnsafeMutablePointer<Double>,
+                           _ str_In: String, _ str_Out: inout String,
+                           _ int1D_In: UnsafeMutablePointer<Int32>, _ int1D_Out: UnsafeMutablePointer<Int32>,
+                           _ long1D_In: UnsafeMutablePointer<Int64>, _ long1D_Out: UnsafeMutablePointer<Int64>,
+                           _ real1D_In: UnsafeMutablePointer<Double>, _ real1D_Out: UnsafeMutablePointer<Double>,
+                           _ int2D_In: UnsafeMutablePointer<(Int32, Int32, Int32)>, _ int2D_Out: UnsafeMutablePointer<(Int32, Int32, Int32)>,
+                           _ long2D_In: UnsafeMutablePointer<(Int64, Int64, Int64)>, _ long2D_Out: UnsafeMutablePointer<(Int64, Int64, Int64)>,
+                           _ real2D_In: UnsafeMutablePointer<(Double, Double, Double)>, _ real2D_Out: UnsafeMutablePointer<(Double, Double, Double)>) {
 
-    let _cIn = cIn.utf8CString[0]
-    var _cOut = CChar(0)
-    let _strIn = makeCString(from: strIn)
-    var _strOut = nullCharacterArray(size: INPUTCARDLEN)            //[INPUTCARDLEN = 512]
+    let _char_In = char_In.utf8CString[0]
+    var _char_Out = CChar(0)
+    let _str_In = makeCString(from: str_In)
+    var _str_Out = nullCharacterArray(size: INPUTCARDLEN)            //[INPUTCARDLEN = 512]
 
-    TestInterface(_cIn, &_cOut,
-                  intIn, intOut,
-                  longIn, longOut,
-                  realIn, realOut,
-                  _strIn, &_strOut,
-                  int1DIn, int1DOut,
-                  long1DIn, long1DOut,
-                  real1DIn, real1DOut,
-                  int2DIn, int2DOut,
-                  long2DIn, long2DOut,
-                  real2DIn, real2DOut)
+    TestInterface(_char_In, &_char_Out,
+                  int_In, int_Out,
+                  long_In, long_Out,
+                  real_In, real_Out,
+                  _str_In, &_str_Out,
+                  int1D_In, int1D_Out,
+                  long1D_In, long1D_Out,
+                  real1D_In, real1D_Out,
+                  int2D_In, int2D_Out,
+                  long2D_In, long2D_Out,
+                  real2D_In, real2D_Out)
 
-    cOut = String(UnicodeScalar(UInt8(bitPattern: _cOut)))
-    strOut = stringFromCharacterArray(_strOut, size: INPUTCARDLEN)
+    char_Out = String(UnicodeScalar(UInt8(bitPattern: _char_Out)))
+    str_Out = stringFromCharacterArray(_str_Out, size: INPUTCARDLEN)
 
 }
 
@@ -1966,16 +1966,14 @@ public func testInterface2(_ char_InOut: inout String,
                            _ long2D_InOut: UnsafeMutablePointer<(Int64, Int64, Int64)>,
                            _ real2D_InOut: UnsafeMutablePointer<(Double, Double, Double)>) {
 
-    var _char_inOut = char_InOut.utf8CString[0]
-//    var _str_InOut = nullCharacterArray(size: INPUTCARDLEN)            //[INPUTCARDLEN = 512]
+    var _char_InOut = char_InOut.utf8CString[0]
     var _str_InOut = stringToLongArray(str_InOut)
-//    var _str_InOut = makeCString(from: str_InOut)
 
-    TestInterface2(&_char_inOut, int_InOut, long_InOut, real_InOut, &_str_InOut,
-                   int1D_InOut, long1D_InOut, real1D_InOut,
-                   int2D_InOut, long2D_InOut, real2D_InOut)
+//    TestInterface2(&_char_InOut, int_InOut, long_InOut, real_InOut, &_str_InOut,
+//                   int1D_InOut, long1D_InOut, real1D_InOut,
+//                   int2D_InOut, long2D_InOut, real2D_InOut)
 
-    char_InOut = String(UnicodeScalar(UInt8(bitPattern: _char_inOut)))
+    char_InOut = String(UnicodeScalar(UInt8(bitPattern: _char_InOut)))
     str_InOut = stringFromCharacterArray(_str_InOut, size: INPUTCARDLEN)
 
 }
@@ -1992,11 +1990,11 @@ public func testInterface2(_ char_InOut: inout String,
 ///   - int1DOut: Unknown dimension should be length (3), Unk1DOut should return same as Unk1DIn * 4 (out-Integer[*])
 ///   - int2DIn: Unknown dimension should be length (2) (in-Integer[*, 3])
 ///   - int2DOut: Unknown dimension should be length (2), Unk2DOut should return same as Unk2DIn * 5 (out-Integer[*, 3])
-public func testInterface3(_ int1DIn: UnsafeMutablePointer<Int32>,
-                           _ int1DOut: UnsafeMutablePointer<Int32>,
-                           _ int2DIn: UnsafeMutablePointer<(Int32, Int32, Int32)>,
-                           _ int2DOut: UnsafeMutablePointer<(Int32, Int32, Int32)>) {
+public func testInterface3(_ int1D_In: UnsafeMutablePointer<Int32>,
+                           _ int1D_Out: UnsafeMutablePointer<Int32>,
+                           _ int2D_In: UnsafeMutablePointer<(Int32, Int32, Int32)>,
+                           _ int2D_Out: UnsafeMutablePointer<(Int32, Int32, Int32)>) {
 
-    TestInterface3(int1DIn, int1DOut, int2DIn, int2DOut)
+//    TestInterface3(int1D_In, int1D_Out, int2D_In, int2D_Out)
 
 }

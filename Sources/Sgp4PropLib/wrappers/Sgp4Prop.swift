@@ -52,8 +52,30 @@ public func Sgp4PropMse(_ satKey: Int64, _ mse: Double, _ ds50UTC: UnsafeMutable
     return function(satKey, mse, ds50UTC, pos, vel, llh)
 }
 
-public func Sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double, _ mse: UnsafeMutablePointer<Double>, _ pos: UnsafeMutablePointer<Double>, _ vel: UnsafeMutablePointer<Double>, _ llh: UnsafeMutablePointer<Double>) -> Int32 {
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4PropDs50UTC"), to: fnPtrSgp4PropDs50UTC.self)
+//public func Sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double,
+//                            _ mse: UnsafeMutablePointer<Double>,
+//                            _ pos: UnsafeMutablePointer<Double>,
+//                            _ vel: UnsafeMutablePointer<Double>,
+//                            _ llh: UnsafeMutablePointer<Double>) -> Int32 {
+//
+//    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4PropDs50UTC"), to: fnPtrSgp4PropDs50UTC.self)
+//
+//    return function(satKey, ds50UTC, mse, pos, vel, llh)
+//}
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+public func Sgp4PropDs50UTC(_ satKey: Int64, _ ds50UTC: Double,
+                            _ mse: UnsafeMutablePointer<Double>,
+                            _ pos: UnsafeMutablePointer<Double>,
+                            _ vel: UnsafeMutablePointer<Double>,
+                            _ llh: UnsafeMutablePointer<Double>) -> Int32 {
+
+    typealias functionSignature = @convention(c) (Int64, Double, UnsafeMutablePointer<Double>,
+                                                  UnsafeMutablePointer<Double>,
+                                                  UnsafeMutablePointer<Double>,
+                                                  UnsafeMutablePointer<Double>) -> Int32
+
+    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4PropDs50UTC"), to: functionSignature.self)
 
     return function(satKey, ds50UTC, mse, pos, vel, llh)
 }
