@@ -1530,49 +1530,15 @@ public func tleSetField(_ satKey: SatKey, _ xf_Tle: Int, _ valueStr: String) -> 
 
 }
 
-//---------
+public func getCheckSums(_ line1: String, _ line2: String) -> (Int, Int, Int) {
 
-/// returns the Sun's lat/lon for the time (days after 1950)
-/// - Parameter ds1950: days after 1950
-/// - Returns: a tuple carrying (solarLat, solarLon)
-public func solarLLH(_ ds1950: Double) -> (Double, Double) {
+    var check1: Int32 = 0
+    var check2: Int32 = 0
+    var errorCode: Int32 = 0
 
-    var solarPos = [0.0, 0.0, 0.0]
-    var solarMag = 0.0
+    GetCheckSums(makeCString(from: line1), makeCString(from: line2), &check1, &check2, &errorCode)
 
-    CompSunPos(ds1950, &solarPos, &solarMag)
-
-    solarPos[0] = solarPos[0] * solarMag
-    solarPos[1] = solarPos[1] * solarMag
-    solarPos[2] = solarPos[2] * solarMag
-
-    var earthLLH = [0.0, 0.0, 0.0]
-
-    XYZToLLHTime(ds1950, &solarPos, &earthLLH)
-
-    return (earthLLH[0], earthLLH[1])
-
-}
-
-/// returns the Moon's lat/lon for the time (days after 1950)
-/// - Parameter ds1950: days after 1950
-/// - Returns: a tuple carrying (lunarLat, lunarLon)
-public func lunarLLH(_ ds1950: Double) -> (Double, Double) {
-
-    var lunarPos = [0.0, 0.0, 0.0]
-    var lunarMag = 0.0
-
-    CompMoonPos(ds1950, &lunarPos, &lunarMag)
-
-    lunarPos[0] = lunarPos[0] * lunarMag
-    lunarPos[1] = lunarPos[1] * lunarMag
-    lunarPos[2] = lunarPos[2] * lunarMag
-
-    var earthLLH = [0.0, 0.0, 0.0]
-
-    XYZToLLHTime(ds1950, &lunarPos, &earthLLH)
-
-    return (earthLLH[0], earthLLH[1])
+    return (Int(check1), Int(check2), Int(errorCode))
 
 }
 
@@ -1868,6 +1834,24 @@ public func sgp4ReepochTLE(_ satKey: SatKey, _ newEpoch: Double, _ line1: inout 
     return Int(errorCode)
 }
 
+/// Reepochs a loaded TLE, represented by the satKey, to a new epoch.
+///
+/// - Parameters:
+///   - satKey: The unique key of the satellite to reepoch.
+///   - newEpoch: The new epoch, express in days since 1950, UTC.
+///   - line1: A string to hold the first line of the reepoched TLE.
+///   - line2: A string to hold the second line of the reepoched TLE.
+/// - Returns: tuple (line1, line2) or nil if failure
+public func sgp4ReepochTLE(_ satKey: SatKey, _ newEpoch: Double) -> (String, String)! {
+
+    var _line1 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
+    var _line2 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
+
+    guard 0 == Sgp4ReepochTLE(satKey, newEpoch, &_line1, &_line2) else { return nil }
+
+    return (stringFromCharacterArray(_line1, size: INPUTCARDLEN),
+            stringFromCharacterArray(_line2, size: INPUTCARDLEN))
+}
 /// Reepochs a loaded TLE, represented by the satKey, to a new epoch in Csv format.
 /// - Parameters:
 ///   - satKey: The unique key of the satellite to reepoch.
@@ -1878,6 +1862,52 @@ public func sgp4ReepochCsv(_ satKey: SatKey, _ reepochDs50UTC: Double) -> String
     var _csvLine = nullCharacterArray(size: INPUTCARDLEN)
     guard 0 == Sgp4ReepochCsv(satKey, reepochDs50UTC, &_csvLine) else { return nil }
     return stringFromCharacterArray(_csvLine, size: INPUTCARDLEN)
+
+}
+
+//MARK: XTRA
+
+/// returns the Sun's lat/lon for the time (days after 1950)
+/// - Parameter ds1950: days after 1950
+/// - Returns: a tuple carrying (solarLat, solarLon)
+public func solarLLH(_ ds1950: Double) -> (Double, Double) {
+
+    var solarPos = [0.0, 0.0, 0.0]
+    var solarMag = 0.0
+
+    CompSunPos(ds1950, &solarPos, &solarMag)
+
+    solarPos[0] = solarPos[0] * solarMag
+    solarPos[1] = solarPos[1] * solarMag
+    solarPos[2] = solarPos[2] * solarMag
+
+    var earthLLH = [0.0, 0.0, 0.0]
+
+    XYZToLLHTime(ds1950, &solarPos, &earthLLH)
+
+    return (earthLLH[0], earthLLH[1])
+
+}
+
+/// returns the Moon's lat/lon for the time (days after 1950)
+/// - Parameter ds1950: days after 1950
+/// - Returns: a tuple carrying (lunarLat, lunarLon)
+public func lunarLLH(_ ds1950: Double) -> (Double, Double) {
+
+    var lunarPos = [0.0, 0.0, 0.0]
+    var lunarMag = 0.0
+
+    CompMoonPos(ds1950, &lunarPos, &lunarMag)
+
+    lunarPos[0] = lunarPos[0] * lunarMag
+    lunarPos[1] = lunarPos[1] * lunarMag
+    lunarPos[2] = lunarPos[2] * lunarMag
+
+    var earthLLH = [0.0, 0.0, 0.0]
+
+    XYZToLLHTime(ds1950, &lunarPos, &earthLLH)
+
+    return (earthLLH[0], earthLLH[1])
 
 }
 
@@ -1966,8 +1996,8 @@ public func testInterface2(_ char_InOut: inout String,
                            _ long2D_InOut: UnsafeMutablePointer<(Int64, Int64, Int64)>,
                            _ real2D_InOut: UnsafeMutablePointer<(Double, Double, Double)>) {
 
-    var _char_InOut = char_InOut.utf8CString[0]
-    var _str_InOut = stringToLongArray(str_InOut)
+    let _char_InOut = char_InOut.utf8CString[0]
+    let _str_InOut = stringToLongArray(str_InOut)
 
 //    TestInterface2(&_char_InOut, int_InOut, long_InOut, real_InOut, &_str_InOut,
 //                   int1D_InOut, long1D_InOut, real1D_InOut,

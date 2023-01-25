@@ -15,8 +15,7 @@ final class TleTests: XCTestCase {
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
 
-        let satKey = tleAddSatFrLines(testLine1, testLine2)     // defined in UtilTests
-
+        let satKey = tleAddSatFrLines(testLine1, testLine2)
         print(getLastErrMsg())
 
         var satNum: Int32 = 0
@@ -177,25 +176,60 @@ final class TleTests: XCTestCase {
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
 
+        /*╭╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╮
+          ┆ 1 NNNNNU NNNNNAAA NNNNN.NNNNNNNN ±.NNNNNNNN ±NNNNN-N ±NNNNN-N N NNNNN                            ┆
+          ┆ 1 90021U RELEAS14 22346.21636301 +.00000184  00000 0  00000 0 0 0814    [zero index]             ┆
+          ┆   -----                                                               < [02-06] satellite #      ┆
+          ┆        U                                                              < [   07] classification   ┆
+          ┆          .-                                                           < [09-10] ID (year)        ┆
+          ┆            ---                                                        < [11-13] ID (launch #)    ┆
+          ┆               ---                                                     < [14-16] ID (fragment)    ┆
+          ┆                   --                                                  < [18-19] epoch year       ┆
+          ┆                     ------------                                      < [20-31] epoch day        ┆
+          ┆                                  ----------           [not used SGP4] < [33-42] Mean Motion/s    ┆
+          ┆                                             .-----    [not used SGP4] < [44-                     ┆
+          ┆                                                   --  [not used SGP4] <    -51] Mean Motion/s/s  ┆
+          ┆                                                      .-----           < [53-                     ┆
+          ┆                                                            --         < [  -60] BSTAR drag term  ┆
+          ┆                                                               -       < [   62] ephemeris type   ┆
+          ┆                                                                 ----  < [64-67] element number   ┆
+          ┆                                                                     - < [   68] checksum         ┆
+          ╰╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯*/
+
+        /*╭╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╮
+          ┆ 2 NNNNN NNN.NNNN NNN.NNNN NNNNNNN NNN.NNNN NNN.NNNN NN.NNNNNNNNNNNNNN                            ┆
+          ┆ 2 90021   1.7703  70.7404 0000942 313.6344 184.9072  1.0021757909554    [zero index]             ┆
+          ┆   -----                                                               < [02-06] satellite #      ┆
+          ┆         --------                                                      < [08-15] inclination      ┆
+          ┆                  --------                                             < [17-24] RAAN             ┆
+          ┆                          .-------                                     < [26-32] eccentricity     ┆
+          ┆                                   --------                            < [34-41] Arg of Perigee   ┆
+          ┆                                            --------                   < [43-50] Mean Anomaly     ┆
+          ┆                                                     -----------       < [52-62] Mean Motion      ┆
+          ┆                                                                -----  < [63-67] revolution #     ┆
+          ┆                                                                     - < [   68] checksum         ┆
+          ┆                                                                                                  ┆
+          ┆ The reference frame of the Earth-centered inertial (ECI) coordinates produced by the SGP4/SDP4   ┆
+          ┆ orbital model is true equator, mean equinox (TEME) of epoch.                                     ┆
+          ╰╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╯*/
+
+
         let satKey = tleAddSatFrLines(testLine1, testLine2)
 
-        XCTAssert(tleGetField(satKey, XF_TLE_SATNUM)! == "90021")   // "as Any" shows quoted ("4321")
-
-        print(tleGetField(satKey, XF_TLE_SATNUM) as Any)    // SATELLITE NUMBER
-        print(tleGetField(satKey, XF_TLE_CLASS) as Any)     // SECURITY CLASSIFICATION
-        print(tleGetField(satKey, XF_TLE_SATNAME) as Any)   // SATELLITE NAME A8
-        print(tleGetField(satKey, XF_TLE_EPOCH) as Any)     // SATELLITE'S EPOCH TIME "YYYYJJJ.JJJJJJJJ"
-        print(tleGetField(satKey, XF_TLE_BSTAR) as Any)     // GP B* DRAG TERM (1/ER)
-        print(tleGetField(satKey, XF_TLE_EPHTYPE) as Any)   // SATELLITE EPHEMERIS TYPE:
-        print(tleGetField(satKey, XF_TLE_ELSETNUM) as Any)  // ELEMENT SET NUMBER
-        XCTAssert(tleGetField(satKey, XF_TLE_INCLI)! == "0.022200000000000")
-        print(tleGetField(satKey, XF_TLE_INCLI) as Any)     // ORBIT INCLINATION (DEG)
-        print(tleGetField(satKey, XF_TLE_NODE) as Any)      // RIGHT ASCENSION OF ASENDING NODE (DEG)
-        print(tleGetField(satKey, XF_TLE_ECCEN) as Any)     // ECCENTRICITY
-        print(tleGetField(satKey, XF_TLE_OMEGA) as Any)     // ARGUMENT OF PERIGEE (DEG)
-        print(tleGetField(satKey, XF_TLE_MNANOM) as Any)    // MEAN ANOMALY (DEG)
-        print(tleGetField(satKey, XF_TLE_MNMOTN) as Any)    // MEAN MOTION (REV/DAY)
-        print(tleGetField(satKey, XF_TLE_REVNUM) as Any)    // REVOLUTION NUMBER AT EPOCH
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_SATNUM)!, "90021")                // SATELLITE NUMBER
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_CLASS)!, "U")                     // SECURITY CLASSIFICATION
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_SATNAME)!, "RELEAS14")            // SATELLITE NAME A8
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_EPOCH)!, "2000051.47568104")      // SATELLITE'S EPOCH TIME "YYYYJJJ.JJJJJJJJ"
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_BSTAR)!, "0.000000000000000")     // GP B* DRAG TERM (1/ER)
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_EPHTYPE)!, "0")                   // SATELLITE EPHEMERIS TYPE:
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_ELSETNUM)!, "814")                // ELEMENT SET NUMBER
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_INCLI)!, "0.022200000000000")     // ORBIT INCLINATION (DEG)
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_NODE)!, "182.492300000000000")    // RIGHT ASCENSION OF ASENDING NODE (DEG)
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_ECCEN)!, "0.000072000000000")     // ECCENTRICITY
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_OMEGA)!, "45.603600000000000")    // ARGUMENT OF PERIGEE (DEG)
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_MNANOM)!, "131.882200000000012")  // MEAN ANOMALY (DEG)
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_MNMOTN)!, "1.002713280000000")    // MEAN MOTION (REV/DAY)
+        XCTAssertEqual(tleGetField(satKey, XF_TLE_REVNUM)!, "1199")                 // REVOLUTION NUMBER AT EPOCH
 
         XCTAssertEqual(0, sgp4InitSat(satKey))
 
@@ -207,13 +241,32 @@ final class TleTests: XCTestCase {
 
         print("\nGET:\n\(line1)\n\(line2)\n")
 
+        if let twoString = sgp4ReepochTLE(satKey, epoch) {
+            print("GET:\n\(twoString.0)\n\(twoString.1)\n")
+        }
+    }
+
+    func testCheckSum() {
+
+        loadAllDlls()
+
+        _ = Sgp4RemoveAllSats()
+        _ = TleRemoveAllSats()
+
+        let threeInts = getCheckSums(testLine1, testLine2)
+        if threeInts.2 == 0 {
+            print("\nCHK_L1 = \(threeInts.0), CHK_2 = \(threeInts.1)\n")
+        } else {
+            print("getCheckSums error code: \(threeInts.2)")
+        }
+
     }
 
     func test_tleSetField() {
 
         let satKey: Int64 = 514756810000900211
 
-        _ = tleSetField(satKey, Int(XF_TLE_SATNUM), "90021")
+        XCTAssertEqual(0, tleSetField(satKey, Int(XF_TLE_SATNUM), "90021"), "tleSetField error")
         _ = tleSetField(satKey, Int(XF_TLE_CLASS), "U")
         _ = tleSetField(satKey, Int(XF_TLE_SATNAME), "RELEAS14")
         _ = tleSetField(satKey, Int(XF_TLE_EPOCH), "2000051.47568104")
@@ -243,8 +296,8 @@ final class TleTests: XCTestCase {
 
         if (libHandles.isEmpty) { loadAllDlls() }
 
-        let line1import = "1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999"
-        let line2import = "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468"
+        let line1import = "1 00694U 63047A   22346.21636301 +.00001226  00000 0  14598-3 0 0999 "
+        let line2import = "2 00694  30.3563 289.0742 0579612 154.2031 208.8696 14.0412882996468 "
 
         let satKey = tleAddSatFrLines(line1import, line2import)
 
@@ -256,16 +309,20 @@ final class TleTests: XCTestCase {
 
         XCTAssert(0 == tleCsvToLines(csvString, 0, &line1export, &line2export))
 
-        XCTAssert(line1import == line1export)
-        XCTAssert(line2import == line2export)
+        XCTAssertNotEqual(line1import, line1export)     // there's a blank character ending the input lines
+        XCTAssertNotEqual(line2import, line2export)
 
+        XCTAssertEqual(line1import.trimRight(), line1export)
+        XCTAssertEqual(line2import.trimRight(), line2export)
     }
 
 
 }
 
-let testLine1 = "1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814"
-let testLine2 = "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199"
+//                        1         2         3         4         5         6         7
+//               1234567890123456789012345678901234567890123456789012345678901234567890
+let testLine1 = "1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814 "
+let testLine2 = "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199 "
 
 let tleString = """
 1 00694U 63047A   22351.76071400  .00001289  00000+0  15209-3 0  9996

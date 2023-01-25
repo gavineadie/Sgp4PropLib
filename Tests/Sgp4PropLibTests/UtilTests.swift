@@ -22,8 +22,9 @@ final class UtilTests: XCTestCase {
 
     func testStringToLongArray() {
 
-        let charArray = stringToLongArray("123456789")
-        XCTAssertEqual(charArray.count, Int(GETSETSTRLEN)+1)    // room for a null-termination
+        let arrayCount = 24
+        let charArray = stringToLongArray("123456789", size: arrayCount)
+        XCTAssertEqual(charArray.count, Int(arrayCount)+1)    // room for a null-termination
 
     }
 

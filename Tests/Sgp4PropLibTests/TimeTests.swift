@@ -79,7 +79,7 @@ final class TimeTests: XCTestCase {
     /// have about a 10 mSec difference
     func testTimeConversions() {
 
-        let dateTimeGroupUTC = dateToUTC(Date())
+        let dateTimeGroupUTC = Date().ds1950Now
         var year: Int32 = 0
         var dayOfYear: Int32 = 0
         var month: Int32 = 0
@@ -105,7 +105,7 @@ final class TimeTests: XCTestCase {
 
     func testTime() {
 
-        let dateTimeGroupUTC = dateToUTC(Date())
+        let dateTimeGroupUTC = Date().ds1950Now
         print("time now: \(dateTimeGroupUTC)")
         print("reversed: \(utcToDTG20(dateTimeGroupUTC))")
 
@@ -116,7 +116,7 @@ final class TimeTests: XCTestCase {
         let now = Date()
         print("                  (now) = \(now)")
 
-        let nowFrom1950 = dateToUTC(now)
+        let nowFrom1950 = Date().ds1950Now
         print("      daysFrom1950(now) = \(nowFrom1950)")
 
         print("        utcToDTG17(now) = \(utcToDTG17(nowFrom1950))")

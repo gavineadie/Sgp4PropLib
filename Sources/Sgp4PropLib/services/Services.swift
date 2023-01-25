@@ -135,16 +135,14 @@ extension Date {
     public static let timeIntervalBetween1950AndReferenceDate: TimeInterval = 1_609_545_600.0   // 86,400 sec/day -> 18,629 days
 
     /// Returns a `Date` initialized relative to 00:00:00 UTC on 1 January 1950 by a given number of seconds.
-    public init(timeIntervalSince1950: TimeInterval) {
-        self.init(timeIntervalSinceReferenceDate: timeIntervalSince1950 - Date.timeIntervalBetween1950AndReferenceDate)
+    public init(secondSince1950: TimeInterval) {
+        self.init(timeIntervalSinceReferenceDate: secondSince1950 - Date.timeIntervalBetween1950AndReferenceDate)
     }
-}
 
-/// Converts a Swift `Date` type to days since 1950-00-00 (ds50UTC)
-/// - Parameter date: a `Date`
-/// - Returns: days since 1950
-public func dateToUTC(_ date: Date) -> Double {
-    return date.timeIntervalSince(Date(timeIntervalSince1950: 0.0)) / (60*1440)
+    /// Converts a Swift `Date` type to days since 1950-00-00 (ds50UTC)
+    public var ds1950Now: Double {
+        get { self.timeIntervalSince(Date(secondSince1950: 0.0)) / (60*1440) }
+    }
 }
 
 public func printWarning(_ softwareName: String) {
@@ -255,11 +253,11 @@ public func stringFromCharacterArray(_ array: [Int8], size: Int) -> String {
 
 }
 
-func stringToLongArray(_ string: String) -> [Int8] {
+func stringToLongArray(_ string: String, size: Int = GETSETSTRLEN) -> [Int8] {
     assert(!string.isEmpty)
-    assert(string.count < GETSETSTRLEN+1)
+    assert(string.count < size+1)
 
-    let arrayBase = Array(repeating: CChar(0), count: Int(GETSETSTRLEN)+1 - string.count)
+    let arrayBase = Array(repeating: CChar(0), count: Int(size)+1 - string.count)
     let arrayChar = string.utf8.map { Int8(bitPattern: $0) }
     return arrayChar + arrayBase
 

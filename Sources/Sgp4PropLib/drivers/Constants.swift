@@ -19,7 +19,7 @@ let XA_KEP_INCLI =   2       // INCLINATION (DEG)
 let XA_KEP_MA    =   3       // MEAN ANOMALY (DEG)
 let XA_KEP_NODE  =   4       // RIGHT ASCENSION OF THE ASENDING NODE (DEG)
 let XA_KEP_OMEGA =   5       // ARGUMENT OF PERIGEE (DEG)
-let XA_KEP_SIZE  =  6
+let XA_KEP_SIZE  =   6
 
 // INDEX OF CLASSICAL ELEMENTS
 let XA_CLS_N     =   0       // N MEAN MOTION (REVS/DAY)

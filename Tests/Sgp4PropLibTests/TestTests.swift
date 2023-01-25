@@ -22,7 +22,7 @@ final class TestTests: XCTestCase {
         
         XCTAssertEqual(0, sgp4InitSat(satKey))
         
-        let tim = dateToUTC(Date())
+        let tim = Date().ds1950Now
         var epo = 0.0
         var v0 = [0.0, 0.0, 0.0]
         var v1 = [0.0, 0.0, 0.0]
