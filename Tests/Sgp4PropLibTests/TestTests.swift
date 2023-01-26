@@ -24,13 +24,13 @@ final class TestTests: XCTestCase {
         
         let tim = Date().ds1950Now
         var epo = 0.0
-        var v0 = [0.0, 0.0, 0.0]
-        var v1 = [0.0, 0.0, 0.0]
-        var v2 = [0.0, 0.0, 0.0]
-        print(epo, v0, v1, v2)
+        var pos = [0.0, 0.0, 0.0]
+        var vel = [0.0, 0.0, 0.0]
+        var llh = [0.0, 0.0, 0.0]
+        print(epo, pos, vel, llh)
         
-        XCTAssertEqual(0, Sgp4PropDs50UTC(satKey, tim, &epo, &v0, &v1, &v2))
-        print(epo, v0, v1, v2)
+        XCTAssertEqual(0, Sgp4PropDs50UTC(satKey, tim, &epo, &pos, &vel, &llh))
+        print(epo, pos, vel, llh)
         
     }
     
@@ -72,8 +72,8 @@ final class TestTests: XCTestCase {
         
         let _char_In = char_In.utf8CString[0]
         var _char_Out = CChar(0)
-        let _str_In = makeCString(from: str_In)
-        var _str_Out = nullCharacterArray(size: INPUTCARDLEN)
+        let _str_In = str_In.cString
+        var _str_Out = emptyCcharArray(size: INPUTCARDLEN)
         
         TestInterface(_char_In, &_char_Out,
                       int32_In, &int32_Out,
@@ -90,7 +90,7 @@ final class TestTests: XCTestCase {
                       &real2D_In, &real2D_Out)
         
         char_Out = String(UnicodeScalar(UInt8(bitPattern: _char_Out)))
-        str_Out = stringFromCharacterArray(_str_Out, size: INPUTCARDLEN)
+        str_Out = String(fromCcharArray: _str_Out, size: INPUTCARDLEN)
         
         print("\nTestInterface 1 .. input transfered to output\n")
         
@@ -158,14 +158,14 @@ final class TestTests: XCTestCase {
         print(real2D_InOut, terminator: "\n\n")
         
         var _char_InOut = char_InOut.utf8CString[0]
-        var _str_InOut = stringToLongArray(str_InOut)
+        var _str_InOut = str_InOut.toCcharArray()
         
         TestInterface2(&_char_InOut, &int32_InOut, &int64_InOut, &real_InOut, &_str_InOut,
                        &int1D_InOut, &long1D_InOut, &real1D_InOut,
                        &int2D_InOut, &long2D_InOut, &real2D_InOut)
         
         char_InOut = String(UnicodeScalar(UInt8(bitPattern: _char_InOut)))
-        str_InOut = stringFromCharacterArray(_str_InOut, size: INPUTCARDLEN)
+        str_InOut = String(fromCcharArray: _str_InOut, size: INPUTCARDLEN)
         
         print("TestInterface 2 .. Scalar replacement")
         print(char_InOut)

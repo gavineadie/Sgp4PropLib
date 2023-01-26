@@ -14,13 +14,18 @@ public var libHandles = [UnsafeMutableRawPointer]()
 //
 public func loadAllDlls() {
 
-    let globalHandle = DllMainInit()
-    guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
-    guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
-    guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
-    guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
-    guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
+#if DEBUG
+    print(">>> loadAllDlls: libHandles.count = \(libHandles.count)")
+#endif
 
+    if libHandles.count < 6 {
+        let globalHandle = DllMainInit()
+        guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
+        guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
+        guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
+        guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
+        guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
+    }
 }
 
 public func loadDll(_ dllName: String) -> UnsafeMutableRawPointer {
@@ -103,28 +108,48 @@ extension String {
         return urlForString.path
     }
 
-}
-
-// ----------------
-
-// There is a UInt8(ascii:) initialiser but not one for CChar.
-// If you need to do this a lot, add one yourself:
-// Then you can do CChar(ascii: "A").
-
-extension CChar {                       // Extend CChar's functionality for shortcut ..
-    public init(ascii v: Unicode.Scalar) {
-        self = CChar(bitPattern: UInt8(ascii: v))
+    public var cString: UnsafeMutablePointer<Int8> {
+        get {
+            let count = self.utf8.count + 1
+            let result = UnsafeMutablePointer<Int8>.allocate(capacity: count)
+            self.withCString { (baseAddress) in
+                result.initialize(from: baseAddress, count: count)
+            }
+            return result
+        }
     }
-}
 
-extension RangeReplaceableCollection {
+    public func toCcharArray(size: Int = 512) -> [Int8] {
+        assert(!self.isEmpty)
+        assert(self.count < size+1)
 
-    /// If not already at least the given length, appends enough copies of a
-    /// given element to reach that length.
-    public mutating func pad(toLength count: Int, with element: Element) {
-        append(contentsOf: repeatElement(element, count: Swift.max(0, count - self.count)))
+        let arrayBase = Array(repeating: CChar(0), count: Int(size)+1 - self.count)
+        let arrayChar = self.utf8.map { Int8(bitPattern: $0) }
+        return arrayChar + arrayBase
+
     }
+
+    public init(fromCcharArray array: [Int8], size: Int) {
+        var _array = array
+        _array[size] = 0
+        self = String(cString: _array).trimRight()
+    }
+
 }
+
+public func emptyCcharArray(size: Int) -> [Int8] {
+
+    Array(repeating: Int8(0), count: size+1)
+
+}
+
+//public func cCharArrayToString(_ array: [Int8], size: Int) -> String {
+//
+//    var _array = array
+//    _array[size] = 0
+//    return String(cString: _array).trimRight()
+//
+//}
 
 //
 //MARK: Date Extension
@@ -175,6 +200,10 @@ public func printWarning(_ softwareName: String) {
         """
     )
 }
+
+//
+//MARK: File Functions (not exhaustive)
+//
 
 /// Obtains the URL of the directory created at `dirPath`
 /// - Parameters:
@@ -236,44 +265,6 @@ public func writeString(_ string: String, toURL: URL, appending: Bool = false, t
         print("text not written to \(toURL.path)")
     }
 
-}
-
-
-public func nullCharacterArray(size: Int) -> [Int8] {
-
-    Array(repeating: Int8(0), count: size+1)
-
-}
-
-public func stringFromCharacterArray(_ array: [Int8], size: Int) -> String {
-
-    var _array = array
-    _array[size] = 0
-    return String(cString: _array).trimRight()
-
-}
-
-func stringToLongArray(_ string: String, size: Int = GETSETSTRLEN) -> [Int8] {
-    assert(!string.isEmpty)
-    assert(string.count < size+1)
-
-    let arrayBase = Array(repeating: CChar(0), count: Int(size)+1 - string.count)
-    let arrayChar = string.utf8.map { Int8(bitPattern: $0) }
-    return arrayChar + arrayBase
-
-}
-
-// ----------------
-
-// https://developer.apple.com/documentation/swift/string/init(cstring:)-2p84k
-
-public func makeCString(from str: String) -> UnsafeMutablePointer<Int8> {
-    let count = str.utf8.count + 1
-    let result = UnsafeMutablePointer<Int8>.allocate(capacity: count)
-    str.withCString { (baseAddress) in
-        result.initialize(from: baseAddress, count: count)
-    }
-    return result
 }
 
 public func dllVersion() -> Double {

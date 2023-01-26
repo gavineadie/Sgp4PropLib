@@ -9,23 +9,23 @@ import XCTest
 @testable import Sgp4PropLib
 
 final class UtilTests: XCTestCase {
-
+    
     func testWarning() { printWarning("\"Swift Port of Sgp4Prop\"") }
-
+    
     func testStringArrayConversion() {
-
+        
         let arrayCount = 24
-        XCTAssert(0 == stringFromCharacterArray(nullCharacterArray(size: arrayCount),
-                                                size: arrayCount).count)
-
+        XCTAssert(0 == String(fromCcharArray: emptyCcharArray(size: arrayCount),
+                              size: arrayCount).count)
+        
     }
-
-    func testStringToLongArray() {
-
+    
+    func testToLongArray() {
+        
         let arrayCount = 24
-        let charArray = stringToLongArray("123456789", size: arrayCount)
+        let charArray = "123456789".toCcharArray(size: arrayCount)
         XCTAssertEqual(charArray.count, Int(arrayCount)+1)    // room for a null-termination
-
+        
     }
-
+    
 }

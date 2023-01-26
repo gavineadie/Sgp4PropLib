@@ -1,4 +1,5 @@
 // This wrapper file was generated automatically by the GenDllWrappers program.
+import Foundation
 
 #if os(Linux)
 fileprivate let libHandle = loadDll("libenvconst.so")
@@ -146,4 +147,70 @@ public func EnvGetEarthShape(  ) -> Int32 {
 
     return function()
 }
+
+// Indexes of Earth Constant fields
+//Earth flattening (reciprocal; unitless)
+let XF_GEOCON_FF    = 1
+//J2 (unitless)
+let XF_GEOCON_J2    = 2
+//J3 (unitless)
+let XF_GEOCON_J3    = 3
+//J4 (unitless)
+let XF_GEOCON_J4    = 4
+//Ke (er**1.5/min)
+let XF_GEOCON_KE    = 5
+//Earth radius (km/er)
+let XF_GEOCON_KMPER = 6
+//Earth rotation rate w.r.t. fixed equinox (rad/min)
+let XF_GEOCON_RPTIM = 7
+
+//J2/2 (unitless)
+let XF_GEOCON_CK2   = 8
+//-3/8 J4 (unitless)
+let XF_GEOCON_CK4   = 9
+//Converts km/sec to er/kem
+let XF_GEOCON_KS2EK = 10
+//Earth rotation rate w.r.t. fixed equinox (rad/kemin)
+let XF_GEOCON_THDOT = 11
+//J5 (unitless)
+let XF_GEOCON_J5    = 12
+
+
+// Indexes of FK Constant fields
+//Earth rotation rate w.r.t. moving equinox (rad/day)
+let XF_FKCON_C1     = 1
+//Earth rotation acceleration(rad/day**2)
+let XF_FKCON_C1DOT  = 2
+//Greenwich angle (1970; rad)
+let XF_FKCON_THGR70 = 3
+
+// Indexes represent geopotential models GEO
+//Earth constants - JGM2
+let XF_GEOMOD_JGM2   =    2
+//Earth constants - GEM5
+let XF_GEOMOD_GEM5   =    5
+//Earth constants - EGM-08
+let XF_GEOMOD_EGM08  =    8
+//Earth constants - GEM9
+let XF_GEOMOD_GEM9   =    9
+//Earth constants - STEM68
+let XF_GEOMOD_STEM68 =   68
+//Earth constants - WGS-72
+let XF_GEOMOD_WGS72  =   72
+//Earth constants - WGS-84
+let XF_GEOMOD_WGS84  =   84
+//Earth constants - EGM-96
+let XF_GEOMOD_EGM96  =   96
+//Invalid earth model
+let XF_GEOMOD_UNKNOWN =  100
+
+//*******************************************************************************
+
+// Indexes represent fundamental catalogue FK
+//Fundamental Catalog - FK5
+let XF_FKMOD_4 = 4
+//Fundamental Catalog - FK4
+let XF_FKMOD_5 = 5
+
+
 // ========================= End of auto generated code ==========================

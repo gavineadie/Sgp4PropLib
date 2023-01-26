@@ -33,9 +33,9 @@ public func dllMainInit() -> Int64 { DllMainInit() }
 /// - Returns: A `String` of information about the DLL version number, build date, and platform.
 public func dllMainGetInfo() -> String {
 
-    var infoString = nullCharacterArray(size: INFOSTRLEN)
+    var infoString = emptyCcharArray(size: INFOSTRLEN)
     DllMainGetInfo(&infoString)
-    return stringFromCharacterArray(infoString, size: INFOSTRLEN)
+    return String(fromCcharArray: infoString, size: INFOSTRLEN) // (infoString, size: INFOSTRLEN)
 
 }
 
@@ -46,9 +46,9 @@ public func dllMainGetInfo() -> String {
 @available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func getInitDllNames() -> String {
 
-    var getNamesString = nullCharacterArray(size: GETSETSTRLEN)
+    var getNamesString = emptyCcharArray(size: GETSETSTRLEN)
     GetInitDllNames(&getNamesString)
-    return stringFromCharacterArray(getNamesString, size: GETSETSTRLEN)
+    return String(fromCcharArray: getNamesString, size: GETSETSTRLEN)
 
 }
 
@@ -62,9 +62,9 @@ public func getInitDllNames() -> String {
 /// - Returns: A string that stores the last logged error message.
 public func getLastErrMsg() -> String {
 
-    var messageString = nullCharacterArray(size: LOGMSGLEN)
+    var messageString = emptyCcharArray(size: LOGMSGLEN)
     GetLastErrMsg(&messageString)
-    return stringFromCharacterArray(messageString, size: LOGMSGLEN)
+    return String(fromCcharArray: messageString, size: LOGMSGLEN)
 
 }
 
@@ -86,9 +86,9 @@ public func getLastErrMsg() -> String {
 /// - Returns: A string that stores the last logged informational message.
 public func GetLastInfoMsg() -> String {
 
-    var messageString = nullCharacterArray(size: LOGMSGLEN)
+    var messageString = emptyCcharArray(size: LOGMSGLEN)
     GetLastInfoMsg(&messageString)
-    return stringFromCharacterArray(messageString, size: LOGMSGLEN)
+    return String(fromCcharArray: messageString, size: LOGMSGLEN)
 
 }
 
@@ -106,7 +106,7 @@ public func GetLastInfoMsg() -> String {
 /// - Returns: 0 if the file was opened successfully. Other values indicate an error.
 public func openLogFile(_ filePath: String) -> Int {
 
-    Int(OpenLogFile(makeCString(from: filePath)))
+    Int(OpenLogFile(filePath.cString))
 
 }
 
@@ -118,7 +118,7 @@ public func openLogFile(_ filePath: String) -> Int {
 /// If the message is longer than this, it will be truncated.
 public func logMessage(_ message: String) {
 
-    LogMessage(makeCString(from: message))
+    LogMessage(message.cString)
 
 }
 
@@ -138,7 +138,7 @@ public func closeLogFile() { CloseLogFile() }
 /// - Returns: zero indicating the input file has been loaded successfully. Other values indicate an error.
 public func dllMainLoadFile(_ filePath: String) -> Int {
 
-    Int(DllMainLoadFile(makeCString(from: filePath)))
+    Int(DllMainLoadFile(filePath.cString))
 
 }
 
@@ -160,9 +160,9 @@ public func astroFuncInit(_ dllHandle: Int64) -> Int { Int(AstroFuncInit(dllHand
 /// - Returns: A `String` of information about the DLL version number, build date, and platform.
 public func astroFuncGetInfo() -> String {
 
-    var infoString = nullCharacterArray(size: GETSETSTRLEN)
+    var infoString = emptyCcharArray(size: GETSETSTRLEN)
     AstroFuncGetInfo(&infoString)
-    return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
+    return String(fromCcharArray: infoString, size: GETSETSTRLEN)
 
 }
 
@@ -201,9 +201,9 @@ public func envInit(_ dllHandle: Int64) -> Int { Int(EnvInit(dllHandle)) }
 /// - Returns: A `String` of information about the DLL version number, build date, and platform.
 public func envGetInfo() -> String {
 
-    var infoString = nullCharacterArray(size: GETSETSTRLEN)
+    var infoString = emptyCcharArray(size: GETSETSTRLEN)
     EnvGetInfo(&infoString)
-    return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
+    return String(fromCcharArray: infoString, size: GETSETSTRLEN)
 
 }
 
@@ -223,7 +223,7 @@ public func envGetInfo() -> String {
 /// - Returns: zero indicating the input file has been loaded successfully. Other values indicate an error.
 public func envLoadFile(_ filePath: String) -> Int {
 
-    Int(EnvLoadFile(makeCString(from: filePath)))
+    Int(EnvLoadFile(filePath.cString))
 
 }
 
@@ -235,7 +235,7 @@ public func envLoadFile(_ filePath: String) -> Int {
 /// - Returns: zero indicating the GEO and FK settings have been successfully saved to the file. Other values indicate an error.
 public func envSaveFile(_ envFilePath: String, _ saveMode: Int, _ saveForm: Int) -> Int {
 
-    Int(EnvSaveFile(makeCString(from: envFilePath), Int32(saveMode), Int32(saveForm)))
+    Int(EnvSaveFile(envFilePath.cString, Int32(saveMode), Int32(saveForm)))
 
 }
 
@@ -254,9 +254,9 @@ public func envSaveFile(_ envFilePath: String, _ saveMode: Int, _ saveForm: Int)
 /// - Returns: Returns the name of the current Earth constants (GEO) model.
 public func envGetGeoStr() -> String {
 
-    var geoString = nullCharacterArray(size: 16)
+    var geoString = emptyCcharArray(size: 16)
     EnvGetGeoStr(&geoString)
-    return stringFromCharacterArray(geoString, size: 16)
+    return String(fromCcharArray: geoString, size: 16)
 
 }
 
@@ -287,7 +287,7 @@ public func envGetGeoStr() -> String {
 ///
 /// The GEO model must be set to WGS-72 to use the SGP4 propagator.
 /// - Parameter geoStr: The GEO model to use, expressed as a string.
-public func envSetGeoStr(_ geoStr: String) { EnvSetGeoStr(makeCString(from: geoStr)) }
+public func envSetGeoStr(_ geoStr: String) { EnvSetGeoStr(geoStr.cString) }
 
 //MARK: TIME
 
@@ -312,15 +312,15 @@ public func timeFuncInit(_ dllHandle: Int64) -> Int { Int(TimeFuncInit(dllHandle
 /// - Returns: A string holding the information about TimeFunc.dll.
 public func timeFuncGetInfo() -> String {
 
-    var infoString = nullCharacterArray(size: GETSETSTRLEN)
+    var infoString = emptyCcharArray(size: GETSETSTRLEN)
     TimeFuncGetInfo(&infoString)
-    return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
+    return String(fromCcharArray: infoString, size: GETSETSTRLEN)
 
 }
 
 public func timeFuncLoadFile(_ filePath: String) -> Int {
 
-    Int(TimeFuncLoadFile(makeCString(from: filePath)))
+    Int(TimeFuncLoadFile(filePath.cString))
 
 }
 
@@ -342,7 +342,7 @@ public func timeFuncLoadFile(_ filePath: String) -> Int {
 /// - Returns: 0 if the input file has been loaded successfully, non-0 if error
 public func tConLoadFile(_ filePath: String) -> Int {
 
-    Int(TConLoadFile(makeCString(from: filePath)))
+    Int(TConLoadFile(filePath.cString))
 
 }
 
@@ -357,7 +357,7 @@ public func tConLoadFile(_ filePath: String) -> Int {
 /// - Returns: zero indicating the GEO and FK settings have been successfully saved to the file. Other values indicate an error.
 public func tConSaveFile(_ tleFile: String, _ saveMode: Int, _ xf_tleForm: Int) -> Int {
 
-    Int(TConSaveFile(makeCString(from: tleFile), Int32(saveMode), Int32(xf_tleForm)))
+    Int(TConSaveFile(tleFile.cString, Int32(saveMode), Int32(xf_tleForm)))
 
 }
 
@@ -370,9 +370,9 @@ public func tConRemoveAll() -> Int { Int(TConRemoveAll()) }
 /// - Parameter card6PLine: The resulting 6P-Card string.
 public func get6PCardLine() -> String {
 
-    var string512 = nullCharacterArray(size: GETSETSTRLEN)
+    var string512 = emptyCcharArray(size: GETSETSTRLEN)
     Get6PCardLine(&string512)
-    return stringFromCharacterArray(string512, size: GETSETSTRLEN)
+    return String(fromCcharArray: string512, size: GETSETSTRLEN)
 
 }
 
@@ -386,7 +386,7 @@ public func get6PCardLine() -> String {
 /// - Returns: The number of days since 1950 UTC
 public func dtgToUTC(_ DTG19: String) -> Double {
 
-    DTGToUTC(makeCString(from: DTG19))
+    DTGToUTC(DTG19.cString)
 
 }
 
@@ -519,9 +519,9 @@ public func utcToYrDays(_ ds50UTC: Double,
 /// - Returns: A string to hold the result of the conversion.
 public func utcToDTG20(_ ds50UTC: Double) -> String {
 
-    var string24 = nullCharacterArray(size: 24)
+    var string24 = emptyCcharArray(size: 24)
     UTCToDTG20(ds50UTC, &string24)
-    return stringFromCharacterArray(string24, size: 24)
+    return String(fromCcharArray: string24, size: 24)
 
 }
 
@@ -535,9 +535,9 @@ public func utcToDTG20(_ ds50UTC: Double) -> String {
 /// - Returns: A string to hold the result of the conversion.
 public func utcToDTG19(_ ds50UTC: Double) -> String {
 
-    var string24 = nullCharacterArray(size: 24)
+    var string24 = emptyCcharArray(size: 24)
     UTCToDTG19(ds50UTC, &string24)
-    return stringFromCharacterArray(string24, size: 24)
+    return String(fromCcharArray: string24, size: 24)
 
 }
 
@@ -554,9 +554,9 @@ public func utcToDTG17(_ ds50UTC: Double) -> String {
     print("              utcToDTG17| .. loadAllDlls")
     loadAllDlls()                       // test run before libraries loaded (ouch!)
 
-    var string24 = nullCharacterArray(size: 24)
+    var string24 = emptyCcharArray(size: 24)
     UTCToDTG17(ds50UTC, &string24)
-    return stringFromCharacterArray(string24, size: 24)
+    return String(fromCcharArray: string24, size: 24)
 
 }
 
@@ -570,9 +570,9 @@ public func utcToDTG17(_ ds50UTC: Double) -> String {
 /// - Returns: A string to hold the result of the conversion. (out-Character[19])
 public func utcToDTG15(_ ds50UTC: Double) -> String {
 
-    var string24 = nullCharacterArray(size: 24)
+    var string24 = emptyCcharArray(size: 24)
     UTCToDTG15(ds50UTC, &string24)
-    return stringFromCharacterArray(string24, size: 24)
+    return String(fromCcharArray: string24, size: 24)
 
 }
 
@@ -647,9 +647,9 @@ public func tleInit(_ dllHandle: Int64) -> Int { Int(TleInit(dllHandle)) }
 /// - Returns: A `String` of information about the DLL version number, build date, and platform.
 public func tleGetInfo() -> String {
 
-    var infoString = nullCharacterArray(size: GETSETSTRLEN)
+    var infoString = emptyCcharArray(size: GETSETSTRLEN)
     TleGetInfo(&infoString)
-    return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
+    return String(fromCcharArray: infoString, size: GETSETSTRLEN)
 
 }
 
@@ -681,10 +681,10 @@ public func tleGetInfo() -> String {
 /// - Returns: Output string of all the TLE's text fields, with column arrangement as in above table
 public func tleLinesToArray(_ line1: String, _ line2: String, _ xa_tle: UnsafeMutablePointer<Double>) -> String? {
 
-    var infoString = nullCharacterArray(size: GETSETSTRLEN)
-    guard 0 == Int(TleLinesToArray(makeCString(from: line1), makeCString(from: line2),
+    var infoString = emptyCcharArray(size: GETSETSTRLEN)
+    guard 0 == Int(TleLinesToArray(line1.cString, line2.cString,
                                    xa_tle, &infoString)) else { return nil }
-    return stringFromCharacterArray(infoString, size: GETSETSTRLEN)
+    return String(fromCcharArray: infoString, size: GETSETSTRLEN)
 
 }
 
@@ -694,9 +694,9 @@ public func tleLinesToArray(_ line1: String, _ line2: String, _ xa_tle: UnsafeMu
 /// - Returns: A string to hold the TLE in csv format..
 public func tleGetCsv(_ satKey: SatKey) -> String? {
 
-    var infoArray = nullCharacterArray(size: GETSETSTRLEN)
+    var infoArray = emptyCcharArray(size: GETSETSTRLEN)
     guard 0 == Int(TleGetCsv(satKey, &infoArray)) else { return nil }
-    return stringFromCharacterArray(infoArray, size: GETSETSTRLEN)
+    return String(fromCcharArray: infoArray, size: GETSETSTRLEN)
 
 }
 
@@ -726,13 +726,13 @@ public func tleGPFieldsToCsv(_ satNum: SatNum, _ secClass: String, _ satName: St
                              _ elsetNum: Int, _ incli: Double, _ node: Double, _ eccen: Double,
                              _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int) -> String {
 
-    var returnString = nullCharacterArray(size: GETSETSTRLEN)
+    var returnString = emptyCcharArray(size: GETSETSTRLEN)
 
-         TleGPFieldsToCsv(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
+         TleGPFieldsToCsv(Int32(satNum), secClass.utf8CString[0], satName.cString,
                           Int32(epochYr), epochDays, nDotO2, n2DotO6, bstar, Int32(ephType),
                           Int32(elsetNum), incli, node, eccen, omega, mnMotion, mnMotion, Int32(revNum), &returnString)
 
-    return stringFromCharacterArray(returnString, size: GETSETSTRLEN)
+    return String(fromCcharArray: returnString, size: GETSETSTRLEN)
 
 }
 
@@ -745,13 +745,13 @@ public func tleGPFieldsToCsv(_ satNum: SatNum, _ secClass: String, _ satName: St
 public func tleGPArrayToLines(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String,
                               _ line1: inout String, _ line2: inout String) {
 
-    var _line1 = nullCharacterArray(size: INPUTCARDLEN)
-    var _line2 = nullCharacterArray(size: INPUTCARDLEN)
+    var _line1 = emptyCcharArray(size: INPUTCARDLEN)
+    var _line2 = emptyCcharArray(size: INPUTCARDLEN)
 
-    TleGPArrayToLines(xa_tle, makeCString(from: xs_tle), &_line1, &_line2)
+    TleGPArrayToLines(xa_tle, xs_tle.cString, &_line1, &_line2)
 
-    line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
-    line2 = stringFromCharacterArray(_line2, size: INPUTCARDLEN)
+    line1 = String(fromCcharArray: _line1, size: INPUTCARDLEN)
+    line2 = String(fromCcharArray: _line2, size: INPUTCARDLEN)
 
 }
 
@@ -785,15 +785,15 @@ public func tleSPFieldsToLines(_ satNum: SatNum, _ secClass: String, _ satName: 
                                _ omega: Double, _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int32,
                                _ line1: inout String, _ line2: inout String) {
 
-    var _line1 = nullCharacterArray(size: INPUTCARDLEN)
-    var _line2 = nullCharacterArray(size: INPUTCARDLEN)
+    var _line1 = emptyCcharArray(size: INPUTCARDLEN)
+    var _line2 = emptyCcharArray(size: INPUTCARDLEN)
 
-    TleSPFieldsToLines(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
+    TleSPFieldsToLines(Int32(satNum), secClass.utf8CString[0], satName.cString,
                        epochYr, epochDays, bterm, ogParm, agom,
                        elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, &_line1, &_line2)
 
-    line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
-    line2 = stringFromCharacterArray(_line2, size: INPUTCARDLEN)
+    line1 = String(fromCcharArray: _line1, size: INPUTCARDLEN)
+    line2 = String(fromCcharArray: _line2, size: INPUTCARDLEN)
 
 }
 
@@ -805,9 +805,9 @@ public func tleSPFieldsToLines(_ satNum: SatNum, _ secClass: String, _ satName: 
 // csvline            Returned csv format elements.
 public func tleGPArrayToCsv(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String) -> String? {
 
-    var csvString = nullCharacterArray(size: INPUTCARDLEN)
-    TleGPArrayToCsv(xa_tle, makeCString(from: xs_tle), &csvString)
-    return stringFromCharacterArray(csvString, size: INPUTCARDLEN)
+    var csvString = emptyCcharArray(size: INPUTCARDLEN)
+    TleGPArrayToCsv(xa_tle, xs_tle.cString, &csvString)
+    return String(fromCcharArray: csvString, size: INPUTCARDLEN)
 
 }
 
@@ -818,7 +818,7 @@ public func tleGPArrayToCsv(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: St
 /// - Returns: The satKey of the newly added TLE on success, a negative value on error.
 public func tleAddSatFrArray(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String) -> SatKey {
 
-    TleAddSatFrArray(xa_tle, makeCString(from: xs_tle))
+    TleAddSatFrArray(xa_tle, xs_tle.cString)
 
 }
 
@@ -835,7 +835,7 @@ public func tleAddSatFrArray(_ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: S
 /// - Returns: 0 if the TLE is successfully updated, non-0 if there is an error
 public func tleUpdateSatFrArray(_ satKey: SatKey, _ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: String) -> Int {
 
-    Int(TleUpdateSatFrArray(satKey, xa_tle, makeCString(from: xs_tle)))
+    Int(TleUpdateSatFrArray(satKey, xa_tle, xs_tle.cString))
 
 }
 
@@ -929,9 +929,9 @@ public enum XA_KEYS: Int {
 /// - Returns: Output string that contains all TLE's text fields, see XS_TLE_? for column arrangement
 public func tleDataToArray(_ satKey: SatKey, _ xa_tle: inout Double) -> String? {
 
-    var info = nullCharacterArray(size: INPUTCARDLEN)
+    var info = emptyCcharArray(size: INPUTCARDLEN)
     guard 0 == TleDataToArray(satKey, &xa_tle, &info) else { return nil }
-    return stringFromCharacterArray(info, size: INPUTCARDLEN)
+    return String(fromCcharArray: info, size: INPUTCARDLEN)
 
 }
 
@@ -942,9 +942,9 @@ public func tleDataToArray(_ satKey: SatKey, _ xa_tle: inout Double) -> String? 
 /// - Returns: A string to hold the TLE in csv format
 public func tleLinesToCsv(_ line1: String, _ line2: String) -> String? {
 
-    var info = nullCharacterArray(size: INPUTCARDLEN)
-    guard 0 == TleLinesToCsv(makeCString(from: line1), makeCString(from: line2), &info) else { return nil }
-    return stringFromCharacterArray(info, size: INPUTCARDLEN)
+    var info = emptyCcharArray(size: INPUTCARDLEN)
+    guard 0 == TleLinesToCsv(line1.cString, line2.cString, &info) else { return nil }
+    return String(fromCcharArray: info, size: INPUTCARDLEN)
 
 }
 
@@ -957,13 +957,13 @@ public func tleLinesToCsv(_ line1: String, _ line2: String) -> String? {
 public func tleCsvToLines(_ csvLine: String, _ newSatno: Int32,
                           _ line1: inout String, _ line2: inout String) -> Int {
 
-    var _line1 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
-    var _line2 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
+    var _line1 = emptyCcharArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
+    var _line2 = emptyCcharArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
 
-    let errorCode = Int(TleCsvToLines(makeCString(from: csvLine), newSatno, &_line1, &_line2))
+    let errorCode = Int(TleCsvToLines(csvLine.cString, newSatno, &_line1, &_line2))
 
-    line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
-    line2 = stringFromCharacterArray(_line2, size: INPUTCARDLEN)
+    line1 = String(fromCcharArray: _line1, size: INPUTCARDLEN)
+    line2 = String(fromCcharArray: _line2, size: INPUTCARDLEN)
 
     return errorCode
 
@@ -971,13 +971,13 @@ public func tleCsvToLines(_ csvLine: String, _ newSatno: Int32,
 
 public func tleAddSatFrLines (_ line1: String, _ line2: String) -> SatKey {
 
-    TleAddSatFrLines(makeCString(from: line1), makeCString(from: line2))
+    TleAddSatFrLines(line1.cString, line2.cString)
 
 }
 
 public func tleAddSatFrCsv (_ csvLine: String) -> SatKey {
 
-    TleAddSatFrCsv(makeCString(from: csvLine))
+    TleAddSatFrCsv(csvLine.cString)
 
 }
 
@@ -998,7 +998,7 @@ public func tleAddSatFrCsv (_ csvLine: String) -> SatKey {
 /// - Returns: 0 if the two line element sets in the file are successfully loaded, non-0 if there is an error.
 public func tleLoadFile(_ tleFileName: String) -> Int {
 
-    Int(TleLoadFile(makeCString(from: tleFileName)))
+    Int(TleLoadFile(tleFileName.cString))
 
 }
 
@@ -1026,7 +1026,7 @@ public func tleGetCount() -> Int { Int(TleGetCount()) }
 /// - Returns: 0 if the data is successfully saved to the file, non-0 if there is an error.
 public func tleSaveFile(_ tleFile: String, _ saveMode: Int, _ xf_tleForm: Int) -> Int {
 
-    Int(TleSaveFile(makeCString(from: tleFile), Int32(saveMode), Int32(xf_tleForm)))
+    Int(TleSaveFile(tleFile.cString, Int32(saveMode), Int32(xf_tleForm)))
 
 }
 
@@ -1063,13 +1063,13 @@ public func tleGetLoaded(_ order: Int = 9) -> [SatKey]? {
 /// - Returns: 0 if successful, non-0 on error.
 public func tleGetLines(_ satKey: SatKey, _ line1: inout String, _ line2: inout String) -> Int {
 
-    var _line1 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
-    var _line2 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
+    var _line1 = emptyCcharArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
+    var _line2 = emptyCcharArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
 
     let errorCode = TleGetLines(satKey, &_line1, &_line2)
 
-    line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
-    line2 = stringFromCharacterArray(_line2, size: INPUTCARDLEN)
+    line1 = String(fromCcharArray: _line1, size: INPUTCARDLEN)
+    line2 = String(fromCcharArray: _line2, size: INPUTCARDLEN)
 
     return Int(errorCode)
 }
@@ -1105,16 +1105,16 @@ public func tleGPFieldsToLines(_ satNum: SatNum, _ secClass: String, _ satName: 
                                _ line1: inout String, _ line2: inout String) {
 
 
-    var _line1 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
-    var _line2 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
+    var _line1 = emptyCcharArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
+    var _line2 = emptyCcharArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
 
-    TleGPFieldsToLines(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
+    TleGPFieldsToLines(Int32(satNum), secClass.utf8CString[0], satName.cString,
                        Int32(epochYr), epochDays, nDotO2, n2DotO6, bstar, Int32(ephType),
                        Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum),
                        &_line1, &_line2)
 
-    line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
-    line2 = stringFromCharacterArray(_line2, size: INPUTCARDLEN)
+    line1 = String(fromCcharArray: _line1, size: INPUTCARDLEN)
+    line2 = String(fromCcharArray: _line2, size: INPUTCARDLEN)
 
 }
 
@@ -1150,7 +1150,7 @@ public func tleAddSatFrFieldsGP(_ satNum: SatNum, _ secClass: String, _ satName:
                                 _ node: Double, _ eccen: Double, _ omega: Double,
                                 _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int) -> SatKey {
 
-    TleAddSatFrFieldsGP(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
+    TleAddSatFrFieldsGP(Int32(satNum), secClass.utf8CString[0], satName.cString,
                         Int32(epochYr), epochDays, bstar, Int32(ephType),
                         Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum))
 
@@ -1163,7 +1163,7 @@ public func tleAddSatFrFieldsGP2(_ satNum: SatNum, _ secClass: String, _ satName
                                  _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int,
                                  _ nDotO2: Double, _ n2DotO6: Double) -> Int64 {
 
-    TleAddSatFrFieldsGP2(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
+    TleAddSatFrFieldsGP2(Int32(satNum), secClass.utf8CString[0], satName.cString,
                          Int32(epochYr), epochDays, bstar, Int32(ephType),
                          Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum),
                          nDotO2, n2DotO6)
@@ -1177,7 +1177,7 @@ public func tleAddSatFrFieldsSP(_ satNum: SatNum, _ secClass: String, _ satName:
                                 _ node: Double, _ eccen: Double, _ omega: Double,
                                 _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int) -> Int64 {
 
-    TleAddSatFrFieldsSP(Int32(satNum), secClass.utf8CString[0], makeCString(from: satName),
+    TleAddSatFrFieldsSP(Int32(satNum), secClass.utf8CString[0], satName.cString,
                         Int32(epochYr), epochDays, bterm, ogParm, agom,
                         Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum))
 
@@ -1188,7 +1188,7 @@ public func tleUpdateSatFrFieldsGP(_ satKey: SatKey, _ secClass: String, _ satNa
                                    _ node: Double, _ eccen: Double, _ omega: Double,
                                    _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int) -> Int {
 
-    Int(TleUpdateSatFrFieldsGP(satKey, secClass.utf8CString[0], makeCString(from: satName),
+    Int(TleUpdateSatFrFieldsGP(satKey, secClass.utf8CString[0], satName.cString,
                                bstar,
                                Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum)))
 
@@ -1200,7 +1200,7 @@ public func tleUpdateSatFrFieldsGP2(_ satKey: SatKey, _ secClass: String, _ satN
                                     _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int,
                                     _ nDotO2: Double, _ n2DotO6: Double) -> Int {
 
-    Int(TleUpdateSatFrFieldsGP2(satKey, secClass.utf8CString[0], makeCString(from: satName),
+    Int(TleUpdateSatFrFieldsGP2(satKey, secClass.utf8CString[0], satName.cString,
                                 bstar,
                                 Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum),
                                 nDotO2, n2DotO6))
@@ -1212,7 +1212,7 @@ public func tleUpdateSatFrFieldsSP(_ satKey: SatKey, _ secClass: String, _ satNa
                                    _ node: Double, _ eccen: Double, _ omega: Double,
                                    _ mnAnomaly: Double, _ mnMotion: Double, _ revNum: Int) -> Int {
 
-    Int(TleUpdateSatFrFieldsSP(satKey, secClass.utf8CString[0], makeCString(from: satName),
+    Int(TleUpdateSatFrFieldsSP(satKey, secClass.utf8CString[0], satName.cString,
                                bterm, ogParm, agom,
                                Int32(elsetNum), incli, node, eccen, omega, mnAnomaly, mnMotion, Int32(revNum)))
 
@@ -1250,14 +1250,14 @@ public func  tleGetAllFieldsGP(_ satKey: SatKey,
                                _ mnMotion: inout Double, _ revNum: inout Int32) -> Int {
 
     var _secClass = CChar(0)
-    var _satName = nullCharacterArray(size: 8)                // satName is 8 characters
+    var _satName = emptyCcharArray(size: 8)                // satName is 8 characters
 
     let errorCode = TleGetAllFieldsGP(satKey, &satNum, &_secClass, &_satName,
                                       &epochYr, &epochDays, &bStar, &ephType,
                                       &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum)
 
     secClass = String(UnicodeScalar(UInt8(bitPattern: _secClass)))
-    satName = stringFromCharacterArray(_satName, size: 8)
+    satName = String(fromCcharArray: _satName, size: 8)
 
     return Int(errorCode)
 
@@ -1305,7 +1305,7 @@ public func tleGetAllFieldsGP2(_ satKey: SatKey,
                                        &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum, &nDotO2, &n2DotO6)
 
     secClass = String(UnicodeScalar(UInt8(bitPattern: _secClass)))
-    satName = stringFromCharacterArray(_satName, size: 8)
+    satName = String(fromCcharArray: _satName, size: 8)
 
     return Int(errorCode)
 
@@ -1343,14 +1343,14 @@ public func  tleGetAllFieldsSP(_ satKey: SatKey,
                                _ mnMotion: inout Double, _ revNum: inout Int32) -> Int {
 
     var _secClass = CChar(0)
-    var _satName = nullCharacterArray(size: 8)                // satName is 8 characters
+    var _satName = emptyCcharArray(size: 8)                // satName is 8 characters
 
     let errorCode = TleGetAllFieldsSP(satKey, &satNum, &_secClass, &_satName,
                                       &epochYr, &epochDays, &bterm, &ogParm, &agom,
                                       &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum)
 
     secClass = String(UnicodeScalar(UInt8(bitPattern: _secClass)))
-    satName = stringFromCharacterArray(_satName, size: 8)
+    satName = String(fromCcharArray: _satName, size: 8)
 
     return Int(errorCode)
 
@@ -1390,14 +1390,14 @@ public func tleParseGP(_ line1: String, _ line2: String,
                        _ mnMotion: inout Double, _ revNum: inout Int32) -> Int {
 
     var _secClass = CChar(0)
-    var _satName = nullCharacterArray(size: 8)                // satName is 8 characters
+    var _satName = emptyCcharArray(size: 8)                // satName is 8 characters
 
-    let errorCode = TleParseGP(makeCString(from: line1), makeCString(from: line2), &satNum, &_secClass, &_satName,
+    let errorCode = TleParseGP(line1.cString, line2.cString, &satNum, &_secClass, &_satName,
                                &epochYr, &epochDays, &nDotO2, &n2DotO6, &bstar, &ephType,
                                &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum)
 
     secClass = String(UnicodeScalar(UInt8(bitPattern: _secClass)))
-    satName = stringFromCharacterArray(_satName, size: 8)
+    satName = String(fromCcharArray: _satName, size: 8)
 
     return Int(errorCode)
 
@@ -1436,14 +1436,14 @@ public func tleParseSP(_ line1: String, _ line2: String,
                        _ mnMotion: inout Double, _ revNum: inout Int32) -> Int {
 
     var _secClass = CChar(0)
-    var _satName = nullCharacterArray(size: 8)                // satName is 8 characters
+    var _satName = emptyCcharArray(size: 8)                // satName is 8 characters
 
-    let errorCode = TleParseSP(makeCString(from: line1), makeCString(from: line2), &satNum, &_secClass, &_satName,
+    let errorCode = TleParseSP(line1.cString, line2.cString, &satNum, &_secClass, &_satName,
                                &epochYr, &epochDays, &bterm, &ogParm, &agom,
                                &elsetNum, &incli, &node, &eccen, &omega, &mnAnomaly, &mnMotion, &revNum)
 
     secClass = String(UnicodeScalar(UInt8(bitPattern: _secClass)))
-    satName = stringFromCharacterArray(_satName, size: 8)
+    satName = String(fromCcharArray: _satName, size: 8)
 
     return Int(errorCode)
 
@@ -1484,9 +1484,9 @@ public func tleRemoveSat(_ satKey: SatKey) -> Int { Int(TleRemoveSat(satKey)) }
 /// - Returns: A string to contain the value of the requested field (nil if failure).
 public func tleGetField(_ satKey: SatKey, _ xf_Tle: Int) -> String? {
 
-    var valueStr = nullCharacterArray(size: GETSETSTRLEN)
+    var valueStr = emptyCcharArray(size: GETSETSTRLEN)
     guard 0  == TleGetField(satKey, Int32(xf_Tle), &valueStr) else { return nil }
-    return stringFromCharacterArray(valueStr, size: GETSETSTRLEN)
+    return String(fromCcharArray: valueStr, size: GETSETSTRLEN)
 
 }
 
@@ -1526,7 +1526,7 @@ public func tleGetField(_ satKey: SatKey, _ xf_Tle: Int) -> String? {
 /// - Returns: 0 if the TLE is successfully updated, non-0 if there is an error
 public func tleSetField(_ satKey: SatKey, _ xf_Tle: Int, _ valueStr: String) -> Int {
 
-    Int(TleSetField(satKey, Int32(xf_Tle), makeCString(from: valueStr)))
+    Int(TleSetField(satKey, Int32(xf_Tle), valueStr.cString))
 
 }
 
@@ -1536,7 +1536,7 @@ public func getCheckSums(_ line1: String, _ line2: String) -> (Int, Int, Int) {
     var check2: Int32 = 0
     var errorCode: Int32 = 0
 
-    GetCheckSums(makeCString(from: line1), makeCString(from: line2), &check1, &check2, &errorCode)
+    GetCheckSums(line1.cString, line2.cString, &check1, &check2, &errorCode)
 
     return (Int(check1), Int(check2), Int(errorCode))
 
@@ -1574,9 +1574,9 @@ public func sgp4GetInfo() -> String {
 @available(*, deprecated, message: "This function has been deprecated since v8.2")
 public func Sgp4GetLicFilePath() -> String {
 
-    var licFilePath = nullCharacterArray(size: GETSETSTRLEN)
+    var licFilePath = emptyCcharArray(size: GETSETSTRLEN)
     Sgp4GetLicFilePath(&licFilePath)
-    return stringFromCharacterArray(licFilePath, size: GETSETSTRLEN)
+    return String(fromCcharArray: licFilePath, size: GETSETSTRLEN)
 
 }
 
@@ -1586,7 +1586,7 @@ public func Sgp4GetLicFilePath() -> String {
 @available(*, deprecated, message: "This function has been deprecated since v8.2")
 public func sgp4SetLicFilePath(_ licFilePath: String) {
 
-    Sgp4SetLicFilePath(makeCString(from: licFilePath))
+    Sgp4SetLicFilePath(licFilePath.cString)
 
 }
 
@@ -1656,6 +1656,7 @@ public func sgp4PropMse(_ satKey: SatKey, _ mse: Double, _ ds50UTC: UnsafeMutabl
                         _ llh: UnsafeMutablePointer<Double>) -> Int {
 
     Int(Sgp4PropMse(satKey, mse, ds50UTC, pos, vel, llh))
+
 }
 
 /// Propagates a satellite, represented by the satKey, to the time expressed in days since 1950, UTC.
@@ -1823,13 +1824,13 @@ public func sgp4GetPropOut(_ satKey: SatKey, _ xf_SgpOut: Int, _ destArr: Unsafe
 /// - Returns: 0 if the reepoch is successful, non-0 if there is an error.
 public func sgp4ReepochTLE(_ satKey: SatKey, _ newEpoch: Double, _ line1: inout String, _ line2: inout String) -> Int {
 
-    var _line1 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
-    var _line2 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
+    var _line1 = emptyCcharArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
+    var _line2 = emptyCcharArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
 
     let errorCode = Sgp4ReepochTLE(satKey, newEpoch, &_line1, &_line2)
 
-    line1 = stringFromCharacterArray(_line1, size: INPUTCARDLEN)
-    line2 = stringFromCharacterArray(_line2, size: INPUTCARDLEN)
+    line1 = String(fromCcharArray: _line1, size: INPUTCARDLEN)
+    line2 = String(fromCcharArray: _line2, size: INPUTCARDLEN)
 
     return Int(errorCode)
 }
@@ -1844,13 +1845,13 @@ public func sgp4ReepochTLE(_ satKey: SatKey, _ newEpoch: Double, _ line1: inout 
 /// - Returns: tuple (line1, line2) or nil if failure
 public func sgp4ReepochTLE(_ satKey: SatKey, _ newEpoch: Double) -> (String, String)! {
 
-    var _line1 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
-    var _line2 = nullCharacterArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
+    var _line1 = emptyCcharArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN = 512]
+    var _line2 = emptyCcharArray(size: INPUTCARDLEN)                             //[INPUTCARDLEN]
 
     guard 0 == Sgp4ReepochTLE(satKey, newEpoch, &_line1, &_line2) else { return nil }
 
-    return (stringFromCharacterArray(_line1, size: INPUTCARDLEN),
-            stringFromCharacterArray(_line2, size: INPUTCARDLEN))
+    return (String(fromCcharArray: _line1, size: INPUTCARDLEN),
+            String(fromCcharArray: _line2, size: INPUTCARDLEN))
 }
 /// Reepochs a loaded TLE, represented by the satKey, to a new epoch in Csv format.
 /// - Parameters:
@@ -1859,9 +1860,9 @@ public func sgp4ReepochTLE(_ satKey: SatKey, _ newEpoch: Double) -> (String, Str
 /// - Returns: A string to hold the reepoched CSV.
 public func sgp4ReepochCsv(_ satKey: SatKey, _ reepochDs50UTC: Double) -> String? {
 
-    var _csvLine = nullCharacterArray(size: INPUTCARDLEN)
+    var _csvLine = emptyCcharArray(size: INPUTCARDLEN)
     guard 0 == Sgp4ReepochCsv(satKey, reepochDs50UTC, &_csvLine) else { return nil }
-    return stringFromCharacterArray(_csvLine, size: INPUTCARDLEN)
+    return String(fromCcharArray: _csvLine, size: INPUTCARDLEN)
 
 }
 
@@ -1951,8 +1952,8 @@ public func testInterface1(_ char_In: String, _ char_Out: inout String,
 
     let _char_In = char_In.utf8CString[0]
     var _char_Out = CChar(0)
-    let _str_In = makeCString(from: str_In)
-    var _str_Out = nullCharacterArray(size: INPUTCARDLEN)            //[INPUTCARDLEN = 512]
+    let _str_In = str_In.cString
+    var _str_Out = emptyCcharArray(size: INPUTCARDLEN)            //[INPUTCARDLEN = 512]
 
     TestInterface(_char_In, &_char_Out,
                   int_In, int_Out,
@@ -1967,7 +1968,7 @@ public func testInterface1(_ char_In: String, _ char_Out: inout String,
                   real2D_In, real2D_Out)
 
     char_Out = String(UnicodeScalar(UInt8(bitPattern: _char_Out)))
-    str_Out = stringFromCharacterArray(_str_Out, size: INPUTCARDLEN)
+    str_Out = String(fromCcharArray: _str_Out, size: INPUTCARDLEN)
 
 }
 
@@ -1997,14 +1998,14 @@ public func testInterface2(_ char_InOut: inout String,
                            _ real2D_InOut: UnsafeMutablePointer<(Double, Double, Double)>) {
 
     let _char_InOut = char_InOut.utf8CString[0]
-    let _str_InOut = stringToLongArray(str_InOut)
+    let _str_InOut = str_InOut.toCcharArray()
 
 //    TestInterface2(&_char_InOut, int_InOut, long_InOut, real_InOut, &_str_InOut,
 //                   int1D_InOut, long1D_InOut, real1D_InOut,
 //                   int2D_InOut, long2D_InOut, real2D_InOut)
 
     char_InOut = String(UnicodeScalar(UInt8(bitPattern: _char_InOut)))
-    str_InOut = stringFromCharacterArray(_str_InOut, size: INPUTCARDLEN)
+    str_InOut = String(fromCcharArray: _str_InOut, size: INPUTCARDLEN)
 
 }
 

@@ -1,4 +1,5 @@
 // This wrapper file was generated automatically by the GenDllWrappers program.
+import Foundation
 
 #if os(Linux)
 fileprivate let libHandle = loadDll("libtimefunc.so")
@@ -410,4 +411,5 @@ public func Get6PCardLine( _ card6PLine: UnsafeMutablePointer<CChar> ) {
 
     function(card6PLine)
 }
+
 // ========================= End of auto generated code ==========================
