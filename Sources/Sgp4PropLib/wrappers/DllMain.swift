@@ -9,6 +9,8 @@ fileprivate let libHandle = loadDll("DllMain.dll")
 fileprivate let libHandle = loadDll("libdllmain.dylib")
 #endif
 
+// Notes: This function has been deprecated since v9.0. 
+// Initializes DllMain program (host of Astro Standards libraries) for use in any Astro Standards applications
 public func DllMainInit(  ) -> Int64 {
 
     typealias functionSignature = @convention(c) (  ) -> Int64
@@ -18,6 +20,8 @@ public func DllMainInit(  ) -> Int64 {
     return function()
 }
 
+// Returns information about the DllMain DLL. 
+// The returned string provides information about the version number, build date, and the platform. 
 public func DllMainGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 
     typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -27,6 +31,7 @@ public func DllMainGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
     function(infoStr)
 }
 
+// Loads DllMain-related parameters (AS_MOIC) from a text file
 public func DllMainLoadFile( _ dllMainFile: UnsafeMutablePointer<CChar> ) -> Int32 {
 
     typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
@@ -36,6 +41,11 @@ public func DllMainLoadFile( _ dllMainFile: UnsafeMutablePointer<CChar> ) -> Int
     return function(dllMainFile)
 }
 
+// Opens a log file and enables the writing of diagnostic information into it. 
+// All of the DLLs in the library will write diagnostic information into the log file once this function has been called.
+// If the file specified by logFileName already exists, its contents are erased.
+// 
+// Enabling logging can potentially result in large amounts of diagnostic information being generated, which can lead to large amounts of storage being consumed as well as performance decreases. For this reason, it is recommended that this function only be used for debugging purposes.
 public func OpenLogFile( _ fileName: UnsafeMutablePointer<CChar> ) -> Int32 {
 
     typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
@@ -45,6 +55,8 @@ public func OpenLogFile( _ fileName: UnsafeMutablePointer<CChar> ) -> Int32 {
     return function(fileName)
 }
 
+// Closes the currently open log file and reset the last logged error message to null. 
+// Remember to close the log file before exiting the program.
 public func CloseLogFile(  ) {
 
     typealias functionSignature = @convention(c) (  ) -> Void
@@ -54,6 +66,10 @@ public func CloseLogFile(  ) {
     function()
 }
 
+// Writes a message into the log file.
+// Make sure the log file is open by calling OpenLogFile before using this function.
+// 
+// The message is limited to 128 characters. If the message is longer than this, it will be truncated.
 public func LogMessage( _ msgStr: UnsafeMutablePointer<CChar> ) {
 
     typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -63,6 +79,12 @@ public func LogMessage( _ msgStr: UnsafeMutablePointer<CChar> ) {
     function(msgStr)
 }
 
+// Returns a character string describing the last error that occurred. 
+// As a common practice, this function is called to retrieve the error message when an error occurs.
+// 
+// This function works with or without an opened log file.
+// 
+// If you call this function before you have called DllMainInit(), the function will return an invalid string. This could result in undefined behavior.
 public func GetLastErrMsg( _ lastErrMsg: UnsafeMutablePointer<CChar> ) {
 
     typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -72,6 +94,13 @@ public func GetLastErrMsg( _ lastErrMsg: UnsafeMutablePointer<CChar> ) {
     function(lastErrMsg)
 }
 
+// Returns a character string describing the last informational message that was recorded. 
+// This function is usually called right after space objects (TLEs, VCMs, sensors, observations, etc.) in an input text file were loaded. It gives information about how many records were successfully loaded, how many were bad, and how many were duplicated.
+// 
+// This function works with or without an opened log file.
+// 
+// If you call this function before you have called DllMainInit(), the function will return an invalid string. This could result in undefined behavior.
+// This function provides a quick way to check whether all of the prerequisite DLLs have been loaded and initialized correctly. Improper initialization of the Standardized Astrodynamic Algorithms DLLs is one of the most common causes of program crashes.
 public func GetLastInfoMsg( _ lastInfoMsg: UnsafeMutablePointer<CChar> ) {
 
     typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -81,6 +110,8 @@ public func GetLastInfoMsg( _ lastInfoMsg: UnsafeMutablePointer<CChar> ) {
     function(lastInfoMsg)
 }
 
+// Notes: This function has been deprecated since v9.0. 
+// Returns a list of names of the Standardized Astrodynamic Algorithms DLLs that were initialized successfully.
 public func GetInitDllNames( _ initDllNames: UnsafeMutablePointer<CChar> ) {
 
     typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -90,6 +121,7 @@ public func GetInitDllNames( _ initDllNames: UnsafeMutablePointer<CChar> ) {
     function(initDllNames)
 }
 
+// Tests different input/output data types that are supported by the Astrodynamic Standards library.
 public func TestInterface( _ cIn: CChar,
                            _ cOut: UnsafeMutablePointer<CChar>,
                            _ intIn: Int32,
@@ -148,6 +180,7 @@ public func TestInterface( _ cIn: CChar,
     function(cIn, cOut, intIn, intOut, longIn, longOut, realIn, realOut, strIn, strOut, int1DIn, int1DOut, long1DIn, long1DOut, real1DIn, real1DOut, _int2DIn, _int2DOut, _long2DIn, _long2DOut, _real2DIn, _real2DOut)
 }
 
+// Tests different input/output data types that are supported by the Astrodynamic Standards library.
 public func TestInterface2( _ cInOut: UnsafeMutablePointer<CChar>,
                             _ intInOut: UnsafeMutablePointer<Int32>,
                             _ longInOut: UnsafeMutablePointer<Int64>,
@@ -181,6 +214,7 @@ public func TestInterface2( _ cInOut: UnsafeMutablePointer<CChar>,
     function(cInOut, intInOut, longInOut, realInOut, strInOut, int1DInOut, long1DInOut, real1DInOut, _int2DInOut, _long2DInOut, _real2DInOut)
 }
 
+// Tests input and output arrays with unknown length that are supported by the Astrodynamic Standards library.
 public func TestInterface3( _ Unk1DIn: UnsafeMutablePointer<Int32>,
                             _ Unk1DOut: UnsafeMutablePointer<Int32>,
                             _ Unk2DIn: UnsafeMutablePointer<(Int32, Int32, Int32)>,
@@ -199,6 +233,7 @@ public func TestInterface3( _ Unk1DIn: UnsafeMutablePointer<Int32>,
     function(Unk1DIn, Unk1DOut, _Unk2DIn, _Unk2DOut)
 }
 
+// Returns data parsed from user's AS_MOIC-typed input card - up to 128 fields are allowed.
 public func GetMOICData( _ arrSize: Int32, _ xa_moic: UnsafeMutablePointer<Double> ) {
 
     typealias functionSignature = @convention(c) ( Int32,
@@ -209,6 +244,9 @@ public func GetMOICData( _ arrSize: Int32, _ xa_moic: UnsafeMutablePointer<Doubl
     function(arrSize, xa_moic)
 }
 
+// Sets ELSET key mode
+// This mode can also be turned on if the user loads an input text file that includes this line - "AS_DMA_ON" -
+// and is currently calling any of these methods: DllMainLoadFile(), TleLoadFile(), SpVecLoadFile(), or VcmLoadFile()
 public func SetElsetKeyMode( _ elset_keyMode: Int32 ) -> Int32 {
 
     typealias functionSignature = @convention(c) ( Int32 ) -> Int32
@@ -218,6 +256,7 @@ public func SetElsetKeyMode( _ elset_keyMode: Int32 ) -> Int32 {
     return function(elset_keyMode)
 }
 
+// Gets current ELSET key mode
 public func GetElsetKeyMode(  ) -> Int32 {
 
     typealias functionSignature = @convention(c) (  ) -> Int32
@@ -228,90 +267,90 @@ public func GetElsetKeyMode(  ) -> Int32 {
 }
 
 // log message string length
-let LOGMSGLEN = 128
+public let LOGMSGLEN = 128
 
 // DHN 06Feb12 - Increase file path length to 512 characters from 128 characters to handle longer file path
-let FILEPATHLEN = 512
+public let FILEPATHLEN = 512
 
 // DHN 10Feb12 - Uniformally using 512 characters to passing/receiving string in all Get/Set Field functions
-let GETSETSTRLEN = 512
+public let GETSETSTRLEN = 512
 
-let INFOSTRLEN = 128
+public let INFOSTRLEN = 128
 
 // DHN 10Feb12 - All input card types' (elsets, ob, sensors, ...) can now have maximum of 512 characters
-let INPUTCARDLEN = 512
+public let INPUTCARDLEN = 512
 
 // Different orbital element types
 //Element type - SGP Tle type 0
-let ELTTYPE_TLE_SGP   = 1
+public let ELTTYPE_TLE_SGP   = 1
 //Element type - SGP4 Tle type 2
-let ELTTYPE_TLE_SGP4  = 2
+public let ELTTYPE_TLE_SGP4  = 2
 //Element type - SP Tle type 6
-let ELTTYPE_TLE_SP    = 3
+public let ELTTYPE_TLE_SP    = 3
 //Element type - SP Vector
-let ELTTYPE_SPVEC_B1P = 4
+public let ELTTYPE_SPVEC_B1P = 4
 //Element type - VCM
-let ELTTYPE_VCM       = 5
+public let ELTTYPE_VCM       = 5
 //Element type - External ephemeris
-let ELTTYPE_EXTEPH    = 6
+public let ELTTYPE_EXTEPH    = 6
 //Element type - SGP Tle type 4 - XP
-let ELTTYPE_TLE_XP    = 7
+public let ELTTYPE_TLE_XP    = 7
 
 //*******************************************************************************
 
 // Propagation types
 //GP/SGP4/SGP4-XP propagator
-let PROPTYPE_GP  = 1
+public let PROPTYPE_GP  = 1
 //SP propagator
-let PROPTYPE_SP  = 2
+public let PROPTYPE_SP  = 2
 //External ephemeris
-let PROPTYPE_X   = 3
+public let PROPTYPE_X   = 3
 //Unknown
-let PROPTYPE_UK  = 4
+public let PROPTYPE_UK  = 4
 //*******************************************************************************
 
 // Add sat error
 //Bad satellite key
-let BADSATKEY = -1
+public let BADSATKEY = -1
 //Duplicate satellite key
-let DUPSATKEY =  0
+public let DUPSATKEY =  0
 
 //*******************************************************************************
 
 // satellite/observation/sensor key possible errors
 //Bad (satellite/observation/sensor) key
-let BADKEY = -1
+public let BADKEY = -1
 //Duplicate (satellite/observation/sensor) key
-let DUPKEY =  0
+public let DUPKEY =  0
 
 //*******************************************************************************
 
 // Options used in GetLoaded()
 //ascending order
-let IDX_ORDER_ASC   = 0
+public let IDX_ORDER_ASC   = 0
 //descending order
-let IDX_ORDER_DES   = 1
+public let IDX_ORDER_DES   = 1
 //order as read
-let IDX_ORDER_READ  = 2
+public let IDX_ORDER_READ  = 2
 //tree traversal order
-let IDX_ORDER_QUICK = 9
+public let IDX_ORDER_QUICK = 9
 
 //*******************************************************************************
 
 // Different key mode options for elset satKey
 //Default - duplicate elsets can not be loaded in binary tree
-let ELSET_KEYMODE_NODUP  = 0
+public let ELSET_KEYMODE_NODUP  = 0
 //Allow duplicate elsets to be loaded and have direct memory access (DMA - no duplication check and no binary tree)
-let ELSET_KEYMODE_DMA    = 1
+public let ELSET_KEYMODE_DMA    = 1
 
 //*******************************************************************************
 
 //Input time is in minutes since epoch
-let TIME_IS_MSE = 1
+public let TIME_IS_MSE = 1
 //Input time is in days since 1950 TAI
-let TIME_IS_TAI = 2
+public let TIME_IS_TAI = 2
 //Input time is in days since 1950 UTC
-let TIME_IS_UTC = 3
+public let TIME_IS_UTC = 3
 
 //*******************************************************************************
 
