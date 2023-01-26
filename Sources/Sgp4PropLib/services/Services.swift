@@ -14,10 +14,6 @@ public var libHandles = [UnsafeMutableRawPointer]()
 //
 public func loadAllDlls() {
 
-#if DEBUG
-    print(">>> loadAllDlls: libHandles.count = \(libHandles.count)")
-#endif
-
     if libHandles.count < 6 {
         let globalHandle = DllMainInit()
         guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }

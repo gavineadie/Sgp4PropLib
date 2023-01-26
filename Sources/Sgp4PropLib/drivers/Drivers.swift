@@ -35,7 +35,7 @@ public func dllMainGetInfo() -> String {
 
     var infoString = emptyCcharArray(size: INFOSTRLEN)
     DllMainGetInfo(&infoString)
-    return String(fromCcharArray: infoString, size: INFOSTRLEN) // (infoString, size: INFOSTRLEN)
+    return String(fromCcharArray: infoString, size: INFOSTRLEN)
 
 }
 
