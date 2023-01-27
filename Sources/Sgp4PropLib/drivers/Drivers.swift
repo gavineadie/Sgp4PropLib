@@ -1997,23 +1997,17 @@ public func testInterface2(_ char_InOut: inout String,
                            _ long2D_InOut: UnsafeMutablePointer<(Int64, Int64, Int64)>,
                            _ real2D_InOut: UnsafeMutablePointer<(Double, Double, Double)>) {
 
-    let _char_InOut = char_InOut.utf8CString[0]
-    let _str_InOut = str_InOut.toCcharArray()
+    var _char_InOut = char_InOut.utf8CString[0]
+    var _str_InOut = str_InOut.toCcharArray()
 
-//    TestInterface2(&_char_InOut, int_InOut, long_InOut, real_InOut, &_str_InOut,
-//                   int1D_InOut, long1D_InOut, real1D_InOut,
-//                   int2D_InOut, long2D_InOut, real2D_InOut)
+    TestInterface2(&_char_InOut, int_InOut, long_InOut, real_InOut, &_str_InOut,
+                   int1D_InOut, long1D_InOut, real1D_InOut,
+                   int2D_InOut, long2D_InOut, real2D_InOut)
 
     char_InOut = String(UnicodeScalar(UInt8(bitPattern: _char_InOut)))
     str_InOut = String(fromCcharArray: _str_InOut, size: INPUTCARDLEN)
 
 }
-
-// Tests input and output arrays with unknown length that are supported by the Astrodynamic Standards library.
-// Unk1DIn            Unknown dimension should be length (3) (in-Integer[*])
-// Unk1DOut           Unknown dimension should be length (3), Unk1DOut should return same as Unk1DIn * 4 (out-Integer[*])
-// Unk2DIn            Unknown dimension should be length (2) (in-Integer[*, 3])
-// Unk2DOut           Unknown dimension should be length (2), Unk2DOut should return same as Unk2DIn * 5 (out-Integer[*, 3])
 
 /// Tests input and output arrays with unknown length that are supported by the Astrodynamic Standards library.
 /// - Parameters:
@@ -2026,6 +2020,6 @@ public func testInterface3(_ int1D_In: UnsafeMutablePointer<Int32>,
                            _ int2D_In: UnsafeMutablePointer<(Int32, Int32, Int32)>,
                            _ int2D_Out: UnsafeMutablePointer<(Int32, Int32, Int32)>) {
 
-//    TestInterface3(int1D_In, int1D_Out, int2D_In, int2D_Out)
+    TestInterface3(int1D_In, int1D_Out, int2D_In, int2D_Out)
 
 }
