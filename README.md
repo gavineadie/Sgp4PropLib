@@ -12,16 +12,14 @@ The best way to incorporate the Swift interface to the SGP4 libraries in your Sw
 
 On Apple's platforms (Mac, iPhone, iPad and Apple Watch) the most used development environment is Xcode which is a complete IDE designed to cater for multiple computer languages and multiple target products, kernel extensions, plug-ins, libraries (static or dynamic) all the way to complete applications.
 
-Xcode is a tool aimed at producing software for Apple's hardware and it is full of esoteric features for that platform.  However, Swift is not limited to Apple products, so where Xcode doesn't go, another mechanism  is required.  The Swift compiler runs on several varieties of Linux, and on Windows, and will build products for those platforms.  The Swift Package Manager operates across all these platforms too.
+Xcode is a tool aimed at producing software for Apple's hardware and it is bursting full of esoteric features for that platform.  However, Swift is not limited to Apple products, so where Xcode doesn't go, another mechanism  is required.  The Swift compiler runs on several varieties of Linux, and on Windows, and will build products for those platforms.  The Swift Package Manager operates across all these platforms too.  The SPM is not a development environment; it is a deployment tool.
 
-In the presence of the SPM, on Mac, Linux or Windows, building and running an application can be as simple as
+In the presence of the SPM, on Mac, Linux or Windows, building and running an application can be as simple as:
 ```
     cd Application
     swift run
 ```
 This capability relies on a manifest file which describes the necessary libraries and Swift settings for success.  Any libraries that are necessary for linking external functionality and completing the creation of the runnable application are described within that manifest.
-
-Swift is an object oriented language but the Swift interface to the SGP4 libraries does not make use of that.  Whether providing TLEs, Satellites, Orbital Elements etc as objects would be helpful is a matter for another day.
 
 ## The SGP4 Package
 
