@@ -92,6 +92,7 @@ public func TConSaveFile( _ tconFile: UnsafeMutablePointer<CChar>,
 }
 
 // Adds a timing constant record to memory. Note that this function is solely for backward compatible with legacy software.
+// Notes: only the latest timing record is stored in memory using this method. Input timing record will be skipped/ignored if it's earlier than the existing one
 // The users should use TConLoadFile or TimeFuncLoadFile to load timing constants file instead.
 public func TConAddARec( _ refDs50UTC: Double,
                          _ leapDs50UTC: Double,
