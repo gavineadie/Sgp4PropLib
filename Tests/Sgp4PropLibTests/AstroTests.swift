@@ -27,11 +27,26 @@ final class AstroTests: XCTestCase {
 
         XCTAssertEqual(0, sgp4PropMse(satKey, 0.0, &ds1950, &pos, &vel, &llh))
 
-        var kep = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        var kepArray = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         
-        PosVelToKep(&pos, &vel, &kep)
-        print("Sem: \(kep[XA_KEP_A]),\nEcc: \(kep[XA_KEP_E]),\nInc: \(kep[XA_KEP_INCLI]),\nMAn: \(kep[XA_KEP_MA]),\nRAN: \(kep[XA_KEP_NODE]),\nPer: \(kep[XA_KEP_OMEGA])")
+        PosVelToKep(&pos, &vel, &kepArray)
+        print("Sem: \(kepArray[XA_KEP_A]),\nEcc: \(kepArray[XA_KEP_E]),\nInc: \(kepArray[XA_KEP_INCLI])")
+        print("MAn: \(kepArray[XA_KEP_MA]),\nRAN: \(kepArray[XA_KEP_NODE]),\nPer: \(kepArray[XA_KEP_OMEGA])")
+
+        var posK = [0.0, 0.0, 0.0]
+        var velK = [0.0, 0.0, 0.0]
+        KepToPosVel(&kepArray, &posK, &velK)
+
+        XCTAssertEqual(pos[0], posK[0], accuracy: 0.0000000001)         // 1 µm
+        XCTAssertEqual(pos[1], posK[1], accuracy: 0.0000000001)
+        XCTAssertEqual(pos[2], posK[2], accuracy: 0.0000000001)
+
+        XCTAssertEqual(vel[0], velK[0], accuracy: 0.00000000000001)     // .0001 µm/s
+        XCTAssertEqual(vel[1], velK[1], accuracy: 0.00000000000001)
+        XCTAssertEqual(vel[2], velK[2], accuracy: 0.00000000000001)
 
     }
+
+    
 
 }

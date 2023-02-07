@@ -7,6 +7,10 @@
 
 import Foundation
 
+public let IDX_ERR_NONE  = 0        // OK
+public let IDX_ERR_WARN  = 1        // Warning
+public let IDX_ERR_ERROR = 2        // Error
+
 public var libHandles = [UnsafeMutableRawPointer]()
 
 //

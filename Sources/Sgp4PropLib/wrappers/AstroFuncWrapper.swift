@@ -611,28 +611,6 @@ public func CompSunPos( _ ds50ET: Double,
     function(ds50ET, uvecSun, sunVecMag)
 }
 
-/// returns the Sun's lat/lon for the time (days after 1950)
-/// - Parameter ds1950: days after 1950
-/// - Returns: a tuple carrying (solarLat, solarLon)
-public func solarLLH(_ ds1950: Double) -> (Double, Double) {
-
-    var solarPos = [0.0, 0.0, 0.0]
-    var solarMag = 0.0
-
-    CompSunPos(ds1950, &solarPos, &solarMag)
-
-    solarPos[0] = solarPos[0] * solarMag
-    solarPos[1] = solarPos[1] * solarMag
-    solarPos[2] = solarPos[2] * solarMag
-
-    var earthLLH = [0.0, 0.0, 0.0]
-
-    XYZToLLHTime(ds1950, &solarPos, &earthLLH)
-
-    return (earthLLH[0], earthLLH[1])
-
-}
-
 // Computes the Moon position at the specified time.
 public func CompMoonPos( _ ds50ET: Double,
                          _ uvecMoon: UnsafeMutablePointer<Double>,
@@ -645,28 +623,6 @@ public func CompMoonPos( _ ds50ET: Double,
     let function = unsafeBitCast(getFunctionPointer(libHandle, "CompMoonPos"), to: functionSignature.self)
 
     function(ds50ET, uvecMoon, moonVecMag)
-}
-
-/// returns the Moon's lat/lon for the time (days after 1950)
-/// - Parameter ds1950: days after 1950
-/// - Returns: a tuple carrying (lunarLat, lunarLon)
-public func lunarLLH(_ ds1950: Double) -> (Double, Double) {
-
-    var lunarPos = [0.0, 0.0, 0.0]
-    var lunarMag = 0.0
-
-    CompMoonPos(ds1950, &lunarPos, &lunarMag)
-
-    lunarPos[0] = lunarPos[0] * lunarMag
-    lunarPos[1] = lunarPos[1] * lunarMag
-    lunarPos[2] = lunarPos[2] * lunarMag
-
-    var earthLLH = [0.0, 0.0, 0.0]
-
-    XYZToLLHTime(ds1950, &lunarPos, &earthLLH)
-
-    return (earthLLH[0], earthLLH[1])
-
 }
 
 // This function is intended for future use.  No information is currently available.

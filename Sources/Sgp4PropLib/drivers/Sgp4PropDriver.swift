@@ -232,10 +232,15 @@ public func sgp4PropDs50UtcPos(_ satKey: SatKey,
 public func sgp4GenEphems(_ satKey: Int64, _ startTime: Double, _ endTime: Double, _ stepSize: Double,
                           _ sgp4_ephem: Int, _ arrSize: Int,
                           _ ephemArr: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double)>,
-                          _ genEphemPts: UnsafeMutablePointer<Int32>) -> Int {
+                          _ genEphemPts: UnsafeMutablePointer<Int>) -> Int {
 
-    Int(Sgp4GenEphems(satKey, startTime, endTime, stepSize, Int32(sgp4_ephem), Int32(arrSize), ephemArr, genEphemPts))
+    var int32: Int32 = 0
+    let errorCode = Int(Sgp4GenEphems(satKey, startTime, endTime, stepSize,
+                                      Int32(sgp4_ephem), Int32(arrSize), ephemArr, &int32))
+    var int64 = Int(int32)
+    genEphemPts.assign(from: &int64, count: 1)
 
+    return errorCode
 }
 
 /// Retrieves propagator's precomputed results. This function can be used to obtain results from a

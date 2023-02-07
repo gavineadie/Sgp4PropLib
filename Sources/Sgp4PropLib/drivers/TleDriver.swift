@@ -404,6 +404,26 @@ public func tleAddSatFrLines (_ line1: String, _ line2: String) -> SatKey {
 
 }
 
+/// Gets the `satKey` from 2LE and catches errors ..
+/// - Parameters:
+///   - line: 2LE line one
+///   - line2: 2LE line two
+/// - Returns: the `satKey`, or zero if failure
+func satKeyFromLines(_ line: String, _ line2: String) -> Int64 {
+
+    let satKey = tleAddSatFrLines("1 25544U 98067A   22342.03316807  .00009173  00000+0  16967-3 0  9992",
+                                  "2 25544  51.6443 195.3775 0004403 136.6700  15.6217 15.49799285372144")
+
+    if 0 == sgp4InitSat(satKey) {
+        print("## \(getLastErrMsg()) (after sgp4InitSat) <<<-- MISTAKE")   // shouldn't happen ..
+    } else {
+        fatalError("## \(getLastErrMsg()) (after sgp4InitSat)")
+    }
+
+    return satKey
+
+}
+
 public func tleAddSatFrCsv (_ csvLine: String) -> SatKey {
 
     TleAddSatFrCsv(csvLine.cString)
