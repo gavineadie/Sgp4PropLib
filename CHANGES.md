@@ -3,11 +3,13 @@
 
 ### (2023 Feb xx : v0.2.1)
 
-- Services: IDX_ERR_NONE, IDX_ERR_WARN, IDX_ERR_ERROR added
-- Driver: `sgp4GenEphems`: last parameter "genEphemPts" changed from `UnsafeMutablePointer<Int32>` to `UnsafeMutablePointer<Int>`
-- **Note Also**: a known bug in `Sgp4GenEphems` .. last parameter is returned 1 too many on array overflow
+- Services: IDX_ERR_NONE, IDX_ERR_WARN, IDX_ERR_ERROR added ..
+- Driver: `sgp4GenEphems`: last parameter "genEphemPts" changed from `UnsafeMutablePointer<Int32>` to `UnsafeMutablePointer<Int>` ..
+- **Library Error**: a known bug in `Sgp4GenEphems` .. last parameter ("genEphemPts") is returned 1 too many on array overflow
 
 ### 2023 Jan 18 : v0.2.0 • _First public release (corresponds to Space-Track v9)_
+
+- Sample application removed ..
 
 ### 2023 Jan 14 : v0.1.12
 
