@@ -10,6 +10,16 @@ import XCTest
 
 final class DllTests: XCTestCase {
 
+    func testLoader() {
+
+        let handle1 = Loader.load(getDylibPath() + "libtle.dylib", mode: .lazy)
+        XCTAssert(handle1 != nil)
+
+        let handle2 = Loader.load(getDylibPath() + "xxxxxx.dylib", mode: .lazy)
+        XCTAssert(handle2 == nil)
+
+    }
+
     func testDllVersion() { XCTAssertEqual(dllVersion(), 9.0, "dllVersion failure") }
 
     func testLastErrMsg() {

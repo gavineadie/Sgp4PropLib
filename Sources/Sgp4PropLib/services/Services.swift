@@ -5,13 +5,20 @@
 //  Created by Gavin Eadie on 10/16/22.
 //
 
+#if os(Windows)
+import WinSDK
+#elseif os(iOS) || os(macOS) || os(tvOS) || os(watchOS)
+import Darwin
+#else
+import Glibc
+#endif
 import Foundation
 
 public let IDX_ERR_NONE  = 0        // Ok
 public let IDX_ERR_WARN  = 1        // Warning
 public let IDX_ERR_ERROR = 2        // Error
 
-public var libHandles = [UnsafeMutableRawPointer]()
+public var libHandles = [LibHandle]()
 
 //
 //MARK: Dynamic Library Services
@@ -28,51 +35,47 @@ public func loadAllDlls() {
     }
 }
 
-public func loadDll(_ dllName: String) -> UnsafeMutableRawPointer {
-    guard let dllHandle = dlopen(getDylibPath() + dllName, RTLD_NOW) else {
-        fatalError("Could not open \(getDylibPath() + dllName) \(String(cString: dlerror()))")
+public func loadDll(_ dllName: String) -> LibHandle {
+    guard let libHandle = Loader.load(getDylibPath() + dllName, mode: Loader.Flags(rawValue: 0)) else {
+        fatalError("Could not open '\(getDylibPath() + dllName)' ..") // \(String(cString: dlerror()))")
     }
 
-    libHandles.append(dllHandle)                   // put another handle in the pile
+    libHandles.append(libHandle)                   // put another handle in the pile
 
-    return dllHandle
+    return libHandle
 }
 
 //
 //TODO: I'm not too proud of this .. I need a better way
 //
 
+#if os(Windows)
+func getDylibPath() -> String {
+    return "C:\\Windows\\SysWOW64\\"
+}
+#else
 func getDylibPath() -> String {
     if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
         return dylibDirectory + "/"
     }
-
     return "/usr/local/lib/sgp4prop/"
 }
+#endif
 
-func getFunctionPointer(_ libHandle: UnsafeMutableRawPointer?,
-                        _ functionName: String) -> UnsafeMutableRawPointer {
+func getFunctionPointer(_ libHandle: LibHandle,
+                        _ functionName: String) -> functionPtr {
 
-    guard let functionPointer = dlsym(libHandle, functionName) else {
-        fatalError("dlsym failure: \(String(cString: dlerror())) (freed dylib?)")
-    }
+    Loader.lookup(symbol: functionName, in: libHandle)
 
-    return functionPointer
 }
 
 public func freeAllDlls() {
     if libHandles.count > 0 {
         for i in (0..<libHandles.count).reversed() {  // reverse, so the array is diminished from the tail
-            guard 0 == freeDll(libHandles[i]) else {
-                fatalError("dlclose failure: \(String(cString: dlerror()))")
-            }
+            Loader.unload(libHandles[i])
             libHandles.remove(at: i)
         }
     }
-}
-
-func freeDll(_ dllHandle: UnsafeMutableRawPointer) -> Int32 {
-    return dlclose(dllHandle)
 }
 
 public func verifyDLLs() {
