@@ -13,9 +13,9 @@ fileprivate let libHandle = loadDll("libdllmain.dylib")
 // Initializes DllMain program (host of Astro Standards libraries) for use in any Astro Standards applications
 public func DllMainInit(  ) -> Int64 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int64
+    typealias FunctionSignature = @convention(c) (  ) -> Int64
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "DllMainInit"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "DllMainInit"), to: FunctionSignature.self)
 
     return function()
 }
@@ -24,9 +24,9 @@ public func DllMainInit(  ) -> Int64 {
 // The returned string provides information about the version number, build date, and the platform. 
 public func DllMainGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "DllMainGetInfo"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "DllMainGetInfo"), to: FunctionSignature.self)
 
     function(infoStr)
 }
@@ -34,9 +34,9 @@ public func DllMainGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 // Loads DllMain-related parameters (AS_MOIC) from a text file
 public func DllMainLoadFile( _ dllMainFile: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "DllMainLoadFile"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "DllMainLoadFile"), to: FunctionSignature.self)
 
     return function(dllMainFile)
 }
@@ -48,9 +48,9 @@ public func DllMainLoadFile( _ dllMainFile: UnsafeMutablePointer<CChar> ) -> Int
 // Enabling logging can potentially result in large amounts of diagnostic information being generated, which can lead to large amounts of storage being consumed as well as performance decreases. For this reason, it is recommended that this function only be used for debugging purposes.
 public func OpenLogFile( _ fileName: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "OpenLogFile"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "OpenLogFile"), to: FunctionSignature.self)
 
     return function(fileName)
 }
@@ -59,9 +59,9 @@ public func OpenLogFile( _ fileName: UnsafeMutablePointer<CChar> ) -> Int32 {
 // Remember to close the log file before exiting the program.
 public func CloseLogFile(  ) {
 
-    typealias functionSignature = @convention(c) (  ) -> Void
+    typealias FunctionSignature = @convention(c) (  ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "CloseLogFile"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CloseLogFile"), to: FunctionSignature.self)
 
     function()
 }
@@ -72,9 +72,9 @@ public func CloseLogFile(  ) {
 // The message is limited to 128 characters. If the message is longer than this, it will be truncated.
 public func LogMessage( _ msgStr: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "LogMessage"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "LogMessage"), to: FunctionSignature.self)
 
     function(msgStr)
 }
@@ -87,9 +87,9 @@ public func LogMessage( _ msgStr: UnsafeMutablePointer<CChar> ) {
 // If you call this function before you have called DllMainInit(), the function will return an invalid string. This could result in undefined behavior.
 public func GetLastErrMsg( _ lastErrMsg: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "GetLastErrMsg"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetLastErrMsg"), to: FunctionSignature.self)
 
     function(lastErrMsg)
 }
@@ -103,9 +103,9 @@ public func GetLastErrMsg( _ lastErrMsg: UnsafeMutablePointer<CChar> ) {
 // This function provides a quick way to check whether all of the prerequisite DLLs have been loaded and initialized correctly. Improper initialization of the Standardized Astrodynamic Algorithms DLLs is one of the most common causes of program crashes.
 public func GetLastInfoMsg( _ lastInfoMsg: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "GetLastInfoMsg"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetLastInfoMsg"), to: FunctionSignature.self)
 
     function(lastInfoMsg)
 }
@@ -114,9 +114,9 @@ public func GetLastInfoMsg( _ lastInfoMsg: UnsafeMutablePointer<CChar> ) {
 // Returns a list of names of the Standardized Astrodynamic Algorithms DLLs that were initialized successfully.
 public func GetInitDllNames( _ initDllNames: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "GetInitDllNames"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetInitDllNames"), to: FunctionSignature.self)
 
     function(initDllNames)
 }
@@ -152,7 +152,7 @@ public func TestInterface( _ cIn: CChar,
     let _real2DIn = UnsafeMutableRawPointer(real2DIn).bindMemory(to: Double.self, capacity: 6)
     let _real2DOut = UnsafeMutableRawPointer(real2DOut).bindMemory(to: Double.self, capacity: 6)
 
-    typealias functionSignature = @convention(c) ( CChar,
+    typealias FunctionSignature = @convention(c) ( CChar,
                                                    UnsafeMutablePointer<CChar>,
                                                    Int32,
                                                    UnsafeMutablePointer<Int32>,
@@ -175,7 +175,7 @@ public func TestInterface( _ cIn: CChar,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TestInterface"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TestInterface"), to: FunctionSignature.self)
 
     function(cIn, cOut, intIn, intOut, longIn, longOut, realIn, realOut, strIn, strOut, int1DIn, int1DOut, long1DIn, long1DOut, real1DIn, real1DOut, _int2DIn, _int2DOut, _long2DIn, _long2DOut, _real2DIn, _real2DOut)
 }
@@ -197,7 +197,7 @@ public func TestInterface2( _ cInOut: UnsafeMutablePointer<CChar>,
     let _long2DInOut = UnsafeMutableRawPointer(long2DInOut).bindMemory(to: Int64.self, capacity: 6)
     let _real2DInOut = UnsafeMutableRawPointer(real2DInOut).bindMemory(to: Double.self, capacity: 6)
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int64>,
                                                    UnsafeMutablePointer<Double>,
@@ -209,7 +209,7 @@ public func TestInterface2( _ cInOut: UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<Int64>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TestInterface2"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TestInterface2"), to: FunctionSignature.self)
 
     function(cInOut, intInOut, longInOut, realInOut, strInOut, int1DInOut, long1DInOut, real1DInOut, _int2DInOut, _long2DInOut, _real2DInOut)
 }
@@ -223,12 +223,12 @@ public func TestInterface3( _ Unk1DIn: UnsafeMutablePointer<Int32>,
     let _Unk2DIn = UnsafeMutableRawPointer(Unk2DIn).bindMemory(to: Int32.self, capacity: 0)
     let _Unk2DOut = UnsafeMutableRawPointer(Unk2DOut).bindMemory(to: Int32.self, capacity: 0)
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Int32>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int32> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TestInterface3"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TestInterface3"), to: FunctionSignature.self)
 
     function(Unk1DIn, Unk1DOut, _Unk2DIn, _Unk2DOut)
 }
@@ -236,10 +236,10 @@ public func TestInterface3( _ Unk1DIn: UnsafeMutablePointer<Int32>,
 // Returns data parsed from user's AS_MOIC-typed input card - up to 128 fields are allowed.
 public func GetMOICData( _ arrSize: Int32, _ xa_moic: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "GetMOICData"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetMOICData"), to: FunctionSignature.self)
 
     function(arrSize, xa_moic)
 }
@@ -249,9 +249,9 @@ public func GetMOICData( _ arrSize: Int32, _ xa_moic: UnsafeMutablePointer<Doubl
 // and is currently calling any of these methods: DllMainLoadFile(), TleLoadFile(), SpVecLoadFile(), or VcmLoadFile()
 public func SetElsetKeyMode( _ elset_keyMode: Int32 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int32 ) -> Int32
+    typealias FunctionSignature = @convention(c) ( Int32 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "SetElsetKeyMode"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SetElsetKeyMode"), to: FunctionSignature.self)
 
     return function(elset_keyMode)
 }
@@ -259,9 +259,9 @@ public func SetElsetKeyMode( _ elset_keyMode: Int32 ) -> Int32 {
 // Gets current ELSET key mode
 public func GetElsetKeyMode(  ) -> Int32 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int32
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "GetElsetKeyMode"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetElsetKeyMode"), to: FunctionSignature.self)
 
     return function()
 }

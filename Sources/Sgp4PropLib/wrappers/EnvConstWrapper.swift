@@ -18,9 +18,9 @@ fileprivate let libHandle = loadDll("libenvconst.dylib")
 // When the function is called, the GEO model is set to WGS-72 and the FK model is set to FK5.  If the user plans to use the SGP4 propagator, do NOT change this default setting. Otherwise, SGP4 won't work
 public func EnvInit( _ apAddr: Int64 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64 ) -> Int32
+    typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvInit"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvInit"), to: FunctionSignature.self)
 
     return function(apAddr)
 }
@@ -29,9 +29,9 @@ public func EnvInit( _ apAddr: Int64 ) -> Int32 {
 // The returned string provides information about the version number, build date, and the platform of the EnvConst DLL.
 public func EnvGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvGetInfo"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvGetInfo"), to: FunctionSignature.self)
 
     function(infoStr)
 }
@@ -46,9 +46,9 @@ public func EnvGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 // All the string literals are case-insensitive.	
 public func EnvLoadFile( _ envFile: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvLoadFile"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvLoadFile"), to: FunctionSignature.self)
 
     return function(envFile)
 }
@@ -59,11 +59,11 @@ public func EnvSaveFile( _ envConstFile: UnsafeMutablePointer<CChar>,
                          _ saveMode: Int32,
                          _ saveForm: Int32 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    Int32,
                                                    Int32 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvSaveFile"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvSaveFile"), to: FunctionSignature.self)
 
     return function(envConstFile, saveMode, saveForm)
 }
@@ -72,9 +72,9 @@ public func EnvSaveFile( _ envConstFile: UnsafeMutablePointer<CChar>,
 // The FK model is shared among all the Standardized Astrodynamic Algorithms DLLs in the program. 
 public func EnvGetFkIdx(  ) -> Int32 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int32
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvGetFkIdx"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvGetFkIdx"), to: FunctionSignature.self)
 
     return function()
 }
@@ -86,9 +86,9 @@ public func EnvGetFkIdx(  ) -> Int32 {
 // The FK model must be set to FK5 to use the SGP4 propagator.
 public func EnvSetFkIdx( _ xf_FkMod: Int32 ) {
 
-    typealias functionSignature = @convention(c) ( Int32 ) -> Void
+    typealias FunctionSignature = @convention(c) ( Int32 ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvSetFkIdx"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvSetFkIdx"), to: FunctionSignature.self)
 
     function(xf_FkMod)
 }
@@ -114,9 +114,9 @@ public func EnvSetFkIdx( _ xf_FkMod: Int32 ) {
 // </table>
 public func EnvGetGeoIdx(  ) -> Int32 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int32
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvGetGeoIdx"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvGetGeoIdx"), to: FunctionSignature.self)
 
     return function()
 }
@@ -146,9 +146,9 @@ public func EnvGetGeoIdx(  ) -> Int32 {
 // The GEO model must be set to WGS-72 to use the SGP4 propagator.
 public func EnvSetGeoIdx( _ xf_GeoMod: Int32 ) {
 
-    typealias functionSignature = @convention(c) ( Int32 ) -> Void
+    typealias FunctionSignature = @convention(c) ( Int32 ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvSetGeoIdx"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvSetGeoIdx"), to: FunctionSignature.self)
 
     function(xf_GeoMod)
 }
@@ -168,9 +168,9 @@ public func EnvSetGeoIdx( _ xf_GeoMod: Int32 ) {
 // </table>
 public func EnvGetGeoStr( _ geoStr: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvGetGeoStr"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvGetGeoStr"), to: FunctionSignature.self)
 
     function(geoStr)
 }
@@ -200,9 +200,9 @@ public func EnvGetGeoStr( _ geoStr: UnsafeMutablePointer<CChar> ) {
 // The GEO model must be set to WGS-72 to use the SGP4 propagator.
 public func EnvSetGeoStr( _ geoStr: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvSetGeoStr"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvSetGeoStr"), to: FunctionSignature.self)
 
     function(geoStr)
 }
@@ -229,9 +229,9 @@ public func EnvSetGeoStr( _ geoStr: UnsafeMutablePointer<CChar> ) {
 // </table>   
 public func EnvGetGeoConst( _ xf_GeoCon: Int32 ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Int32 ) -> Double
+    typealias FunctionSignature = @convention(c) ( Int32 ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvGetGeoConst"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvGetGeoConst"), to: FunctionSignature.self)
 
     return function(xf_GeoCon)
 }
@@ -250,9 +250,9 @@ public func EnvGetGeoConst( _ xf_GeoCon: Int32 ) -> Double {
 // </table>   
 public func EnvGetFkConst( _ xf_FkCon: Int32 ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Int32 ) -> Double
+    typealias FunctionSignature = @convention(c) ( Int32 ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvGetFkConst"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvGetFkConst"), to: FunctionSignature.self)
 
     return function(xf_FkCon)
 }
@@ -264,9 +264,9 @@ public func EnvGetFkConst( _ xf_FkCon: Int32 ) -> Double {
 // The handle returned by this function is sometimes called a pointer for historical reasons. The name EnvGetFkPtr comes from the fact that the handle used to be called a pointer.
 public func EnvGetFkPtr(  ) -> Int64 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int64
+    typealias FunctionSignature = @convention(c) (  ) -> Int64
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvGetFkPtr"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvGetFkPtr"), to: FunctionSignature.self)
 
     return function()
 }
@@ -274,9 +274,9 @@ public func EnvGetFkPtr(  ) -> Int64 {
 // Specifies the shape of the earth that will be used by the Astro Standards software, either spherical earth or oblate earth
 public func EnvSetEarthShape( _ earthShape: Int32 ) {
 
-    typealias functionSignature = @convention(c) ( Int32 ) -> Void
+    typealias FunctionSignature = @convention(c) ( Int32 ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvSetEarthShape"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvSetEarthShape"), to: FunctionSignature.self)
 
     function(earthShape)
 }
@@ -284,9 +284,9 @@ public func EnvSetEarthShape( _ earthShape: Int32 ) {
 // Returns the value representing the shape of the earth being used by the Astro Standards software, either spherical earth or oblate earth
 public func EnvGetEarthShape(  ) -> Int32 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int32
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EnvGetEarthShape"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EnvGetEarthShape"), to: FunctionSignature.self)
 
     return function()
 }

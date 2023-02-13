@@ -17,9 +17,9 @@ fileprivate let libHandle = loadDll("libsgp4prop.dylib")
 // An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section of the accompanying documentation, before using this DLL.
 public func Sgp4Init( _ apAddr: Int64 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64 ) -> Int32
+    typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4Init"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4Init"), to: FunctionSignature.self)
 
     return function(apAddr)
 }
@@ -28,9 +28,9 @@ public func Sgp4Init( _ apAddr: Int64 ) -> Int32 {
 // The returned string provides information about the version number, build date, and platform.
 public func Sgp4GetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4GetInfo"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4GetInfo"), to: FunctionSignature.self)
 
     function(infoStr)
 }
@@ -43,9 +43,9 @@ public func Sgp4GetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 // The call to this routine needs to be placed before any calls to the SGP4 propagator routines (Sgp4PropMse(), Sgp4PropDs50UTC(), etc.).
 public func Sgp4InitSat( _ satKey: Int64 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64 ) -> Int32
+    typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4InitSat"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4InitSat"), to: FunctionSignature.self)
 
     return function(satKey)
 }
@@ -53,9 +53,9 @@ public func Sgp4InitSat( _ satKey: Int64 ) -> Int32 {
 // Removing a satellite from the propagator's set of satellites does not affect the corresponding TLE data loaded by calls to routines in Tle.dll.
 public func Sgp4RemoveSat( _ satKey: Int64 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64 ) -> Int32
+    typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4RemoveSat"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4RemoveSat"), to: FunctionSignature.self)
 
     return function(satKey)
 }
@@ -64,9 +64,9 @@ public func Sgp4RemoveSat( _ satKey: Int64 ) -> Int32 {
 // Calling this function removes all satellites from the set maintained by Sgp4Prop.dll. However, the TLE data loaded by Tle.dll is unaffected by this function.
 public func Sgp4RemoveAllSats(  ) -> Int32 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int32
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4RemoveAllSats"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4RemoveAllSats"), to: FunctionSignature.self)
 
     return function()
 }
@@ -74,9 +74,9 @@ public func Sgp4RemoveAllSats(  ) -> Int32 {
 // Returns the number of GP objects currently created. 
 public func Sgp4GetCount(  ) -> Int32 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int32
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4GetCount"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4GetCount"), to: FunctionSignature.self)
 
     return function()
 }
@@ -102,14 +102,14 @@ public func Sgp4PropMse( _ satKey: Int64,
                          _ vel: UnsafeMutablePointer<Double>,
                          _ llh: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4PropMse"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4PropMse"), to: FunctionSignature.self)
 
     return function(satKey, mse, ds50UTC, pos, vel, llh)
 }
@@ -133,14 +133,14 @@ public func Sgp4PropDs50UTC( _ satKey: Int64,
                              _ vel: UnsafeMutablePointer<Double>,
                              _ llh: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4PropDs50UTC"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4PropDs50UTC"), to: FunctionSignature.self)
 
     return function(satKey, ds50UTC, mse, pos, vel, llh)
 }
@@ -152,12 +152,12 @@ public func Sgp4PropDs50UtcPosVel( _ satKey: Int64,
                                    _ pos: UnsafeMutablePointer<Double>,
                                    _ vel: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4PropDs50UtcPosVel"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4PropDs50UtcPosVel"), to: FunctionSignature.self)
 
     return function(satKey, ds50UTC, pos, vel)
 }
@@ -180,11 +180,11 @@ public func Sgp4PropDs50UtcLLH( _ satKey: Int64,
                                 _ ds50UTC: Double,
                                 _ llh: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    Double,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4PropDs50UtcLLH"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4PropDs50UtcLLH"), to: FunctionSignature.self)
 
     return function(satKey, ds50UTC, llh)
 }
@@ -207,11 +207,11 @@ public func Sgp4PropDs50UtcPos( _ satKey: Int64,
                                 _ ds50UTC: Double,
                                 _ pos: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    Double,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4PropDs50UtcPos"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4PropDs50UtcPos"), to: FunctionSignature.self)
 
     return function(satKey, ds50UTC, pos)
 }
@@ -250,11 +250,11 @@ public func Sgp4GetPropOut( _ satKey: Int64,
                             _ xf_Sgp4Out: Int32,
                             _ destArr: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    Int32,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4GetPropOut"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4GetPropOut"), to: FunctionSignature.self)
 
     return function(satKey, xf_Sgp4Out, destArr)
 }
@@ -266,12 +266,12 @@ public func Sgp4PropAll( _ satKey: Int64,
                          _ timeIn: Double,
                          _ xa_Sgp4Out: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    Int32,
                                                    Double,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4PropAll"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4PropAll"), to: FunctionSignature.self)
 
     return function(satKey, timeType, timeIn, xa_Sgp4Out)
 }
@@ -288,7 +288,7 @@ public func Sgp4PosVelToKep( _ yr: Int32,
                              _ velNew: UnsafeMutablePointer<Double>,
                              _ sgp4MeanKep: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
@@ -296,7 +296,7 @@ public func Sgp4PosVelToKep( _ yr: Int32,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4PosVelToKep"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4PosVelToKep"), to: FunctionSignature.self)
 
     return function(yr, day, pos, vel, posNew, velNew, sgp4MeanKep)
 }
@@ -309,11 +309,11 @@ public func Sgp4PosVelToTleArr( _ pos: UnsafeMutablePointer<Double>,
                                 _ vel: UnsafeMutablePointer<Double>,
                                 _ xa_tle: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4PosVelToTleArr"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4PosVelToTleArr"), to: FunctionSignature.self)
 
     return function(pos, vel, xa_tle)
 }
@@ -324,12 +324,12 @@ public func Sgp4ReepochTLE( _ satKey: Int64,
                             _ line1Out: UnsafeMutablePointer<CChar>,
                             _ line2Out: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    Double,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4ReepochTLE"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4ReepochTLE"), to: FunctionSignature.self)
 
     return function(satKey, reepochDs50UTC, line1Out, line2Out)
 }
@@ -339,11 +339,11 @@ public func Sgp4ReepochCsv( _ satKey: Int64,
                             _ reepochDs50UTC: Double,
                             _ csvLine: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    Double,
                                                    UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4ReepochCsv"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4ReepochCsv"), to: FunctionSignature.self)
 
     return function(satKey, reepochDs50UTC, csvLine)
 }
@@ -352,9 +352,9 @@ public func Sgp4ReepochCsv( _ satKey: Int64,
 // Note: The only requirement now is that "SGP4_Open_License.txt" file needs to be in those folders specified in PATH/LD_LIBRARY_PATH environment or AstroStds DLLs/SOs'
 public func Sgp4SetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4SetLicFilePath"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4SetLicFilePath"), to: FunctionSignature.self)
 
     function(licFilePath)
 }
@@ -363,9 +363,9 @@ public func Sgp4SetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
 // Note: The only requirement now is that "SGP4_Open_License.txt" file needs to be in those folders specified in PATH/LD_LIBRARY_PATH environment or AstroStds DLLs/SOs'
 public func Sgp4GetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4GetLicFilePath"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4GetLicFilePath"), to: FunctionSignature.self)
 
     function(licFilePath)
 }
@@ -384,7 +384,7 @@ public func Sgp4GenEphems( _ satKey: Int64,
 
     let _ephemArr = UnsafeMutableRawPointer(ephemArr).bindMemory(to: Double.self, capacity: 0)
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    Double,
                                                    Double,
                                                    Double,
@@ -393,7 +393,7 @@ public func Sgp4GenEphems( _ satKey: Int64,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Int32> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4GenEphems"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4GenEphems"), to: FunctionSignature.self)
 
     return function(satKey, startTime, endTime, stepSize, sgp4_ephem, arrSize, _ephemArr, genEphemPts)
 }
@@ -414,7 +414,7 @@ public func Sgp4GenEphems_OS( _ xa_tle: UnsafeMutablePointer<Double>,
 
     let _ephemArr = UnsafeMutableRawPointer(ephemArr).bindMemory(to: Double.self, capacity: 0)
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    Double,
                                                    Double,
                                                    Double,
@@ -423,7 +423,7 @@ public func Sgp4GenEphems_OS( _ xa_tle: UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Int32> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4GenEphems_OS"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4GenEphems_OS"), to: FunctionSignature.self)
 
     return function(xa_tle, startTime, endTime, stepSize, sgp4_ephem, arrSize, _ephemArr, genEphemPts)
 }
@@ -436,12 +436,12 @@ public func Sgp4PropAllSats( _ satKeys: UnsafeMutablePointer<Int64>,
 
     let _ephemArr = UnsafeMutableRawPointer(ephemArr).bindMemory(to: Double.self, capacity: 0)
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Int64>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Int64>,
                                                    Int32,
                                                    Double,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Sgp4PropAllSats"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4PropAllSats"), to: FunctionSignature.self)
 
     return function(satKeys, numOfSats, ds50UTC, _ephemArr)
 }

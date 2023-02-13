@@ -16,9 +16,9 @@ fileprivate let libHandle = loadDll("libtle.dylib")
 // An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section of the accompanying documentation, before using this DLL.
 public func TleInit( _ apAddr: Int64 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64 ) -> Int32
+    typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleInit"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleInit"), to: FunctionSignature.self)
 
     return function(apAddr)
 }
@@ -27,9 +27,9 @@ public func TleInit( _ apAddr: Int64 ) -> Int32 {
 // The returned string provides information about the version number, build date, and the platform of the Tle DLL. 
 public func TleGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGetInfo"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGetInfo"), to: FunctionSignature.self)
 
     function(infoStr)
 }
@@ -42,9 +42,9 @@ public func TleGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 // The input file is read in two passes. The function first looks for "ELTFIL=" and "VECFIL=" lines, then it looks for TLEs which were included directly. The result of this is that data entered using both methods will be processed, but the "ELTFIL=" and "VECFIL=" data will be processed first.
 public func TleLoadFile( _ tleFile: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleLoadFile"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleLoadFile"), to: FunctionSignature.self)
 
     return function(tleFile)
 }
@@ -58,11 +58,11 @@ public func TleSaveFile( _ tleFile: UnsafeMutablePointer<CChar>,
                          _ saveMode: Int32,
                          _ xf_tleForm: Int32 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    Int32,
                                                    Int32 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleSaveFile"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleSaveFile"), to: FunctionSignature.self)
 
     return function(tleFile, saveMode, xf_tleForm)
 }
@@ -71,9 +71,9 @@ public func TleSaveFile( _ tleFile: UnsafeMutablePointer<CChar>,
 // If the users enter an invalid satKey (a non-existing satKey), the function will return a non-zero value indicating an error.
 public func TleRemoveSat( _ satKey: Int64 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64 ) -> Int32
+    typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleRemoveSat"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleRemoveSat"), to: FunctionSignature.self)
 
     return function(satKey)
 }
@@ -81,9 +81,9 @@ public func TleRemoveSat( _ satKey: Int64 ) -> Int32 {
 // Removes all the TLEs from memory.
 public func TleRemoveAllSats(  ) -> Int32 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int32
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleRemoveAllSats"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleRemoveAllSats"), to: FunctionSignature.self)
 
     return function()
 }
@@ -93,9 +93,9 @@ public func TleRemoveAllSats(  ) -> Int32 {
 // This function is useful for dynamically allocating memory for the array that is passed to the function TleGetLoaded().
 public func TleGetCount(  ) -> Int32 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int32
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGetCount"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGetCount"), to: FunctionSignature.self)
 
     return function()
 }
@@ -106,10 +106,10 @@ public func TleGetCount(  ) -> Int32 {
 // If you are going to pass a statically allocated array to this function, ensure it is large enough to hold all of the returned satKeys.
 public func TleGetLoaded( _ order: Int32, _ satKeys: UnsafeMutablePointer<Int64> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    UnsafeMutablePointer<Int64> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGetLoaded"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGetLoaded"), to: FunctionSignature.self)
 
     function(order, satKeys)
 }
@@ -120,10 +120,10 @@ public func TleGetLoaded( _ order: Int32, _ satKeys: UnsafeMutablePointer<Int64>
 // This function can be called repeatedly to add many TLEs, one at a time.
 public func TleAddSatFrLines( _ line1: UnsafeMutablePointer<CChar>, _ line2: UnsafeMutablePointer<CChar> ) -> Int64 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar> ) -> Int64
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleAddSatFrLines"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleAddSatFrLines"), to: FunctionSignature.self)
 
     return function(line1, line2)
 }
@@ -134,11 +134,11 @@ public func TleAddSatFrLinesML( _ line1: UnsafeMutablePointer<CChar>,
                                 _ line2: UnsafeMutablePointer<CChar>,
                                 _ satKey: UnsafeMutablePointer<Int64> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<Int64> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleAddSatFrLinesML"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleAddSatFrLinesML"), to: FunctionSignature.self)
 
     function(line1, line2, satKey)
 }
@@ -146,9 +146,9 @@ public func TleAddSatFrLinesML( _ line1: UnsafeMutablePointer<CChar>,
 // Adds a TLE (satellite), using its CSV string format. 
 public func TleAddSatFrCsv( _ csvLine: UnsafeMutablePointer<CChar> ) -> Int64 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int64
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int64
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleAddSatFrCsv"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleAddSatFrCsv"), to: FunctionSignature.self)
 
     return function(csvLine)
 }
@@ -156,10 +156,10 @@ public func TleAddSatFrCsv( _ csvLine: UnsafeMutablePointer<CChar> ) -> Int64 {
 // This function is similar to TleAddSatFrCsv but designed to be used in Matlab.
 public func TleAddSatFrCsvML( _ csvLine: UnsafeMutablePointer<CChar>, _ satKey: UnsafeMutablePointer<Int64> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<Int64> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleAddSatFrCsvML"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleAddSatFrCsvML"), to: FunctionSignature.self)
 
     function(csvLine, satKey)
 }
@@ -186,7 +186,7 @@ public func TleAddSatFrFieldsGP( _ satNum: Int32,
                                  _ mnMotion: Double,
                                  _ revNum: Int32 ) -> Int64 {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    CChar,
                                                    UnsafeMutablePointer<CChar>,
                                                    Int32,
@@ -202,7 +202,7 @@ public func TleAddSatFrFieldsGP( _ satNum: Int32,
                                                    Double,
                                                    Int32 ) -> Int64
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleAddSatFrFieldsGP"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleAddSatFrFieldsGP"), to: FunctionSignature.self)
 
     return function(satNum, secClass, satName, epochYr, epochDays, bstar, ephType, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
 }
@@ -227,7 +227,7 @@ public func TleAddSatFrFieldsGP2( _ satNum: Int32,
                                   _ nDotO2: Double,
                                   _ n2DotO6: Double ) -> Int64 {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    CChar,
                                                    UnsafeMutablePointer<CChar>,
                                                    Int32,
@@ -245,7 +245,7 @@ public func TleAddSatFrFieldsGP2( _ satNum: Int32,
                                                    Double,
                                                    Double ) -> Int64
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleAddSatFrFieldsGP2"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleAddSatFrFieldsGP2"), to: FunctionSignature.self)
 
     return function(satNum, secClass, satName, epochYr, epochDays, bstar, ephType, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, nDotO2, n2DotO6)
 }
@@ -271,7 +271,7 @@ public func TleAddSatFrFieldsGP2ML( _ satNum: Int32,
                                     _ n2DotO6: Double,
                                     _ satKey: UnsafeMutablePointer<Int64> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    CChar,
                                                    UnsafeMutablePointer<CChar>,
                                                    Int32,
@@ -290,7 +290,7 @@ public func TleAddSatFrFieldsGP2ML( _ satNum: Int32,
                                                    Double,
                                                    UnsafeMutablePointer<Int64> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleAddSatFrFieldsGP2ML"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleAddSatFrFieldsGP2ML"), to: FunctionSignature.self)
 
     function(satNum, secClass, satName, epochYr, epochDays, bstar, ephType, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, nDotO2, n2DotO6, satKey)
 }
@@ -312,7 +312,7 @@ public func TleUpdateSatFrFieldsGP( _ satKey: Int64,
                                     _ mnMotion: Double,
                                     _ revNum: Int32 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    CChar,
                                                    UnsafeMutablePointer<CChar>,
                                                    Double,
@@ -325,7 +325,7 @@ public func TleUpdateSatFrFieldsGP( _ satKey: Int64,
                                                    Double,
                                                    Int32 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleUpdateSatFrFieldsGP"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleUpdateSatFrFieldsGP"), to: FunctionSignature.self)
 
     return function(satKey, secClass, satName, bstar, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
 }
@@ -347,7 +347,7 @@ public func TleUpdateSatFrFieldsGP2( _ satKey: Int64,
                                      _ nDotO2: Double,
                                      _ n2DotO6: Double ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    CChar,
                                                    UnsafeMutablePointer<CChar>,
                                                    Double,
@@ -362,7 +362,7 @@ public func TleUpdateSatFrFieldsGP2( _ satKey: Int64,
                                                    Double,
                                                    Double ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleUpdateSatFrFieldsGP2"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleUpdateSatFrFieldsGP2"), to: FunctionSignature.self)
 
     return function(satKey, secClass, satName, bstar, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, nDotO2, n2DotO6)
 }
@@ -386,7 +386,7 @@ public func TleAddSatFrFieldsSP( _ satNum: Int32,
                                  _ mnMotion: Double,
                                  _ revNum: Int32 ) -> Int64 {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    CChar,
                                                    UnsafeMutablePointer<CChar>,
                                                    Int32,
@@ -403,7 +403,7 @@ public func TleAddSatFrFieldsSP( _ satNum: Int32,
                                                    Double,
                                                    Int32 ) -> Int64
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleAddSatFrFieldsSP"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleAddSatFrFieldsSP"), to: FunctionSignature.self)
 
     return function(satNum, secClass, satName, epochYr, epochDays, bTerm, ogParm, agom, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
 }
@@ -429,7 +429,7 @@ public func TleAddSatFrFieldsSPML( _ satNum: Int32,
                                    _ revNum: Int32,
                                    _ satKey: UnsafeMutablePointer<Int64> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    CChar,
                                                    UnsafeMutablePointer<CChar>,
                                                    Int32,
@@ -447,7 +447,7 @@ public func TleAddSatFrFieldsSPML( _ satNum: Int32,
                                                    Int32,
                                                    UnsafeMutablePointer<Int64> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleAddSatFrFieldsSPML"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleAddSatFrFieldsSPML"), to: FunctionSignature.self)
 
     function(satNum, secClass, satName, epochYr, epochDays, bTerm, ogParm, agom, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, satKey)
 }
@@ -470,7 +470,7 @@ public func TleUpdateSatFrFieldsSP( _ satKey: Int64,
                                     _ mnMotion: Double,
                                     _ revNum: Int32 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    CChar,
                                                    UnsafeMutablePointer<CChar>,
                                                    Double,
@@ -485,7 +485,7 @@ public func TleUpdateSatFrFieldsSP( _ satKey: Int64,
                                                    Double,
                                                    Int32 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleUpdateSatFrFieldsSP"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleUpdateSatFrFieldsSP"), to: FunctionSignature.self)
 
     return function(satKey, secClass, satName, bterm, ogParm, agom, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
 }
@@ -523,11 +523,11 @@ public func TleSetField( _ satKey: Int64,
                          _ xf_Tle: Int32,
                          _ valueStr: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    Int32,
                                                    UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleSetField"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleSetField"), to: FunctionSignature.self)
 
     return function(satKey, xf_Tle, valueStr)
 }
@@ -564,11 +564,11 @@ public func TleGetField( _ satKey: Int64,
                          _ xf_Tle: Int32,
                          _ valueStr: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    Int32,
                                                    UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGetField"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGetField"), to: FunctionSignature.self)
 
     return function(satKey, xf_Tle, valueStr)
 }
@@ -592,7 +592,7 @@ public func TleGetAllFieldsGP( _ satKey: Int64,
                                _ mnMotion: UnsafeMutablePointer<Double>,
                                _ revNum: UnsafeMutablePointer<Int32> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar>,
@@ -609,7 +609,7 @@ public func TleGetAllFieldsGP( _ satKey: Int64,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Int32> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGetAllFieldsGP"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGetAllFieldsGP"), to: FunctionSignature.self)
 
     return function(satKey, satNum, secClass, satName, epochYr, epochDays, bstar, ephType, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
 }
@@ -636,7 +636,7 @@ public func TleGetAllFieldsGP2( _ satKey: Int64,
                                 _ nDotO2: UnsafeMutablePointer<Double>,
                                 _ n2DotO6: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar>,
@@ -655,7 +655,7 @@ public func TleGetAllFieldsGP2( _ satKey: Int64,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGetAllFieldsGP2"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGetAllFieldsGP2"), to: FunctionSignature.self)
 
     return function(satKey, satNum, secClass, satName, epochYr, epochDays, bstar, ephType, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, nDotO2, n2DotO6)
 }
@@ -681,7 +681,7 @@ public func TleGetAllFieldsSP( _ satKey: Int64,
                                _ mnMotion: UnsafeMutablePointer<Double>,
                                _ revNum: UnsafeMutablePointer<Int32> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar>,
@@ -699,7 +699,7 @@ public func TleGetAllFieldsSP( _ satKey: Int64,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Int32> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGetAllFieldsSP"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGetAllFieldsSP"), to: FunctionSignature.self)
 
     return function(satKey, satNum, secClass, satName, epochYr, epochDays, bTerm, ogParm, agom, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
 }
@@ -726,7 +726,7 @@ public func TleParseGP( _ line1: UnsafeMutablePointer<CChar>,
                         _ mnMotion: UnsafeMutablePointer<Double>,
                         _ revNum: UnsafeMutablePointer<Int32> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<CChar>,
@@ -746,7 +746,7 @@ public func TleParseGP( _ line1: UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Int32> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleParseGP"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleParseGP"), to: FunctionSignature.self)
 
     return function(line1, line2, satNum, secClass, satName, epochYr, epochDays, nDotO2, n2DotO6, bstar, ephType, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
 }
@@ -758,12 +758,12 @@ public func TleLinesToArray( _ line1: UnsafeMutablePointer<CChar>,
                              _ xa_tle: UnsafeMutablePointer<Double>,
                              _ xs_tle: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleLinesToArray"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleLinesToArray"), to: FunctionSignature.self)
 
     return function(line1, line2, xa_tle, xs_tle)
 }
@@ -790,7 +790,7 @@ public func TleParseSP( _ line1: UnsafeMutablePointer<CChar>,
                         _ mnMotion: UnsafeMutablePointer<Double>,
                         _ revNum: UnsafeMutablePointer<Int32> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<CChar>,
@@ -809,7 +809,7 @@ public func TleParseSP( _ line1: UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Int32> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleParseSP"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleParseSP"), to: FunctionSignature.self)
 
     return function(line1, line2, satNum, secClass, satName, epochYr, epochDays, bTerm, ogParm, agom, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum)
 }
@@ -819,11 +819,11 @@ public func TleGetLines( _ satKey: Int64,
                          _ line1: UnsafeMutablePointer<CChar>,
                          _ line2: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGetLines"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGetLines"), to: FunctionSignature.self)
 
     return function(satKey, line1, line2)
 }
@@ -831,10 +831,10 @@ public func TleGetLines( _ satKey: Int64,
 // Returns the CSV string representation of a TLE of a satellite. 
 public func TleGetCsv( _ satKey: Int64, _ csvLine: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGetCsv"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGetCsv"), to: FunctionSignature.self)
 
     return function(satKey, csvLine)
 }
@@ -862,7 +862,7 @@ public func TleGPFieldsToLines( _ satNum: Int32,
                                 _ line1: UnsafeMutablePointer<CChar>,
                                 _ line2: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    CChar,
                                                    UnsafeMutablePointer<CChar>,
                                                    Int32,
@@ -882,7 +882,7 @@ public func TleGPFieldsToLines( _ satNum: Int32,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGPFieldsToLines"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGPFieldsToLines"), to: FunctionSignature.self)
 
     function(satNum, secClass, satName, epochYr, epochDays, nDotO2, n2DotO6, bstar, ephType, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, line1, line2)
 }
@@ -909,7 +909,7 @@ public func TleGPFieldsToCsv( _ satNum: Int32,
                               _ revNum: Int32,
                               _ csvLine: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    CChar,
                                                    UnsafeMutablePointer<CChar>,
                                                    Int32,
@@ -928,7 +928,7 @@ public func TleGPFieldsToCsv( _ satNum: Int32,
                                                    Int32,
                                                    UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGPFieldsToCsv"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGPFieldsToCsv"), to: FunctionSignature.self)
 
     function(satNum, secClass, satName, epochYr, epochDays, nDotO2, n2DotO6, bstar, ephType, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, csvLine)
 }
@@ -941,12 +941,12 @@ public func TleGPArrayToLines( _ xa_tle: UnsafeMutablePointer<Double>,
                                _ line1: UnsafeMutablePointer<CChar>,
                                _ line2: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGPArrayToLines"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGPArrayToLines"), to: FunctionSignature.self)
 
     function(xa_tle, xs_tle, line1, line2)
 }
@@ -958,11 +958,11 @@ public func TleGPArrayToCsv( _ xa_tle: UnsafeMutablePointer<Double>,
                              _ xs_tle: UnsafeMutablePointer<CChar>,
                              _ csvline: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGPArrayToCsv"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGPArrayToCsv"), to: FunctionSignature.self)
 
     function(xa_tle, xs_tle, csvline)
 }
@@ -990,7 +990,7 @@ public func TleSPFieldsToLines( _ satNum: Int32,
                                 _ line1: UnsafeMutablePointer<CChar>,
                                 _ line2: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    CChar,
                                                    UnsafeMutablePointer<CChar>,
                                                    Int32,
@@ -1009,7 +1009,7 @@ public func TleSPFieldsToLines( _ satNum: Int32,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleSPFieldsToLines"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleSPFieldsToLines"), to: FunctionSignature.self)
 
     function(satNum, secClass, satName, epochYr, epochDays, bTerm, ogParm, agom, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, revNum, line1, line2)
 }
@@ -1019,9 +1019,9 @@ public func TleSPFieldsToLines( _ satNum: Int32,
 // A negative value will be returned if there is an error.
 public func TleGetSatKey( _ satNum: Int32 ) -> Int64 {
 
-    typealias functionSignature = @convention(c) ( Int32 ) -> Int64
+    typealias FunctionSignature = @convention(c) ( Int32 ) -> Int64
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGetSatKey"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGetSatKey"), to: FunctionSignature.self)
 
     return function(satNum)
 }
@@ -1032,10 +1032,10 @@ public func TleGetSatKey( _ satNum: Int32 ) -> Int64 {
 // A negative value will be returned in satKey if there is an error.
 public func TleGetSatKeyML( _ satNum: Int32, _ satKey: UnsafeMutablePointer<Int64> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    UnsafeMutablePointer<Int64> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleGetSatKeyML"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleGetSatKeyML"), to: FunctionSignature.self)
 
     function(satNum, satKey)
 }
@@ -1050,12 +1050,12 @@ public func TleFieldsToSatKey( _ satNum: Int32,
                                _ epochDays: Double,
                                _ ephType: Int32 ) -> Int64 {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    Int32,
                                                    Double,
                                                    Int32 ) -> Int64
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleFieldsToSatKey"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleFieldsToSatKey"), to: FunctionSignature.self)
 
     return function(satNum, epochYr, epochDays, ephType)
 }
@@ -1072,13 +1072,13 @@ public func TleFieldsToSatKeyML( _ satNum: Int32,
                                  _ ephType: Int32,
                                  _ satKey: UnsafeMutablePointer<Int64> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    Int32,
                                                    Double,
                                                    Int32,
                                                    UnsafeMutablePointer<Int64> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleFieldsToSatKeyML"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleFieldsToSatKeyML"), to: FunctionSignature.self)
 
     function(satNum, epochYr, epochDays, ephType, satKey)
 }
@@ -1086,10 +1086,10 @@ public func TleFieldsToSatKeyML( _ satNum: Int32,
 // Adds a TLE (satellite), using its data stored in the input parameters.
 public func TleAddSatFrArray( _ xa_tle: UnsafeMutablePointer<Double>, _ xs_tle: UnsafeMutablePointer<CChar> ) -> Int64 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<CChar> ) -> Int64
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleAddSatFrArray"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleAddSatFrArray"), to: FunctionSignature.self)
 
     return function(xa_tle, xs_tle)
 }
@@ -1099,11 +1099,11 @@ public func TleAddSatFrArrayML( _ xa_tle: UnsafeMutablePointer<Double>,
                                 _ xs_tle: UnsafeMutablePointer<CChar>,
                                 _ satKey: UnsafeMutablePointer<Int64> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<Int64> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleAddSatFrArrayML"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleAddSatFrArrayML"), to: FunctionSignature.self)
 
     function(xa_tle, xs_tle, satKey)
 }
@@ -1114,11 +1114,11 @@ public func TleUpdateSatFrArray( _ satKey: Int64,
                                  _ xa_tle: UnsafeMutablePointer<Double>,
                                  _ xs_tle: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleUpdateSatFrArray"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleUpdateSatFrArray"), to: FunctionSignature.self)
 
     return function(satKey, xa_tle, xs_tle)
 }
@@ -1190,11 +1190,11 @@ public func TleDataToArray( _ satKey: Int64,
                             _ xa_tle: UnsafeMutablePointer<Double>,
                             _ xs_tle: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64,
+    typealias FunctionSignature = @convention(c) ( Int64,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleDataToArray"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleDataToArray"), to: FunctionSignature.self)
 
     return function(satKey, xa_tle, xs_tle)
 }
@@ -1204,11 +1204,11 @@ public func TleLinesToCsv( _ line1: UnsafeMutablePointer<CChar>,
                            _ line2: UnsafeMutablePointer<CChar>,
                            _ csvline: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleLinesToCsv"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleLinesToCsv"), to: FunctionSignature.self)
 
     return function(line1, line2, csvline)
 }
@@ -1219,12 +1219,12 @@ public func TleCsvToLines( _ csvLine: UnsafeMutablePointer<CChar>,
                            _ line1: UnsafeMutablePointer<CChar>,
                            _ line2: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    Int32,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TleCsvToLines"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TleCsvToLines"), to: FunctionSignature.self)
 
     return function(csvLine, newSatno, line1, line2)
 }
@@ -1232,9 +1232,9 @@ public func TleCsvToLines( _ csvLine: UnsafeMutablePointer<CChar>,
 // Sets TLE key mode - This function was deprecated, please use DllMain/SetElsetKeyMode() instead
 public func SetTleKeyMode( _ tle_keyMode: Int32 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int32 ) -> Int32
+    typealias FunctionSignature = @convention(c) ( Int32 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "SetTleKeyMode"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SetTleKeyMode"), to: FunctionSignature.self)
 
     return function(tle_keyMode)
 }
@@ -1242,9 +1242,9 @@ public func SetTleKeyMode( _ tle_keyMode: Int32 ) -> Int32 {
 // Gets current TLE key mode - This function was deprecated, please use DllMain/GetElsetKeyMode() instead
 public func GetTleKeyMode(  ) -> Int32 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int32
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "GetTleKeyMode"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetTleKeyMode"), to: FunctionSignature.self)
 
     return function()
 }
@@ -1256,13 +1256,13 @@ public func GetCheckSums( _ line1: UnsafeMutablePointer<CChar>,
                           _ chkSum2: UnsafeMutablePointer<Int32>,
                           _ errCode: UnsafeMutablePointer<Int32> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<CChar>,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int32> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "GetCheckSums"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetCheckSums"), to: FunctionSignature.self)
 
     function(line1, line2, chkSum1, chkSum2, errCode)
 }

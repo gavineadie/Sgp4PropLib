@@ -18,76 +18,6 @@ public let IDX_ERR_NONE  = 0        // Ok
 public let IDX_ERR_WARN  = 1        // Warning
 public let IDX_ERR_ERROR = 2        // Error
 
-public var libHandles = [LibHandle]()
-
-//
-//MARK: Dynamic Library Services
-//
-public func loadAllDlls() {
-
-    if libHandles.count < 6 {
-        let globalHandle = DllMainInit()
-        guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
-        guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
-        guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
-        guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
-        guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
-    }
-}
-
-public func loadDll(_ dllName: String) -> LibHandle {
-    guard let libHandle = Loader.load(getDylibPath() + dllName, mode: Loader.Flags(rawValue: 0)) else {
-        fatalError("Could not open '\(getDylibPath() + dllName)' ..") // \(String(cString: dlerror()))")
-    }
-
-    libHandles.append(libHandle)                   // put another handle in the pile
-
-    return libHandle
-}
-
-//
-//TODO: I'm not too proud of this .. I need a better way
-//
-
-#if os(Windows)
-func getDylibPath() -> String {
-    return "C:\\Windows\\SysWOW64\\"
-}
-#else
-func getDylibPath() -> String {
-    if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
-        return dylibDirectory + "/"
-    }
-    return "/usr/local/lib/sgp4prop/"
-}
-#endif
-
-func getFunctionPointer(_ libHandle: LibHandle,
-                        _ functionName: String) -> functionPtr {
-
-    Loader.lookup(symbol: functionName, in: libHandle)
-
-}
-
-public func freeAllDlls() {
-    if libHandles.count > 0 {
-        for i in (0..<libHandles.count).reversed() {  // reverse, so the array is diminished from the tail
-            Loader.unload(libHandles[i])
-            libHandles.remove(at: i)
-        }
-    }
-}
-
-public func verifyDLLs() {
-
-    print(dllMainGetInfo())
-    print(envGetInfo())
-    print(timeFuncGetInfo())
-    print(astroFuncGetInfo())
-    print(tleGetInfo())
-    print(sgp4GetInfo())
-
-}
 
 //
 //MARK: String Extension
@@ -270,15 +200,17 @@ public func writeString(_ string: String, toURL: URL, appending: Bool = true, te
 
 }
 
+#if os(macOS)
 public func dllVersion() -> Double {
 
-    if #available(macOS 13.0, *) {
-        if let dllMainVersion = dllMainGetInfo().firstMatch(of: #/\w(\d\.\d)/#) {
-            return Double(dllMainVersion.output.1) ?? 0.0
-        }
-    } else {
-        print("Can't do regex")
-    }
+   if #available(macOS 13.0, *) {
+       if let dllMainVersion = dllMainGetInfo().firstMatch(of: #/\w(\d\.\d)/#) {
+           return Double(dllMainVersion.output.1) ?? 0.0
+       }
+   } else {
+       print("Can't do regex")
+   }
 
-    return 0.0
+   return 0.0
 }
+#endif

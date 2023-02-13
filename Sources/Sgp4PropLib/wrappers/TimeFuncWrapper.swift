@@ -16,9 +16,9 @@ fileprivate let libHandle = loadDll("libtimefunc.dylib")
 // An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section of the accompanying documentation, before using this DLL.
 public func TimeFuncInit( _ apAddr: Int64 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64 ) -> Int32
+    typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TimeFuncInit"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TimeFuncInit"), to: FunctionSignature.self)
 
     return function(apAddr)
 }
@@ -27,9 +27,9 @@ public func TimeFuncInit( _ apAddr: Int64 ) -> Int32 {
 // The returned string provides information about the version number, build date, and the platform of the TimeFunc DLL.
 public func TimeFuncGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TimeFuncGetInfo"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TimeFuncGetInfo"), to: FunctionSignature.self)
 
     function(infoStr)
 }
@@ -43,9 +43,9 @@ public func TimeFuncGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 // See the "Time Constants Data Description" section in the accompanying TimeFunc documentation file for supported formats.
 public func TConLoadFile( _ tconFile: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TConLoadFile"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TConLoadFile"), to: FunctionSignature.self)
 
     return function(tconFile)
 }
@@ -58,9 +58,9 @@ public func TConLoadFile( _ tconFile: UnsafeMutablePointer<CChar> ) -> Int32 {
 // The time constants are also read in from each VCM. However, only the most recent time constants among VCMs are stored in the memory, see VCM.dll documentation.
 public func TimeFuncLoadFile( _ tconFile: UnsafeMutablePointer<CChar> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TimeFuncLoadFile"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TimeFuncLoadFile"), to: FunctionSignature.self)
 
     return function(tconFile)
 }
@@ -69,9 +69,9 @@ public func TimeFuncLoadFile( _ tconFile: UnsafeMutablePointer<CChar> ) -> Int32
 // The timing constants can be loaded from a timing constants file or from VCM(s).  See TConLoadFile, TConAddOne, and TConAddARec functions.
 public func IsTConFileLoaded(  ) -> Int32 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int32
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "IsTConFileLoaded"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "IsTConFileLoaded"), to: FunctionSignature.self)
 
     return function()
 }
@@ -82,11 +82,11 @@ public func TConSaveFile( _ tconFile: UnsafeMutablePointer<CChar>,
                           _ saveMode: Int32,
                           _ saveForm: Int32 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
                                                    Int32,
                                                    Int32 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TConSaveFile"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TConSaveFile"), to: FunctionSignature.self)
 
     return function(tconFile, saveMode, saveForm)
 }
@@ -101,7 +101,7 @@ public func TConAddARec( _ refDs50UTC: Double,
                          _ polarX: Double,
                          _ polarY: Double ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    Double,
                                                    Double,
@@ -109,7 +109,7 @@ public func TConAddARec( _ refDs50UTC: Double,
                                                    Double,
                                                    Double ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TConAddARec"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TConAddARec"), to: FunctionSignature.self)
 
     return function(refDs50UTC, leapDs50UTC, taiMinusUTC, ut1MinusUTC, ut1Rate, polarX, polarY)
 }
@@ -122,14 +122,14 @@ public func TConAddOne( _ refDs50UTC: Double,
                         _ polarX: Double,
                         _ polarY: Double ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    Double,
                                                    Double,
                                                    Double,
                                                    Double ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TConAddOne"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TConAddOne"), to: FunctionSignature.self)
 
     return function(refDs50UTC, taiMinusUTC, ut1MinusUTC, ut1Rate, polarX, polarY)
 }
@@ -143,14 +143,14 @@ public func UTCToTConRec( _ ds50UTC: Double,
                           _ polarX: UnsafeMutablePointer<Double>,
                           _ polarY: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "UTCToTConRec"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "UTCToTConRec"), to: FunctionSignature.self)
 
     function(ds50UTC, taiMinusUTC, ut1MinusUTC, ut1Rate, polarX, polarY)
 }
@@ -158,9 +158,9 @@ public func UTCToTConRec( _ ds50UTC: Double,
 // Removes all the timing constants records in memory.
 public func TConRemoveAll(  ) -> Int32 {
 
-    typealias functionSignature = @convention(c) (  ) -> Int32
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TConRemoveAll"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TConRemoveAll"), to: FunctionSignature.self)
 
     return function()
 }
@@ -169,10 +169,10 @@ public func TConRemoveAll(  ) -> Int32 {
 // The input ds50UTC must be greater than 2192.0, which corresponds to a time later than 1st Jan 1956. Any input value less than or equal to 2192.0 will yield "1956/001 0000 00.000".
 public func UTCToDTG20( _ ds50UTC: Double, _ dtg20: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "UTCToDTG20"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "UTCToDTG20"), to: FunctionSignature.self)
 
     function(ds50UTC, dtg20)
 }
@@ -183,10 +183,10 @@ public func UTCToDTG20( _ ds50UTC: Double, _ dtg20: UnsafeMutablePointer<CChar> 
 // Note, the return value is in the DTG19 format "YYYYMonDDHHMMSS.SSS", not the "YY DDD HH MM SS.SSS" format.
 public func UTCToDTG19( _ ds50UTC: Double, _ dtg19: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "UTCToDTG19"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "UTCToDTG19"), to: FunctionSignature.self)
 
     function(ds50UTC, dtg19)
 }
@@ -196,10 +196,10 @@ public func UTCToDTG19( _ ds50UTC: Double, _ dtg19: UnsafeMutablePointer<CChar> 
 // The input ds50UTC must be greater than 2192.0, which corresponds to a time later than 1st Jan 1956. Any input value less than or equal to 2192.0 will yield "1956/001.00000000".
 public func UTCToDTG17( _ ds50UTC: Double, _ dtg17: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "UTCToDTG17"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "UTCToDTG17"), to: FunctionSignature.self)
 
     function(ds50UTC, dtg17)
 }
@@ -209,10 +209,10 @@ public func UTCToDTG17( _ ds50UTC: Double, _ dtg17: UnsafeMutablePointer<CChar> 
 // The input ds50UTC must be greater than 2192.0, which corresponds to a time later than 1st Jan 1956. Any input value less than or equal to 2192.0 will yield "56001000000.000".
 public func UTCToDTG15( _ ds50UTC: Double, _ dtg15: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "UTCToDTG15"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "UTCToDTG15"), to: FunctionSignature.self)
 
     function(ds50UTC, dtg15)
 }
@@ -225,9 +225,9 @@ public func UTCToDTG15( _ ds50UTC: Double, _ dtg15: UnsafeMutablePointer<CChar> 
 // This function supports DTG19 inputs in both "YY DDD HH MM SS.SSS" and "YYYYMonDDHHMMSS.SSS" formats.
 public func DTGToUTC( _ dtg: UnsafeMutablePointer<CChar> ) -> Double {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Double
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "DTGToUTC"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "DTGToUTC"), to: FunctionSignature.self)
 
     return function(dtg)
 }
@@ -237,9 +237,9 @@ public func DTGToUTC( _ dtg: UnsafeMutablePointer<CChar> ) -> Double {
 // Partial days may be returned.
 public func UTCToTAI( _ ds50UTC: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Double ) -> Double
+    typealias FunctionSignature = @convention(c) ( Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "UTCToTAI"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "UTCToTAI"), to: FunctionSignature.self)
 
     return function(ds50UTC)
 }
@@ -249,9 +249,9 @@ public func UTCToTAI( _ ds50UTC: Double ) -> Double {
 // Partial days may be returned.
 public func UTCToUT1( _ ds50UTC: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Double ) -> Double
+    typealias FunctionSignature = @convention(c) ( Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "UTCToUT1"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "UTCToUT1"), to: FunctionSignature.self)
 
     return function(ds50UTC)
 }
@@ -261,9 +261,9 @@ public func UTCToUT1( _ ds50UTC: Double ) -> Double {
 // Partial days may be returned.
 public func UTCToET( _ ds50UTC: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Double ) -> Double
+    typealias FunctionSignature = @convention(c) ( Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "UTCToET"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "UTCToET"), to: FunctionSignature.self)
 
     return function(ds50UTC)
 }
@@ -273,9 +273,9 @@ public func UTCToET( _ ds50UTC: Double ) -> Double {
 // Partial days may be returned.
 public func TAIToUTC( _ ds50TAI: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Double ) -> Double
+    typealias FunctionSignature = @convention(c) ( Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TAIToUTC"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TAIToUTC"), to: FunctionSignature.self)
 
     return function(ds50TAI)
 }
@@ -285,9 +285,9 @@ public func TAIToUTC( _ ds50TAI: Double ) -> Double {
 // Partial days may be returned.
 public func TAIToUT1( _ ds50TAI: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Double ) -> Double
+    typealias FunctionSignature = @convention(c) ( Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TAIToUT1"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TAIToUT1"), to: FunctionSignature.self)
 
     return function(ds50TAI)
 }
@@ -296,10 +296,10 @@ public func TAIToUT1( _ ds50TAI: Double ) -> Double {
 // Partial days may be returned.
 public func YrDaysToUTC( _ year: Int32, _ dayOfYear: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "YrDaysToUTC"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "YrDaysToUTC"), to: FunctionSignature.self)
 
     return function(year, dayOfYear)
 }
@@ -310,11 +310,11 @@ public func UTCToYrDays( _ ds50UTC: Double,
                          _ year: UnsafeMutablePointer<Int32>,
                          _ dayOfYear: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "UTCToYrDays"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "UTCToYrDays"), to: FunctionSignature.self)
 
     function(ds50UTC, year, dayOfYear)
 }
@@ -328,13 +328,13 @@ public func TimeComps1ToUTC( _ year: Int32,
                              _ mm: Int32,
                              _ sss: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    Int32,
                                                    Int32,
                                                    Int32,
                                                    Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TimeComps1ToUTC"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TimeComps1ToUTC"), to: FunctionSignature.self)
 
     return function(year, dayOfYear, hh, mm, sss)
 }
@@ -349,14 +349,14 @@ public func UTCToTimeComps1( _ ds50UTC: Double,
                              _ mm: UnsafeMutablePointer<Int32>,
                              _ sss: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "UTCToTimeComps1"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "UTCToTimeComps1"), to: FunctionSignature.self)
 
     function(ds50UTC, year, dayOfYear, hh, mm, sss)
 }
@@ -371,14 +371,14 @@ public func TimeComps2ToUTC( _ year: Int32,
                              _ mm: Int32,
                              _ sss: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    Int32,
                                                    Int32,
                                                    Int32,
                                                    Int32,
                                                    Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TimeComps2ToUTC"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TimeComps2ToUTC"), to: FunctionSignature.self)
 
     return function(year, mon, dayOfMonth, hh, mm, sss)
 }
@@ -394,7 +394,7 @@ public func UTCToTimeComps2( _ ds50UTC: Double,
                              _ mm: UnsafeMutablePointer<Int32>,
                              _ sss: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int32>,
@@ -402,7 +402,7 @@ public func UTCToTimeComps2( _ ds50UTC: Double,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "UTCToTimeComps2"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "UTCToTimeComps2"), to: FunctionSignature.self)
 
     function(ds50UTC, year, month, dayOfMonth, hh, mm, sss)
 }
@@ -412,10 +412,10 @@ public func UTCToTimeComps2( _ ds50UTC: Double,
 // EnvConst.dll is not marked as a direct dependency of TimeFunc.dll. However, it obviously must be loaded in order to be able to use this function since you must first obtain a handle via the EnvGetFkPtr() function.
 public func ThetaGrnwch( _ ds50UT1: Double, _ lenvFk: Int64 ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Int64 ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "ThetaGrnwch"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ThetaGrnwch"), to: FunctionSignature.self)
 
     return function(ds50UT1, lenvFk)
 }
@@ -424,9 +424,9 @@ public func ThetaGrnwch( _ ds50UT1: Double, _ lenvFk: Int64 ) -> Double {
 // There is no need to load or initialize EnvConst.dll when computing right ascension using this function.
 public func ThetaGrnwchFK4( _ ds50UT1: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Double ) -> Double
+    typealias FunctionSignature = @convention(c) ( Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "ThetaGrnwchFK4"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ThetaGrnwchFK4"), to: FunctionSignature.self)
 
     return function(ds50UT1)
 }
@@ -435,9 +435,9 @@ public func ThetaGrnwchFK4( _ ds50UT1: Double ) -> Double {
 // There is no need to load or initialize EnvConst.dll when computing right ascension using this function.
 public func ThetaGrnwchFK5( _ ds50UT1: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Double ) -> Double
+    typealias FunctionSignature = @convention(c) ( Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "ThetaGrnwchFK5"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ThetaGrnwchFK5"), to: FunctionSignature.self)
 
     return function(ds50UT1)
 }
@@ -448,11 +448,11 @@ public func TimeConvFrTo( _ funcIdx: Int32,
                           _ frArr: UnsafeMutablePointer<Double>,
                           _ toArr: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "TimeConvFrTo"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TimeConvFrTo"), to: FunctionSignature.self)
 
     function(funcIdx, frArr, toArr)
 }
@@ -464,13 +464,13 @@ public func Get6P( _ startFrEpoch: UnsafeMutablePointer<Int32>,
                    _ stopTime: UnsafeMutablePointer<Double>,
                    _ interval: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Int32>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Get6P"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Get6P"), to: FunctionSignature.self)
 
     function(startFrEpoch, stopFrEpoch, startTime, stopTime, interval)
 }
@@ -482,13 +482,13 @@ public func Set6P( _ startFrEpoch: Int32,
                    _ stopTime: Double,
                    _ interval: Double ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    Int32,
                                                    Double,
                                                    Double,
                                                    Double ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Set6P"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Set6P"), to: FunctionSignature.self)
 
     function(startFrEpoch, stopFrEpoch, startTime, stopTime, interval)
 }
@@ -496,9 +496,9 @@ public func Set6P( _ startFrEpoch: Int32,
 // Returns current prediction control parameters in form of a 6P-Card string.
 public func Get6PCardLine( _ card6PLine: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Get6PCardLine"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Get6PCardLine"), to: FunctionSignature.self)
 
     function(card6PLine)
 }

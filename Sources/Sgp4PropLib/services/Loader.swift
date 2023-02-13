@@ -14,109 +14,132 @@ import Glibc
 
 #if os(Windows)
 public typealias LibHandle = HMODULE
-public typealias functionPtr = FARPROC
+public typealias FunctionPtr = FARPROC
 #else
 public typealias LibHandle = UnsafeMutableRawPointer
-public typealias functionPtr = UnsafeMutableRawPointer
+public typealias FunctionPtr = UnsafeMutableRawPointer
 #endif
 
-public enum Loader { }
+var libHandles = [LibHandle]()               // keep the handles in an array
+
+//
+//MARK: Dynamic Library Services
+//
+public func loadAllDlls() {
+
+    if libHandles.count < 6 {
+        let globalHandle = DllMainInit()
+        guard EnvInit(globalHandle) == 0 else { fatalError("envInit load failure") }
+        guard TimeFuncInit(globalHandle) == 0 else { fatalError("timeFuncInit load failure") }
+        guard AstroFuncInit(globalHandle) == 0 else { fatalError("astroFuncInit load failure") }
+        guard TleInit(globalHandle) == 0 else { fatalError("tleInit load failure") }
+        guard Sgp4Init(globalHandle) == 0 else { fatalError("sgp4Init load failure") }
+    }
+}
+
+public func loadDll(_ dllName: String) -> LibHandle {
+    guard let libHandle = Loader.load(getDylibPath() + dllName, mode: RTLD_LAZY) else {
+        fatalError("Could not open '\(getDylibPath() + dllName)' ..") // \(String(cString: dlerror()))")
+    }
+
+    libHandles.append(libHandle)                   // put another handle in the pile
+
+    return libHandle
+}
+
+/// Use an empty `enum` to create the `Loader` namespace
+enum Loader { }
 
 extension Loader {
-    public static func load(_ path: String?, mode: Flags) -> LibHandle? {
+    static func load(_ path: String?, mode: Int32) -> LibHandle? {
 #if os(Windows)
         guard let libHandle = path?.withCString(encodedAs: UTF16.self, LoadLibraryW) else {
-            print("LoadLibraryW failure: \(GetLastError())") // throw Loader.Error.open("LoadLibraryW failure: \(GetLastError())")
+            print("LoadLibraryW failure: \(GetLastError())")
             return nil
         }
 #else
-        guard let libHandle = dlopen(path, mode.rawValue) else {
-            print("dlopen failure") // throw Loader.Error.open(Loader.error() ?? "unknown error")
+        guard let libHandle = dlopen(path, mode) else {
+            print("dlopen failure")
             return nil
         }
 #endif
         return libHandle
     }
 
-    public static func lookup(symbol: String, in libHandle: LibHandle) -> functionPtr { //### what for Windows ??
+    static func lookup(_ functionName: String, in libHandle: LibHandle) -> FunctionPtr {
 #if os(Windows)
-        guard let pointer = GetProcAddress(libHandle, symbol) else {
-            fatalError("GetProcAddress failure:") // return nil
+        guard let functionPointer = GetProcAddress(libHandle, functionName) else {
+            fatalError("GetProcAddress failure:")
         }
 #else
-        guard let pointer = dlsym(libHandle, symbol) else {
-            fatalError("dlsym failure:") // return nil
+        guard let functionPointer = dlsym(libHandle, functionName) else {
+            fatalError("dlsym failure:")
         }
 #endif
-        return pointer // unsafeBitCast(pointer, to: T.self)
+        return functionPointer
     }
 
-    public static func unload(_ libHandle: LibHandle) {
+    static func unload(_ libHandle: LibHandle) {
 #if os(Windows)
         guard FreeLibrary(libHandle) else {
-            fatalError("FreeLibrary failure: \(GetLastError())") // throw Loader.Error.close("FreeLibrary failure: \(GetLastError())")
+            fatalError("FreeLibrary failure: \(GetLastError())")
         }
 #else
         guard dlclose(libHandle) == 0 else {
-            fatalError("dlclose failure") // throw Loader.Error.close(Loader.error() ?? "unknown error")
+            fatalError("dlclose failure")
         }
 #endif
     }
 
 }
 
-extension Loader {
-    public struct Flags: RawRepresentable, OptionSet {
-        public var rawValue: Int32
+//
+//TODO: I'm not too proud of this .. I need a better way
+//
 
-        public init(rawValue: Int32) {
-            self.rawValue = rawValue
+#if os(Windows)
+func getDylibPath() -> String {
+    return ""
+}
+#else
+func getDylibPath() -> String {
+//    if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
+//        return dylibDirectory + "/"
+//    }
+    return "/usr/local/lib/sgp4prop/"
+}
+#endif
+
+func getFunctionPointer(_ libHandle: LibHandle,
+                        _ functionName: String) -> FunctionPtr {
+
+    Loader.lookup(functionName, in: libHandle)
+
+}
+
+public func unsafeFunctionSignatureCast<U>(_ value: FunctionPtr,
+                                           to type: U.Type) -> U {
+
+    return unsafeBitCast(value, to: type)
+
+}
+
+public func freeAllDlls() {
+    if libHandles.count > 0 {
+        for i in (0..<libHandles.count).reversed() {  // reverse, so the array is diminished from the tail
+            Loader.unload(libHandles[i])
+            libHandles.remove(at: i)
         }
     }
 }
 
-#if !os(Windows)
-extension Loader.Flags {
-    public static var lazy: Loader.Flags {
-        Loader.Flags(rawValue: RTLD_LAZY)
-    }
+public func verifyDLLs() {
 
-    public static var now: Loader.Flags {
-        Loader.Flags(rawValue: RTLD_NOW)
-    }
+    print(dllMainGetInfo())
+    print(envGetInfo())
+    print(timeFuncGetInfo())
+    print(astroFuncGetInfo())
+    print(tleGetInfo())
+    print(sgp4GetInfo())
 
-    public static var local: Loader.Flags {
-        Loader.Flags(rawValue: RTLD_LOCAL)
-    }
-
-    public static var global: Loader.Flags {
-        Loader.Flags(rawValue: RTLD_GLOBAL)
-    }
-
-    // Platform-specific flags
-#if os(iOS) || os(macOS) || os(tvOS) || os(watchOS)
-    public static var first: Loader.Flags {
-        Loader.Flags(rawValue: RTLD_FIRST)
-    }
-
-    public static var deepBind: Loader.Flags {
-        Loader.Flags(rawValue: 0)
-    }
-#else
-    public static var first: Loader.Flags {
-        Loader.Flags(rawValue: 0)
-    }
-
-#if os(Linux)
-    public static var deepBind: Loader.Flags {
-        Loader.Flags(rawValue: RTLD_DEEPBIND)
-    }
-#else
-    public static var deepBind: Loader.Flags {
-        Loader.Flags(rawValue: 0)
-    }
-#endif
-#endif
 }
-#endif
-

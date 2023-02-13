@@ -16,9 +16,9 @@ fileprivate let libHandle = loadDll("libastrofunc.dylib")
 // An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section of the accompanying documentation, before using this DLL.
 public func AstroFuncInit( _ apAddr: Int64 ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int64 ) -> Int32
+    typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "AstroFuncInit"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AstroFuncInit"), to: FunctionSignature.self)
 
     return function(apAddr)
 }
@@ -27,9 +27,9 @@ public func AstroFuncInit( _ apAddr: Int64 ) -> Int32 {
 // The returned string provides information about the version number, build date, and platform.
 public func AstroFuncGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "AstroFuncGetInfo"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AstroFuncGetInfo"), to: FunctionSignature.self)
 
     function(infoStr)
 }
@@ -37,10 +37,10 @@ public func AstroFuncGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 // Converts a set of Keplerian elements to a set of equinoctial elements. 
 public func KepToEqnx( _ metricKep: UnsafeMutablePointer<Double>, _ metricEqnx: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "KepToEqnx"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "KepToEqnx"), to: FunctionSignature.self)
 
     function(metricKep, metricEqnx)
 }
@@ -50,11 +50,11 @@ public func KepToPosVel( _ metricKep: UnsafeMutablePointer<Double>,
                          _ pos: UnsafeMutablePointer<Double>,
                          _ vel: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "KepToPosVel"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "KepToPosVel"), to: FunctionSignature.self)
 
     function(metricKep, pos, vel)
 }
@@ -65,12 +65,12 @@ public func KepToUVW( _ metricKep: UnsafeMutablePointer<Double>,
                       _ vBar: UnsafeMutablePointer<Double>,
                       _ wBar: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "KepToUVW"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "KepToUVW"), to: FunctionSignature.self)
 
     function(metricKep, uBar, vBar, wBar)
 }
@@ -78,10 +78,10 @@ public func KepToUVW( _ metricKep: UnsafeMutablePointer<Double>,
 // Converts a set of classical elements to a set of equinoctial elements. 
 public func ClassToEqnx( _ metricClass: UnsafeMutablePointer<Double>, _ metricEqnx: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "ClassToEqnx"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ClassToEqnx"), to: FunctionSignature.self)
 
     function(metricClass, metricEqnx)
 }
@@ -89,10 +89,10 @@ public func ClassToEqnx( _ metricClass: UnsafeMutablePointer<Double>, _ metricEq
 // Converts a set of equinoctial elements to a set of classical elements.
 public func EqnxToClass( _ metricEqnx: UnsafeMutablePointer<Double>, _ metricClass: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EqnxToClass"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EqnxToClass"), to: FunctionSignature.self)
 
     function(metricEqnx, metricClass)
 }
@@ -100,10 +100,10 @@ public func EqnxToClass( _ metricEqnx: UnsafeMutablePointer<Double>, _ metricCla
 // Converts a set of equinoctial elements to a set of Keplerian elements. 
 public func EqnxToKep( _ metricEqnx: UnsafeMutablePointer<Double>, _ metricKep: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EqnxToKep"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EqnxToKep"), to: FunctionSignature.self)
 
     function(metricEqnx, metricKep)
 }
@@ -113,11 +113,11 @@ public func EqnxToPosVel( _ metricEqnx: UnsafeMutablePointer<Double>,
                           _ pos: UnsafeMutablePointer<Double>,
                           _ vel: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EqnxToPosVel"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EqnxToPosVel"), to: FunctionSignature.self)
 
     function(metricEqnx, pos, vel)
 }
@@ -127,11 +127,11 @@ public func PosVelToEqnx( _ pos: UnsafeMutablePointer<Double>,
                           _ vel: UnsafeMutablePointer<Double>,
                           _ metricEqnx: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "PosVelToEqnx"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "PosVelToEqnx"), to: FunctionSignature.self)
 
     function(pos, vel, metricEqnx)
 }
@@ -143,12 +143,12 @@ public func PosVelMuToEqnx( _ pos: UnsafeMutablePointer<Double>,
                             _ mu: Double,
                             _ metricEqnx: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    Double,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "PosVelMuToEqnx"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "PosVelMuToEqnx"), to: FunctionSignature.self)
 
     function(pos, vel, mu, metricEqnx)
 }
@@ -158,11 +158,11 @@ public func PosVelToKep( _ pos: UnsafeMutablePointer<Double>,
                          _ vel: UnsafeMutablePointer<Double>,
                          _ metricKep: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "PosVelToKep"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "PosVelToKep"), to: FunctionSignature.self)
 
     function(pos, vel, metricKep)
 }
@@ -174,12 +174,12 @@ public func PosVelMuToKep( _ pos: UnsafeMutablePointer<Double>,
                            _ mu: Double,
                            _ metricKep: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    Double,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "PosVelMuToKep"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "PosVelMuToKep"), to: FunctionSignature.self)
 
     function(pos, vel, mu, metricKep)
 }
@@ -195,13 +195,13 @@ public func PosVelToUUVW( _ pos: UnsafeMutablePointer<Double>,
                           _ vVec: UnsafeMutablePointer<Double>,
                           _ wVec: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "PosVelToUUVW"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "PosVelToUUVW"), to: FunctionSignature.self)
 
     function(pos, vel, uvec, vVec, wVec)
 }
@@ -217,13 +217,13 @@ public func PosVelToPTW( _ pos: UnsafeMutablePointer<Double>,
                          _ vVec: UnsafeMutablePointer<Double>,
                          _ wVec: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "PosVelToPTW"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "PosVelToPTW"), to: FunctionSignature.self)
 
     function(pos, vel, uvec, vVec, wVec)
 }
@@ -231,9 +231,9 @@ public func PosVelToPTW( _ pos: UnsafeMutablePointer<Double>,
 // Solves Kepler's equation (M = E - e sin(E)) for the eccentric anomaly, E, by iteration.
 public func SolveKepEqtn( _ metricKep: UnsafeMutablePointer<Double> ) -> Double {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double> ) -> Double
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double> ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "SolveKepEqtn"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SolveKepEqtn"), to: FunctionSignature.self)
 
     return function(metricKep)
 }
@@ -241,9 +241,9 @@ public func SolveKepEqtn( _ metricKep: UnsafeMutablePointer<Double> ) -> Double 
 // Computes true anomaly from a set of Keplerian elements.
 public func CompTrueAnomaly( _ metricKep: UnsafeMutablePointer<Double> ) -> Double {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double> ) -> Double
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double> ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "CompTrueAnomaly"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CompTrueAnomaly"), to: FunctionSignature.self)
 
     return function(metricKep)
 }
@@ -251,9 +251,9 @@ public func CompTrueAnomaly( _ metricKep: UnsafeMutablePointer<Double> ) -> Doub
 // Converts mean motion N to semi-major axis A.
 public func NToA( _ n: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Double ) -> Double
+    typealias FunctionSignature = @convention(c) ( Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "NToA"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "NToA"), to: FunctionSignature.self)
 
     return function(n)
 }
@@ -261,9 +261,9 @@ public func NToA( _ n: Double ) -> Double {
 // Converts semi-major axis A to mean motion N.
 public func AToN( _ a: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Double ) -> Double
+    typealias FunctionSignature = @convention(c) ( Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "AToN"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AToN"), to: FunctionSignature.self)
 
     return function(a)
 }
@@ -274,11 +274,11 @@ public func KozaiToBrouwer( _ eccen: Double,
                             _ incli: Double,
                             _ nKozai: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "KozaiToBrouwer"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "KozaiToBrouwer"), to: FunctionSignature.self)
 
     return function(eccen, incli, nKozai)
 }
@@ -289,11 +289,11 @@ public func BrouwerToKozai( _ eccen: Double,
                             _ incli: Double,
                             _ nBrouwer: Double ) -> Double {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    Double ) -> Double
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "BrouwerToKozai"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "BrouwerToKozai"), to: FunctionSignature.self)
 
     return function(eccen, incli, nBrouwer)
 }
@@ -301,10 +301,10 @@ public func BrouwerToKozai( _ eccen: Double,
 // Converts a set of osculating Keplerian elements to a set of mean Keplerian elements using method 9 algorithm.
 public func KepOscToMean( _ metricOscKep: UnsafeMutablePointer<Double>, _ metricMeanKep: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "KepOscToMean"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "KepOscToMean"), to: FunctionSignature.self)
 
     function(metricOscKep, metricMeanKep)
 }
@@ -314,11 +314,11 @@ public func XYZToLLH( _ thetaG: Double,
                       _ metricPos: UnsafeMutablePointer<Double>,
                       _ metricLLH: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "XYZToLLH"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "XYZToLLH"), to: FunctionSignature.self)
 
     function(thetaG, metricPos, metricLLH)
 }
@@ -328,11 +328,11 @@ public func XYZToLLHTime( _ ds50UTC: Double,
                           _ metricPos: UnsafeMutablePointer<Double>,
                           _ metricLLH: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "XYZToLLHTime"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "XYZToLLHTime"), to: FunctionSignature.self)
 
     function(ds50UTC, metricPos, metricLLH)
 }
@@ -342,11 +342,11 @@ public func LLHToXYZ( _ thetaG: Double,
                       _ metricLLH: UnsafeMutablePointer<Double>,
                       _ metricXYZ: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "LLHToXYZ"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "LLHToXYZ"), to: FunctionSignature.self)
 
     function(thetaG, metricLLH, metricXYZ)
 }
@@ -356,11 +356,11 @@ public func LLHToXYZTime( _ ds50UTC: Double,
                           _ metricLLH: UnsafeMutablePointer<Double>,
                           _ metricXYZ: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "LLHToXYZTime"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "LLHToXYZTime"), to: FunctionSignature.self)
 
     function(ds50UTC, metricLLH, metricXYZ)
 }
@@ -372,13 +372,13 @@ public func EFGToECI( _ thetaG: Double,
                       _ posECI: UnsafeMutablePointer<Double>,
                       _ velECI: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EFGToECI"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EFGToECI"), to: FunctionSignature.self)
 
     function(thetaG, posEFG, velEFG, posECI, velECI)
 }
@@ -390,13 +390,13 @@ public func EFGToECITime( _ ds50UTC: Double,
                           _ posECI: UnsafeMutablePointer<Double>,
                           _ velECI: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EFGToECITime"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EFGToECITime"), to: FunctionSignature.self)
 
     function(ds50UTC, posEFG, velEFG, posECI, velECI)
 }
@@ -408,13 +408,13 @@ public func ECIToEFG( _ thetaG: Double,
                       _ posEFG: UnsafeMutablePointer<Double>,
                       _ velEFG: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "ECIToEFG"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ECIToEFG"), to: FunctionSignature.self)
 
     function(thetaG, posECI, velECI, posEFG, velEFG)
 }
@@ -426,13 +426,13 @@ public func ECIToEFGTime( _ ds50UTC: Double,
                           _ posEFG: UnsafeMutablePointer<Double>,
                           _ velEFG: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "ECIToEFGTime"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ECIToEFGTime"), to: FunctionSignature.self)
 
     function(ds50UTC, posECI, velECI, posEFG, velEFG)
 }
@@ -445,14 +445,14 @@ public func ECRToEFG( _ polarX: Double,
                       _ posEFG: UnsafeMutablePointer<Double>,
                       _ velEFG: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "ECRToEFG"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ECRToEFG"), to: FunctionSignature.self)
 
     function(polarX, polarY, posECR, velECR, posEFG, velEFG)
 }
@@ -464,13 +464,13 @@ public func ECRToEFGTime( _ ds50UTC: Double,
                           _ posEFG: UnsafeMutablePointer<Double>,
                           _ velEFG: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "ECRToEFGTime"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ECRToEFGTime"), to: FunctionSignature.self)
 
     function(ds50UTC, posECR, velECR, posEFG, velEFG)
 }
@@ -483,14 +483,14 @@ public func EFGToECR( _ polarX: Double,
                       _ posECR: UnsafeMutablePointer<Double>,
                       _ velECR: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EFGToECR"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EFGToECR"), to: FunctionSignature.self)
 
     function(polarX, polarY, posEFG, velEFG, posECR, velECR)
 }
@@ -502,13 +502,13 @@ public func EFGToECRTime( _ ds50UTC: Double,
                           _ posECR: UnsafeMutablePointer<Double>,
                           _ velECR: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EFGToECRTime"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EFGToECRTime"), to: FunctionSignature.self)
 
     function(ds50UTC, posEFG, velEFG, posECR, velECR)
 }
@@ -516,10 +516,10 @@ public func EFGToECRTime( _ ds50UTC: Double,
 // Converts an EFG position vector to geodetic latitude, longitude, and height.
 public func EFGPosToLLH( _ posEFG: UnsafeMutablePointer<Double>, _ metricLLH: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EFGPosToLLH"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EFGPosToLLH"), to: FunctionSignature.self)
 
     function(posEFG, metricLLH)
 }
@@ -527,10 +527,10 @@ public func EFGPosToLLH( _ posEFG: UnsafeMutablePointer<Double>, _ metricLLH: Un
 // Converts geodetic latitude, longitude, and height to an EFG position vector.
 public func LLHToEFGPos( _ metricLLH: UnsafeMutablePointer<Double>, _ posEFG: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "LLHToEFGPos"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "LLHToEFGPos"), to: FunctionSignature.self)
 
     function(metricLLH, posEFG)
 }
@@ -544,7 +544,7 @@ public func RotJ2KToDate( _ spectr: Int32,
                           _ posDate: UnsafeMutablePointer<Double>,
                           _ velDate: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    Int32,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
@@ -552,7 +552,7 @@ public func RotJ2KToDate( _ spectr: Int32,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "RotJ2KToDate"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotJ2KToDate"), to: FunctionSignature.self)
 
     function(spectr, nutationTerms, ds50TAI, posJ2K, velJ2K, posDate, velDate)
 }
@@ -566,7 +566,7 @@ public func RotDateToJ2K( _ spectr: Int32,
                           _ posJ2K: UnsafeMutablePointer<Double>,
                           _ velJ2K: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    Int32,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
@@ -574,7 +574,7 @@ public func RotDateToJ2K( _ spectr: Int32,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "RotDateToJ2K"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotDateToJ2K"), to: FunctionSignature.self)
 
     function(spectr, nutationTerms, ds50TAI, posDate, velDate, posJ2K, velJ2K)
 }
@@ -586,13 +586,13 @@ public func CompSunMoonPos( _ ds50ET: Double,
                             _ uvecMoon: UnsafeMutablePointer<Double>,
                             _ moonVecMag: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "CompSunMoonPos"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CompSunMoonPos"), to: FunctionSignature.self)
 
     function(ds50ET, uvecSun, sunVecMag, uvecMoon, moonVecMag)
 }
@@ -602,11 +602,11 @@ public func CompSunPos( _ ds50ET: Double,
                         _ uvecSun: UnsafeMutablePointer<Double>,
                         _ sunVecMag: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "CompSunPos"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CompSunPos"), to: FunctionSignature.self)
 
     function(ds50ET, uvecSun, sunVecMag)
 }
@@ -616,11 +616,11 @@ public func CompMoonPos( _ ds50ET: Double,
                          _ uvecMoon: UnsafeMutablePointer<Double>,
                          _ moonVecMag: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "CompMoonPos"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CompMoonPos"), to: FunctionSignature.self)
 
     function(ds50ET, uvecMoon, moonVecMag)
 }
@@ -631,11 +631,11 @@ public func AstroConvFrTo( _ xf_Conv: Int32,
                            _ frArr: UnsafeMutablePointer<Double>,
                            _ toArr: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "AstroConvFrTo"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AstroConvFrTo"), to: FunctionSignature.self)
 
     function(xf_Conv, frArr, toArr)
 }
@@ -647,13 +647,13 @@ public func RADecToLAD( _ RA: Double,
                         _ A_Tilde: UnsafeMutablePointer<Double>,
                         _ D_Tilde: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "RADecToLAD"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RADecToLAD"), to: FunctionSignature.self)
 
     function(RA, dec, L, A_Tilde, D_Tilde)
 }
@@ -665,13 +665,13 @@ public func AzElToLAD( _ az: Double,
                        _ Ah: UnsafeMutablePointer<Double>,
                        _ Dh: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "AzElToLAD"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AzElToLAD"), to: FunctionSignature.self)
 
     function(az, el, Lh, Ah, Dh)
 }
@@ -695,14 +695,14 @@ public func ECIToTopoComps( _ theta: Double,
                             _ satVel: UnsafeMutablePointer<Double>,
                             _ xa_topo: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "ECIToTopoComps"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ECIToTopoComps"), to: FunctionSignature.self)
 
     function(theta, lat, senPos, satPos, satVel, xa_topo)
 }
@@ -716,7 +716,7 @@ public func RaDecToAzEl( _ thetaG: Double,
                          _ az: UnsafeMutablePointer<Double>,
                          _ el: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    Double,
                                                    Double,
@@ -724,7 +724,7 @@ public func RaDecToAzEl( _ thetaG: Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "RaDecToAzEl"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RaDecToAzEl"), to: FunctionSignature.self)
 
     function(thetaG, lat, lon, RA, dec, az, el)
 }
@@ -738,7 +738,7 @@ public func RaDecToAzElTime( _ ds50UTC: Double,
                              _ az: UnsafeMutablePointer<Double>,
                              _ el: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    Double,
                                                    Double,
@@ -746,7 +746,7 @@ public func RaDecToAzElTime( _ ds50UTC: Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "RaDecToAzElTime"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RaDecToAzElTime"), to: FunctionSignature.self)
 
     function(ds50UTC, lat, lon, RA, dec, az, el)
 }
@@ -760,7 +760,7 @@ public func AzElToRaDec( _ thetaG: Double,
                          _ RA: UnsafeMutablePointer<Double>,
                          _ dec: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    Double,
                                                    Double,
@@ -768,7 +768,7 @@ public func AzElToRaDec( _ thetaG: Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "AzElToRaDec"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AzElToRaDec"), to: FunctionSignature.self)
 
     function(thetaG, lat, lon, az, el, RA, dec)
 }
@@ -782,7 +782,7 @@ public func AzElToRaDecTime( _ ds50UTC: Double,
                              _ RA: UnsafeMutablePointer<Double>,
                              _ dec: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    Double,
                                                    Double,
@@ -790,7 +790,7 @@ public func AzElToRaDecTime( _ ds50UTC: Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "AzElToRaDecTime"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AzElToRaDecTime"), to: FunctionSignature.self)
 
     function(ds50UTC, lat, lon, az, el, RA, dec)
 }
@@ -810,14 +810,14 @@ public func RAEToECI( _ theta: Double,
                       _ satPos: UnsafeMutablePointer<Double>,
                       _ satVel: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "RAEToECI"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RAEToECI"), to: FunctionSignature.self)
 
     function(theta, astroLat, xa_rae, senPos, satPos, satVel)
 }
@@ -828,12 +828,12 @@ public func GetInitialDrag( _ semiMajorAxis: Double,
                             _ nDot: UnsafeMutablePointer<Double>,
                             _ bstar: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "GetInitialDrag"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetInitialDrag"), to: FunctionSignature.self)
 
     function(semiMajorAxis, eccen, nDot, bstar)
 }
@@ -849,12 +849,12 @@ public func CovMtxPTWToUVW( _ pos: UnsafeMutablePointer<Double>,
     let _ptwCovMtx = UnsafeMutableRawPointer(ptwCovMtx).bindMemory(to: Double.self, capacity: 36)
     let _uvwCovMtx = UnsafeMutableRawPointer(uvwCovMtx).bindMemory(to: Double.self, capacity: 36)
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "CovMtxPTWToUVW"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CovMtxPTWToUVW"), to: FunctionSignature.self)
 
     function(pos, vel, _ptwCovMtx, _uvwCovMtx)
 }
@@ -870,12 +870,12 @@ public func CovMtxUVWToPTW( _ pos: UnsafeMutablePointer<Double>,
     let _uvwCovMtx = UnsafeMutableRawPointer(uvwCovMtx).bindMemory(to: Double.self, capacity: 36)
     let _ptwCovMtx = UnsafeMutableRawPointer(ptwCovMtx).bindMemory(to: Double.self, capacity: 36)
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "CovMtxUVWToPTW"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CovMtxUVWToPTW"), to: FunctionSignature.self)
 
     function(pos, vel, _uvwCovMtx, _ptwCovMtx)
 }
@@ -888,14 +888,14 @@ public func EarthObstructionAngles( _ earthLimb: Double,
                                     _ earthSenSat: UnsafeMutablePointer<Double>,
                                     _ satEarthSen: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "EarthObstructionAngles"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EarthObstructionAngles"), to: FunctionSignature.self)
 
     function(earthLimb, satECI, senECI, earthSenLimb, earthSenSat, satEarthSen)
 }
@@ -903,10 +903,10 @@ public func EarthObstructionAngles( _ earthLimb: Double,
 // Determines if a point in space is sunlit at the input time ds50ET
 public func IsPointSunlit( _ ds50ET: Double, _ ptEci: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Double,
+    typealias FunctionSignature = @convention(c) ( Double,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "IsPointSunlit"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "IsPointSunlit"), to: FunctionSignature.self)
 
     return function(ds50ET, ptEci)
 }
@@ -921,7 +921,7 @@ public func RotRADecl( _ nutationTerms: Int32,
                        _ RAOut: UnsafeMutablePointer<Double>,
                        _ declOut: UnsafeMutablePointer<Double> ) {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    Int32,
                                                    Double,
                                                    Double,
@@ -930,7 +930,7 @@ public func RotRADecl( _ nutationTerms: Int32,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "RotRADecl"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotRADecl"), to: FunctionSignature.self)
 
     function(nutationTerms, dir, ds50UTCIn, RAIn, declIn, ds50UTCOut, RAOut, declOut)
 }
@@ -944,7 +944,7 @@ public func RotRADec_DateToEqnx( _ nutationTerms: Int32,
                                  _ RAOut: UnsafeMutablePointer<Double>,
                                  _ declOut: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    Int32,
                                                    Double,
                                                    Double,
@@ -952,7 +952,7 @@ public func RotRADec_DateToEqnx( _ nutationTerms: Int32,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "RotRADec_DateToEqnx"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotRADec_DateToEqnx"), to: FunctionSignature.self)
 
     return function(nutationTerms, yrOfEqnx, ds50UTCIn, RAIn, declIn, RAOut, declOut)
 }
@@ -966,7 +966,7 @@ public func RotRADec_EqnxToDate( _ nutationTerms: Int32,
                                  _ RAOut: UnsafeMutablePointer<Double>,
                                  _ declOut: UnsafeMutablePointer<Double> ) -> Int32 {
 
-    typealias functionSignature = @convention(c) ( Int32,
+    typealias FunctionSignature = @convention(c) ( Int32,
                                                    Int32,
                                                    Double,
                                                    Double,
@@ -974,7 +974,7 @@ public func RotRADec_EqnxToDate( _ nutationTerms: Int32,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Int32
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "RotRADec_EqnxToDate"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotRADec_EqnxToDate"), to: FunctionSignature.self)
 
     return function(nutationTerms, yrOfEqnx, ds50UTCIn, RAIn, declIn, RAOut, declOut)
 }
@@ -989,12 +989,12 @@ public func CovMtxEqnxToUVW( _ pos: UnsafeMutablePointer<Double>,
     let _covMtxEqnx = UnsafeMutableRawPointer(covMtxEqnx).bindMemory(to: Double.self, capacity: 36)
     let _covMtxUVW = UnsafeMutableRawPointer(covMtxUVW).bindMemory(to: Double.self, capacity: 36)
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "CovMtxEqnxToUVW"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CovMtxEqnxToUVW"), to: FunctionSignature.self)
 
     function(pos, vel, _covMtxEqnx, _covMtxUVW)
 }
@@ -1009,12 +1009,12 @@ public func CovMtxUVWToEqnx( _ pos: UnsafeMutablePointer<Double>,
     let _covMtxUVW = UnsafeMutableRawPointer(covMtxUVW).bindMemory(to: Double.self, capacity: 36)
     let _covMtxEqnx = UnsafeMutableRawPointer(covMtxEqnx).bindMemory(to: Double.self, capacity: 36)
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "CovMtxUVWToEqnx"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CovMtxUVWToEqnx"), to: FunctionSignature.self)
 
     function(pos, vel, _covMtxUVW, _covMtxEqnx)
 }
@@ -1029,12 +1029,12 @@ public func CovMtxECIToUVW( _ pos: UnsafeMutablePointer<Double>,
     let _covMtxECI = UnsafeMutableRawPointer(covMtxECI).bindMemory(to: Double.self, capacity: 36)
     let _covMtxUVW = UnsafeMutableRawPointer(covMtxUVW).bindMemory(to: Double.self, capacity: 36)
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "CovMtxECIToUVW"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CovMtxECIToUVW"), to: FunctionSignature.self)
 
     function(pos, vel, _covMtxECI, _covMtxUVW)
 }
@@ -1049,12 +1049,12 @@ public func CovMtxUVWToECI( _ pos: UnsafeMutablePointer<Double>,
     let _covMtxUVW = UnsafeMutableRawPointer(covMtxUVW).bindMemory(to: Double.self, capacity: 36)
     let _covMtxECI = UnsafeMutableRawPointer(covMtxECI).bindMemory(to: Double.self, capacity: 36)
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "CovMtxUVWToECI"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CovMtxUVWToECI"), to: FunctionSignature.self)
 
     function(pos, vel, _covMtxUVW, _covMtxECI)
 }
@@ -1064,10 +1064,10 @@ public func Mtx6x6ToLTA21( _ symMtx6x6: UnsafeMutablePointer<(Double, Double, Do
 
     let _symMtx6x6 = UnsafeMutableRawPointer(symMtx6x6).bindMemory(to: Double.self, capacity: 36)
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "Mtx6x6ToLTA21"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Mtx6x6ToLTA21"), to: FunctionSignature.self)
 
     function(_symMtx6x6, lta21)
 }
@@ -1077,10 +1077,10 @@ public func LTA21ToMtx6x6( _ lta21: UnsafeMutablePointer<Double>, _ symMtx6x6: U
 
     let _symMtx6x6 = UnsafeMutableRawPointer(symMtx6x6).bindMemory(to: Double.self, capacity: 36)
 
-    typealias functionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
-    let function = unsafeBitCast(getFunctionPointer(libHandle, "LTA21ToMtx6x6"), to: functionSignature.self)
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "LTA21ToMtx6x6"), to: FunctionSignature.self)
 
     function(lta21, _symMtx6x6)
 }
