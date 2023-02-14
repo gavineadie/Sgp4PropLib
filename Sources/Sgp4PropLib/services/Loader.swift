@@ -47,6 +47,26 @@ public func loadDll(_ dllName: String) -> LibHandle {
     return libHandle
 }
 
+public func freeAllDlls() {
+    if libHandles.count > 0 {
+        for i in (0..<libHandles.count).reversed() {  // reverse, so the array is diminished from the tail
+            Loader.unload(libHandles[i])
+            libHandles.remove(at: i)
+        }
+    }
+}
+
+public func verifyDLLs() {
+
+    print(dllMainGetInfo())
+    print(envGetInfo())
+    print(timeFuncGetInfo())
+    print(astroFuncGetInfo())
+    print(tleGetInfo())
+    print(sgp4GetInfo())
+
+}
+
 /// Use an empty `enum` to create the `Loader` namespace
 enum Loader { }
 
@@ -54,12 +74,12 @@ extension Loader {
     static func load(_ path: String?, mode: Int32) -> LibHandle? {
 #if os(Windows)
         guard let libHandle = path?.withCString(encodedAs: UTF16.self, LoadLibraryW) else {
-            print("LoadLibraryW failure: \(GetLastError())")
+            print("LoadLibraryW failure: error #\(GetLastError())")
             return nil
         }
 #else
         guard let libHandle = dlopen(path, mode) else {
-            print("dlopen failure")
+            print("dlopen failure: \(String(cString: dlerror()))")
             return nil
         }
 #endif
@@ -69,11 +89,11 @@ extension Loader {
     static func lookup(_ functionName: String, in libHandle: LibHandle) -> FunctionPtr {
 #if os(Windows)
         guard let functionPointer = GetProcAddress(libHandle, functionName) else {
-            fatalError("GetProcAddress failure:")
+            fatalError("GetProcAddress failure: error #\(GetLastError())")
         }
 #else
         guard let functionPointer = dlsym(libHandle, functionName) else {
-            fatalError("dlsym failure:")
+            fatalError("dlsym failure: \(String(cString: dlerror()))")
         }
 #endif
         return functionPointer
@@ -82,11 +102,11 @@ extension Loader {
     static func unload(_ libHandle: LibHandle) {
 #if os(Windows)
         guard FreeLibrary(libHandle) else {
-            fatalError("FreeLibrary failure: \(GetLastError())")
+            fatalError("FreeLibrary failure:  error #\(GetLastError())")
         }
 #else
         guard dlclose(libHandle) == 0 else {
-            fatalError("dlclose failure")
+            fatalError("dlclose failure: \(String(cString: dlerror()))")
         }
 #endif
     }
@@ -94,7 +114,7 @@ extension Loader {
 }
 
 //
-//TODO: I'm not too proud of this .. I need a better way
+//MARK: Environment Variables
 //
 
 #if os(Windows)
@@ -115,11 +135,9 @@ func getDylibPath() -> String {
 
 func getEnVariable (_ variable: String) -> String? {
 
-    if let value = getenv(variable) {
-        return String(cString: value)
-    } else {
-        return nil
-    }
+    guard let value = getenv(variable) else { return nil }
+
+    return String(cString: value)
 
 }
 
@@ -134,25 +152,5 @@ public func unsafeFunctionSignatureCast<U>(_ value: FunctionPtr,
                                            to type: U.Type) -> U {
 
     return unsafeBitCast(value, to: type)
-
-}
-
-public func freeAllDlls() {
-    if libHandles.count > 0 {
-        for i in (0..<libHandles.count).reversed() {  // reverse, so the array is diminished from the tail
-            Loader.unload(libHandles[i])
-            libHandles.remove(at: i)
-        }
-    }
-}
-
-public func verifyDLLs() {
-
-    print(dllMainGetInfo())
-    print(envGetInfo())
-    print(timeFuncGetInfo())
-    print(astroFuncGetInfo())
-    print(tleGetInfo())
-    print(sgp4GetInfo())
 
 }
