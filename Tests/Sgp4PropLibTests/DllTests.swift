@@ -20,10 +20,6 @@ final class DllTests: XCTestCase {
 
     }
 
-#if os(macOS)
-    func testDllVersion() { XCTAssertEqual(dllVersion(), 9.0, "dllVersion failure") }
-#endif
-
     func testLastErrMsg() {
 
         XCTAssertEqual(getLastErrMsg(), "")
@@ -34,6 +30,13 @@ final class DllTests: XCTestCase {
 
         XCTAssertEqual(GetLastInfoMsg(), "")
 
+    }
+
+    func testEnvironment() {
+        print("##                       PATH: " + (getEnVariable("PATH") ?? "missing"))
+        print("##            LD_LIBRARY_PATH: " + (getEnVariable("LD_LIBRARY_PATH") ?? "missing"))
+        print("##          DYLD_LIBRARY_PATH: " + (getEnVariable("DYLD_LIBRARY_PATH") ?? "missing"))
+        print("## DYLD_FALLBACK_LIBRARY_PATH: " + (getEnVariable("DYLD_FALLBACK_LIBRARY_PATH") ?? "missing"))
     }
 
 }

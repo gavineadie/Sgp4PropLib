@@ -1,6 +1,6 @@
-//===------------------------ SwiftScan.swift -----------------------------===//
+//===-------------------------- Loader.swift ------------------------------===//
 //
-// This source file was part of the Swift.org open source project
+// This source file is based on part of the Swift.org open source project
 //
 //===----------------------------------------------------------------------===//
 
@@ -38,8 +38,8 @@ public func loadAllDlls() {
 }
 
 public func loadDll(_ dllName: String) -> LibHandle {
-    guard let libHandle = Loader.load(getDylibPath() + dllName, mode: RTLD_LAZY) else {
-        fatalError("Could not open '\(getDylibPath() + dllName)' ..") // \(String(cString: dlerror()))")
+    guard let libHandle = Loader.load(getDylibPath() + dllName, mode: 1) else {
+        fatalError("Could not open '\(getDylibPath() + dllName)' ..")
     }
 
     libHandles.append(libHandle)                   // put another handle in the pile
@@ -98,17 +98,30 @@ extension Loader {
 //
 
 #if os(Windows)
-func getDylibPath() -> String {
-    return ""
-}
+func getDylibPath() -> String { "" }
 #else
 func getDylibPath() -> String {
-//    if let dylibDirectory = ProcessInfo.processInfo.environment["LD_LIBRARY_PATH"] {
-//        return dylibDirectory + "/"
-//    }
-    return "/usr/local/lib/sgp4prop/"
+    if let value = getEnVariable("LD_LIBRARY_PATH"), !value.isEmpty {
+        if value.contains(":") {
+            fatalError("the environment variable LD_LIBRARY_PATH must contain ONLY the file path to the AS libraries")
+        } else {
+            return value + "/"
+        }
+    } else {
+        fatalError("the environment variable LD_LIBRARY_PATH must contain the file path to the AS libraries")
+    }
 }
 #endif
+
+func getEnVariable (_ variable: String) -> String? {
+
+    if let value = getenv(variable) {
+        return String(cString: value)
+    } else {
+        return nil
+    }
+
+}
 
 func getFunctionPointer(_ libHandle: LibHandle,
                         _ functionName: String) -> FunctionPtr {

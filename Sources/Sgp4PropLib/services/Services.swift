@@ -5,19 +5,11 @@
 //  Created by Gavin Eadie on 10/16/22.
 //
 
-#if os(Windows)
-import WinSDK
-#elseif os(iOS) || os(macOS) || os(tvOS) || os(watchOS)
-import Darwin
-#else
-import Glibc
-#endif
 import Foundation
 
 public let IDX_ERR_NONE  = 0        // Ok
 public let IDX_ERR_WARN  = 1        // Warning
 public let IDX_ERR_ERROR = 2        // Error
-
 
 //
 //MARK: String Extension
@@ -75,14 +67,6 @@ public func emptyCcharArray(size: Int) -> [Int8] {
     Array(repeating: Int8(0), count: size+1)
 
 }
-
-//public func cCharArrayToString(_ array: [Int8], size: Int) -> String {
-//
-//    var _array = array
-//    _array[size] = 0
-//    return String(cString: _array).trimRight()
-//
-//}
 
 //
 //MARK: Date Extension
@@ -199,18 +183,3 @@ public func writeString(_ string: String, toURL: URL, appending: Bool = true, te
     }
 
 }
-
-#if os(macOS)
-public func dllVersion() -> Double {
-
-   if #available(macOS 13.0, *) {
-       if let dllMainVersion = dllMainGetInfo().firstMatch(of: #/\w(\d\.\d)/#) {
-           return Double(dllMainVersion.output.1) ?? 0.0
-       }
-   } else {
-       print("Can't do regex")
-   }
-
-   return 0.0
-}
-#endif
