@@ -47,26 +47,6 @@ public func loadDll(_ dllName: String) -> LibHandle {
     return libHandle
 }
 
-public func freeAllDlls() {
-    if libHandles.count > 0 {
-        for i in (0..<libHandles.count).reversed() {  // reverse, so the array is diminished from the tail
-            Loader.unload(libHandles[i])
-            libHandles.remove(at: i)
-        }
-    }
-}
-
-public func verifyDLLs() {
-
-    print(dllMainGetInfo())
-    print(envGetInfo())
-    print(timeFuncGetInfo())
-    print(astroFuncGetInfo())
-    print(tleGetInfo())
-    print(sgp4GetInfo())
-
-}
-
 /// Use an empty `enum` to create the `Loader` namespace
 enum Loader { }
 
@@ -152,5 +132,25 @@ public func unsafeFunctionSignatureCast<U>(_ value: FunctionPtr,
                                            to type: U.Type) -> U {
 
     return unsafeBitCast(value, to: type)
+
+}
+
+public func freeAllDlls() {
+    if libHandles.count > 0 {
+        for i in (0..<libHandles.count).reversed() {  // reverse, so the array is diminished from the tail
+            Loader.unload(libHandles[i])
+            libHandles.remove(at: i)
+        }
+    }
+}
+
+public func verifyDLLs() {
+
+    print(dllMainGetInfo())
+    print(envGetInfo())
+    print(timeFuncGetInfo())
+    print(astroFuncGetInfo())
+    print(tleGetInfo())
+    print(sgp4GetInfo())
 
 }

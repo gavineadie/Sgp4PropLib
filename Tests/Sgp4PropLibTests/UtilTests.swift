@@ -27,5 +27,5 @@ final class UtilTests: XCTestCase {
         XCTAssertEqual(charArray.count, Int(arrayCount)+1)    // room for a null-termination
         
     }
-    
+
 }
