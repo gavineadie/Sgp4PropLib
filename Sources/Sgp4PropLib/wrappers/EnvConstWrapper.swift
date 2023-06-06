@@ -208,25 +208,6 @@ public func EnvSetGeoStr( _ geoStr: UnsafeMutablePointer<CChar> ) {
 }
 
 // Retrieves the value of one of the constants from the current Earth constants (GEO) model. 
-// <br>
-// The following table lists possible values of the parameter value xf_GeoCon:
-// <table summary="">
-// <tr>
-// <td><b>xf_GeoCon</b></td>
-// <td><b>xf_GeoCon Interpretation</b></td>
-// </tr>
-// <tr><td>1</td><td>FF: Earth flattening (reciprocal; unitless)</td></tr>
-// <tr><td>2</td><td>J2 (unitless)</td></tr>
-// <tr><td>3</td><td>J3 (unitless)</td></tr>
-// <tr><td>4</td><td>J4 (unitless)</td></tr>
-// <tr><td>5</td><td>KE (er^1.5/min)</td></tr>
-// <tr><td>6</td><td>KMPER: Earth radius (km/er)</td></tr>
-// <tr><td>7</td><td>RPTIM: Earth rotation rate w.r.t. fixed equinox (rad/min)</td></tr>
-// <tr><td>8</td><td>CK2: J2/2 (unitless)</td></tr>
-// <tr><td>9</td><td>CK4: -3/8 J4 (unitless)</td></tr>
-// <tr><td>10</td><td>KS2EK: Converts km/sec to er/kem</td></tr>
-// <tr><td>11</td><td>THDOT: Earth rotation rate w.r.t. fixed equinox (rad/kem)</td></tr>
-// </table>   
 public func EnvGetGeoConst( _ xf_GeoCon: Int32 ) -> Double {
 
     typealias FunctionSignature = @convention(c) ( Int32 ) -> Double
@@ -237,17 +218,6 @@ public func EnvGetGeoConst( _ xf_GeoCon: Int32 ) -> Double {
 }
 
 // Retrieves the value of one of the constants from the current fundamental catalogue (FK) model.
-// <br>
-// The following table lists possible values of the parameter value xf_FkCon:
-// <table summary="">
-// <tr>
-// <td><b>xf_FkCon</b></td>
-// <td><b>xf_FkCon Interpretation</b></td>
-// </tr>
-// <tr><td>1</td><td>c1: Earth rotation rate w.r.t. moving equinox (rad/day)</td></tr>
-// <tr><td>2</td><td>c1dot: Earth rotation acceleration (rad/day2)</td></tr>
-// <tr><td>3</td><td>thgr70: Greenwich angle (1970; rad)</td></tr>
-// </table>   
 public func EnvGetFkConst( _ xf_FkCon: Int32 ) -> Double {
 
     typealias FunctionSignature = @convention(c) ( Int32 ) -> Double

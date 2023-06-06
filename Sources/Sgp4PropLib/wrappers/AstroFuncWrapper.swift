@@ -35,18 +35,18 @@ public func AstroFuncGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 }
 
 // Converts a set of Keplerian elements to a set of equinoctial elements. 
-public func KepToEqnx( _ metricKep: UnsafeMutablePointer<Double>, _ metricEqnx: UnsafeMutablePointer<Double> ) {
+public func KepToEqnx( _ xa_kep: UnsafeMutablePointer<Double>, _ xa_eqnx: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "KepToEqnx"), to: FunctionSignature.self)
 
-    function(metricKep, metricEqnx)
+    function(xa_kep, xa_eqnx)
 }
 
 // Converts a set of osculating Keplerian elements to osculating position and velocity vectors.
-public func KepToPosVel( _ metricKep: UnsafeMutablePointer<Double>,
+public func KepToPosVel( _ xa_kep: UnsafeMutablePointer<Double>,
                          _ pos: UnsafeMutablePointer<Double>,
                          _ vel: UnsafeMutablePointer<Double> ) {
 
@@ -56,11 +56,11 @@ public func KepToPosVel( _ metricKep: UnsafeMutablePointer<Double>,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "KepToPosVel"), to: FunctionSignature.self)
 
-    function(metricKep, pos, vel)
+    function(xa_kep, pos, vel)
 }
 
 // Converts a set of Keplerian elements to Ubar, Vbar, and Wbar vectors.
-public func KepToUVW( _ metricKep: UnsafeMutablePointer<Double>,
+public func KepToUVW( _ xa_kep: UnsafeMutablePointer<Double>,
                       _ uBar: UnsafeMutablePointer<Double>,
                       _ vBar: UnsafeMutablePointer<Double>,
                       _ wBar: UnsafeMutablePointer<Double> ) {
@@ -72,44 +72,44 @@ public func KepToUVW( _ metricKep: UnsafeMutablePointer<Double>,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "KepToUVW"), to: FunctionSignature.self)
 
-    function(metricKep, uBar, vBar, wBar)
+    function(xa_kep, uBar, vBar, wBar)
 }
 
 // Converts a set of classical elements to a set of equinoctial elements. 
-public func ClassToEqnx( _ metricClass: UnsafeMutablePointer<Double>, _ metricEqnx: UnsafeMutablePointer<Double> ) {
+public func ClassToEqnx( _ xa_cls: UnsafeMutablePointer<Double>, _ xa_eqnx: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ClassToEqnx"), to: FunctionSignature.self)
 
-    function(metricClass, metricEqnx)
+    function(xa_cls, xa_eqnx)
 }
 
 // Converts a set of equinoctial elements to a set of classical elements.
-public func EqnxToClass( _ metricEqnx: UnsafeMutablePointer<Double>, _ metricClass: UnsafeMutablePointer<Double> ) {
+public func EqnxToClass( _ xa_eqnx: UnsafeMutablePointer<Double>, _ xa_cls: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EqnxToClass"), to: FunctionSignature.self)
 
-    function(metricEqnx, metricClass)
+    function(xa_eqnx, xa_cls)
 }
 
 // Converts a set of equinoctial elements to a set of Keplerian elements. 
-public func EqnxToKep( _ metricEqnx: UnsafeMutablePointer<Double>, _ metricKep: UnsafeMutablePointer<Double> ) {
+public func EqnxToKep( _ xa_eqnx: UnsafeMutablePointer<Double>, _ xa_kep: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EqnxToKep"), to: FunctionSignature.self)
 
-    function(metricEqnx, metricKep)
+    function(xa_eqnx, xa_kep)
 }
 
 // Converts a set of equinoctial elements to position and velocity vectors.
-public func EqnxToPosVel( _ metricEqnx: UnsafeMutablePointer<Double>,
+public func EqnxToPosVel( _ xa_eqnx: UnsafeMutablePointer<Double>,
                           _ pos: UnsafeMutablePointer<Double>,
                           _ vel: UnsafeMutablePointer<Double> ) {
 
@@ -119,13 +119,13 @@ public func EqnxToPosVel( _ metricEqnx: UnsafeMutablePointer<Double>,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "EqnxToPosVel"), to: FunctionSignature.self)
 
-    function(metricEqnx, pos, vel)
+    function(xa_eqnx, pos, vel)
 }
 
 // Converts position and velocity vectors to a set of equinoctial elements.
 public func PosVelToEqnx( _ pos: UnsafeMutablePointer<Double>,
                           _ vel: UnsafeMutablePointer<Double>,
-                          _ metricEqnx: UnsafeMutablePointer<Double> ) {
+                          _ xa_eqnx: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
@@ -133,7 +133,7 @@ public func PosVelToEqnx( _ pos: UnsafeMutablePointer<Double>,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "PosVelToEqnx"), to: FunctionSignature.self)
 
-    function(pos, vel, metricEqnx)
+    function(pos, vel, xa_eqnx)
 }
 
 // Converts position and velocity vectors to a set of equinoctial elements with the given mu value. 
@@ -141,7 +141,7 @@ public func PosVelToEqnx( _ pos: UnsafeMutablePointer<Double>,
 public func PosVelMuToEqnx( _ pos: UnsafeMutablePointer<Double>,
                             _ vel: UnsafeMutablePointer<Double>,
                             _ mu: Double,
-                            _ metricEqnx: UnsafeMutablePointer<Double> ) {
+                            _ xa_eqnx: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
@@ -150,13 +150,13 @@ public func PosVelMuToEqnx( _ pos: UnsafeMutablePointer<Double>,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "PosVelMuToEqnx"), to: FunctionSignature.self)
 
-    function(pos, vel, mu, metricEqnx)
+    function(pos, vel, mu, xa_eqnx)
 }
 
 // Converts osculating position and velocity vectors to a set of osculating Keplerian elements.
 public func PosVelToKep( _ pos: UnsafeMutablePointer<Double>,
                          _ vel: UnsafeMutablePointer<Double>,
-                         _ metricKep: UnsafeMutablePointer<Double> ) {
+                         _ xa_kep: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
@@ -164,7 +164,7 @@ public func PosVelToKep( _ pos: UnsafeMutablePointer<Double>,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "PosVelToKep"), to: FunctionSignature.self)
 
-    function(pos, vel, metricKep)
+    function(pos, vel, xa_kep)
 }
 
 // Converts osculating position and velocity vectors to a set of osculating Keplerian elements with the given value of mu.
@@ -172,7 +172,7 @@ public func PosVelToKep( _ pos: UnsafeMutablePointer<Double>,
 public func PosVelMuToKep( _ pos: UnsafeMutablePointer<Double>,
                            _ vel: UnsafeMutablePointer<Double>,
                            _ mu: Double,
-                           _ metricKep: UnsafeMutablePointer<Double> ) {
+                           _ xa_kep: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double>,
@@ -181,7 +181,7 @@ public func PosVelMuToKep( _ pos: UnsafeMutablePointer<Double>,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "PosVelMuToKep"), to: FunctionSignature.self)
 
-    function(pos, vel, mu, metricKep)
+    function(pos, vel, mu, xa_kep)
 }
 
 // Converts position and velocity vectors to U, V, W vectors. See the remarks section for details.
@@ -229,23 +229,23 @@ public func PosVelToPTW( _ pos: UnsafeMutablePointer<Double>,
 }
 
 // Solves Kepler's equation (M = E - e sin(E)) for the eccentric anomaly, E, by iteration.
-public func SolveKepEqtn( _ metricKep: UnsafeMutablePointer<Double> ) -> Double {
+public func SolveKepEqtn( _ xa_kep: UnsafeMutablePointer<Double> ) -> Double {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double> ) -> Double
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SolveKepEqtn"), to: FunctionSignature.self)
 
-    return function(metricKep)
+    return function(xa_kep)
 }
 
 // Computes true anomaly from a set of Keplerian elements.
-public func CompTrueAnomaly( _ metricKep: UnsafeMutablePointer<Double> ) -> Double {
+public func CompTrueAnomaly( _ xa_kep: UnsafeMutablePointer<Double> ) -> Double {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double> ) -> Double
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CompTrueAnomaly"), to: FunctionSignature.self)
 
-    return function(metricKep)
+    return function(xa_kep)
 }
 
 // Converts mean motion N to semi-major axis A.
@@ -299,14 +299,14 @@ public func BrouwerToKozai( _ eccen: Double,
 }
 
 // Converts a set of osculating Keplerian elements to a set of mean Keplerian elements using method 9 algorithm.
-public func KepOscToMean( _ metricOscKep: UnsafeMutablePointer<Double>, _ metricMeanKep: UnsafeMutablePointer<Double> ) {
+public func KepOscToMean( _ xa_OscKep: UnsafeMutablePointer<Double>, _ xa_MeanKep: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
                                                    UnsafeMutablePointer<Double> ) -> Void
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "KepOscToMean"), to: FunctionSignature.self)
 
-    function(metricOscKep, metricMeanKep)
+    function(xa_OscKep, xa_MeanKep)
 }
 
 // Converts an ECI position vector XYZ to geodetic latitude, longitude, and height.
@@ -981,6 +981,7 @@ public func RotRADec_EqnxToDate( _ nutationTerms: Int32,
 
 // Rotates the Equinoctial covariance to UVW
 // Note: This method uses the global Earth constants so make sure that you select the right Earth model by calling the EnvConst/EnvSetGeoIdx method
+// The n terms must be normalized by n
 public func CovMtxEqnxToUVW( _ pos: UnsafeMutablePointer<Double>,
                              _ vel: UnsafeMutablePointer<Double>,
                              _ covMtxEqnx: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double)>,
@@ -1001,6 +1002,7 @@ public func CovMtxEqnxToUVW( _ pos: UnsafeMutablePointer<Double>,
 
 // Rotates the UVW covariance to Equinoctial
 // Note: This method uses the global Earth constants so make sure that you select the right Earth model by calling the EnvConst/EnvSetGeoIdx method
+// The n terms are normalized by n
 public func CovMtxUVWToEqnx( _ pos: UnsafeMutablePointer<Double>,
                              _ vel: UnsafeMutablePointer<Double>,
                              _ covMtxUVW: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double)>,
@@ -1059,6 +1061,44 @@ public func CovMtxUVWToECI( _ pos: UnsafeMutablePointer<Double>,
     function(pos, vel, _covMtxUVW, _covMtxECI)
 }
 
+// Converts covariance matrix ECI to EFG.
+// EFG = Earth Fixed Greenwich
+// ECI = Earth Centered Inertial - need to determine TEME or J2K
+public func CovMtxECIToEFG( _ thetaG: Double,
+                            _ covECI: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double)>,
+                            _ covEFG: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double)> ) {
+
+    let _covECI = UnsafeMutableRawPointer(covECI).bindMemory(to: Double.self, capacity: 36)
+    let _covEFG = UnsafeMutableRawPointer(covEFG).bindMemory(to: Double.self, capacity: 36)
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CovMtxECIToEFG"), to: FunctionSignature.self)
+
+    function(thetaG, _covECI, _covEFG)
+}
+
+// Converts covariance matrix EFG to ECI.
+// EFG = Earth Fixed Greenwich
+// ECI = Earth Centered Inertial - need to determine TEME or J2K
+public func CovMtxEFGToECI( _ thetaG: Double,
+                            _ covEFG: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double)>,
+                            _ covECI: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double)> ) {
+
+    let _covEFG = UnsafeMutableRawPointer(covEFG).bindMemory(to: Double.self, capacity: 36)
+    let _covECI = UnsafeMutableRawPointer(covECI).bindMemory(to: Double.self, capacity: 36)
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CovMtxEFGToECI"), to: FunctionSignature.self)
+
+    function(thetaG, _covEFG, _covECI)
+}
+
 // Converts 6x6 symmetric Matrix/2D array to 1D array of 21 elements (lower triangular of a 6x6 symmetric matrix)
 public func Mtx6x6ToLTA21( _ symMtx6x6: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double)>, _ lta21: UnsafeMutablePointer<Double> ) {
 
@@ -1083,6 +1123,178 @@ public func LTA21ToMtx6x6( _ lta21: UnsafeMutablePointer<Double>, _ symMtx6x6: U
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "LTA21ToMtx6x6"), to: FunctionSignature.self)
 
     function(lta21, _symMtx6x6)
+}
+
+// Converts 9x9 symmetric Matrix/2D array to 1D array of 45 elements (lower triangular of a 9x9 symmetric matrix)
+public func Mtx9x9ToLTA45( _ symMtx9x9: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double, Double)>, _ lta45: UnsafeMutablePointer<Double> ) {
+
+    let _symMtx9x9 = UnsafeMutableRawPointer(symMtx9x9).bindMemory(to: Double.self, capacity: 81)
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Mtx9x9ToLTA45"), to: FunctionSignature.self)
+
+    function(_symMtx9x9, lta45)
+}
+
+// Converts 1D array of 45 elements (lower triangular of a 9x9 symmetric matrix) to a 9x9 symmetric matrix
+public func LTA45ToMtx9x9( _ lta45: UnsafeMutablePointer<Double>, _ symMtx9x9: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double, Double)> ) {
+
+    let _symMtx9x9 = UnsafeMutableRawPointer(symMtx9x9).bindMemory(to: Double.self, capacity: 81)
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "LTA45ToMtx9x9"), to: FunctionSignature.self)
+
+    function(lta45, _symMtx9x9)
+}
+
+// Propagate xyzDate covariance forward to the propagation time
+public func PropCovFrState( _ rms: Double,
+                            _ consider: Double,
+                            _ stateArray: UnsafeMutablePointer<Double>,
+                            _ cov: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double, Double)>,
+                            _ propCov: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double)> ) {
+
+    let _cov = UnsafeMutableRawPointer(cov).bindMemory(to: Double.self, capacity: 81)
+    let _propCov = UnsafeMutableRawPointer(propCov).bindMemory(to: Double.self, capacity: 36)
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "PropCovFrState"), to: FunctionSignature.self)
+
+    function(rms, consider, stateArray, _cov, _propCov)
+}
+
+// Rotates the ECI covariance to UVW
+// Note: This method uses the global Earth constants so make sure that you select the proper Earth model by calling the EnvConst/EnvSetGeoIdx method
+public func CovMtxECIToEqnx( _ pos: UnsafeMutablePointer<Double>,
+                             _ vel: UnsafeMutablePointer<Double>,
+                             _ covMtxECI: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double, Double)>,
+                             _ covMtxEqnx: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double, Double)> ) {
+
+    let _covMtxECI = UnsafeMutableRawPointer(covMtxECI).bindMemory(to: Double.self, capacity: 81)
+    let _covMtxEqnx = UnsafeMutableRawPointer(covMtxEqnx).bindMemory(to: Double.self, capacity: 81)
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CovMtxECIToEqnx"), to: FunctionSignature.self)
+
+    function(pos, vel, _covMtxECI, _covMtxEqnx)
+}
+
+// Rotates the UVW covariance to ECI
+// Note: This method uses the global Earth constants so make sure that you select the proper Earth model by calling the EnvConst/EnvSetGeoIdx method
+public func CovMtxEqnxToECI9x9( _ pos: UnsafeMutablePointer<Double>,
+                                _ vel: UnsafeMutablePointer<Double>,
+                                _ covEqnx: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double, Double)>,
+                                _ covMtxECI: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double, Double)> ) {
+
+    let _covEqnx = UnsafeMutableRawPointer(covEqnx).bindMemory(to: Double.self, capacity: 81)
+    let _covMtxECI = UnsafeMutableRawPointer(covMtxECI).bindMemory(to: Double.self, capacity: 81)
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CovMtxEqnxToECI9x9"), to: FunctionSignature.self)
+
+    function(pos, vel, _covEqnx, _covMtxECI)
+}
+
+// Rotates the UVW covariance to ECI
+// Note: This method uses the global Earth constants so make sure that you select the proper Earth model by calling the EnvConst/EnvSetGeoIdx method
+public func CovMtxEqnxToUVW9x9( _ pos: UnsafeMutablePointer<Double>,
+                                _ vel: UnsafeMutablePointer<Double>,
+                                _ covEqnx: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double, Double)>,
+                                _ covMtxUVW: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double, Double)> ) {
+
+    let _covEqnx = UnsafeMutableRawPointer(covEqnx).bindMemory(to: Double.self, capacity: 81)
+    let _covMtxUVW = UnsafeMutableRawPointer(covMtxUVW).bindMemory(to: Double.self, capacity: 81)
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CovMtxEqnxToUVW9x9"), to: FunctionSignature.self)
+
+    function(pos, vel, _covEqnx, _covMtxUVW)
+}
+
+// Update (propagate) covariance to a future time with a supplied covariance, state transition matrix
+// consider parameter and RMS. Consider parameter is applied to the drag term only.
+// Full covariance matrix is multiplied by RMS squared.  State transition matrix can be obtained from 
+// SpProp.SpGetStateMtx or supplying your own. State matrix, input and output covariance must be in 
+// matching coordinate systems.
+public func CovMtxUpdate( _ rmsIn: Double,
+                          _ consider: Double,
+                          _ cov: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double, Double)>,
+                          _ stateArray: UnsafeMutablePointer<Double>,
+                          _ propCov: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double)> ) {
+
+    let _cov = UnsafeMutableRawPointer(cov).bindMemory(to: Double.self, capacity: 81)
+    let _propCov = UnsafeMutableRawPointer(propCov).bindMemory(to: Double.self, capacity: 36)
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CovMtxUpdate"), to: FunctionSignature.self)
+
+    function(rmsIn, consider, _cov, stateArray, _propCov)
+}
+
+// Annual Aberration calculated using equations from Astronomical Algorithms, Jean Meeus, 2nd Edition with Corrections as of June 15, 2005
+// Diurnal Aberration calculated using equations from Explanatory Supplement to the Astronomical Almanac 3rd Edition, 2013
+public func AberrationAnnual( _ ra: Double,
+                              _ decl: Double,
+                              _ dS50UTC: Double,
+                              _ raDelta: UnsafeMutablePointer<Double>,
+                              _ decDelta: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   Double,
+                                                   Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AberrationAnnual"), to: FunctionSignature.self)
+
+    function(ra, decl, dS50UTC, raDelta, decDelta)
+}
+
+// Diurnal Aberration is due to the rotation of the Earth about it's axis. This is only valid for ground based sensors.
+// Diurnal Aberration calculated using equations from Explanatory Supplement to the Astronomical Almanac 3rd Edition, 2013
+public func AberrationDiurnal( _ ra: Double,
+                               _ decl: Double,
+                               _ dS50UTC: Double,
+                               _ senPos: UnsafeMutablePointer<Double>,
+                               _ raDelta: UnsafeMutablePointer<Double>,
+                               _ decDelta: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   Double,
+                                                   Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AberrationDiurnal"), to: FunctionSignature.self)
+
+    function(ra, decl, dS50UTC, senPos, raDelta, decDelta)
 }
 
 // Index of Keplerian elements

@@ -1,7 +1,11 @@
 # Change Note Summary
 
+### 2023 Jun 05 : v0.2.2 • _Second public release (corresponds to Space-Track v9.1)_
 
-### (2023 Feb xx : v0.2.1)
+- **Library Error Fixed**: the bug referenced below at v0.2.1 `Sgp4GenEphems` has been corrected in the v9.1 base library.
+- A driver 'convenience' function `tleGetEpochUTC` was added to TleDriver.swift
+
+### 2023 Feb 01 : v0.2.1
 
 - Services: IDX_ERR_NONE, IDX_ERR_WARN, IDX_ERR_ERROR added ..
 - Driver: `sgp4GenEphems`: last parameter "genEphemPts" changed from `UnsafeMutablePointer<Int32>` to `UnsafeMutablePointer<Int>` ..

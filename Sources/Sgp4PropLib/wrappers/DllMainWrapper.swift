@@ -266,6 +266,37 @@ public func GetElsetKeyMode(  ) -> Int32 {
     return function()
 }
 
+// Sets key mode for ALL (elsets/obs/sensors). This takes precedence over individual elset/obs/sensor key mode
+// This mode can also be turned on if the user loads an input text file that includes this line - "AS_DMA_ALL_ON"
+public func SetAllKeyMode( _ all_keyMode: Int32 ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int32 ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SetAllKeyMode"), to: FunctionSignature.self)
+
+    return function(all_keyMode)
+}
+
+// Gets current ALL (elsets/obs/sensors) key mode
+public func GetAllKeyMode(  ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetAllKeyMode"), to: FunctionSignature.self)
+
+    return function()
+}
+
+// Resets ALL (elsets/obs/sensors) key mode to its default value which then allows individual elsets/obs/sensors to use their own key mode settings
+public func ResetAllKeyMode(  ) {
+
+    typealias FunctionSignature = @convention(c) (  ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ResetAllKeyMode"), to: FunctionSignature.self)
+
+    function()
+}
+
 // log message string length
 public let LOGMSGLEN = 128
 
@@ -336,6 +367,15 @@ public let IDX_ORDER_READ  = 2
 public let IDX_ORDER_QUICK = 9
 
 //*******************************************************************************
+
+// Different key mode options for all elset-satKey/obs-obsKey/sensor-senKey
+//Default - duplicate elsets/observations/sensors can not be loaded in their binary trees
+public let ALL_KEYMODE_NODUP  = 0
+//Allow duplicate elsets/obs/sensor to be loaded and have direct memory access (DMA - no duplication check and no binary tree)
+public let ALL_KEYMODE_DMA    = 1
+
+//*******************************************************************************
+
 
 // Different key mode options for elset satKey
 //Default - duplicate elsets can not be loaded in binary tree

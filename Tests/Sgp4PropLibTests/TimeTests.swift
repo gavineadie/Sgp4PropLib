@@ -15,7 +15,6 @@ final class TimeTests: XCTestCase {
         XCTAssertEqual(utcToDTG20(0.0), "1956/001 0000 00.000")         // (below limit)
         XCTAssertEqual(utcToDTG20(2000.0), "1956/001 0000 00.000")      // (below limit)
         XCTAssertEqual(utcToDTG20(2192.0), "1956/001 0000 00.000")      // (equals limit)
-        XCTAssertEqual(utcToDTG20(2192.0), "1956/001 0000 00.000")      // (equals limit)
         XCTAssertEqual(utcToDTG20(10000.0), "1977/138 0000 00.000")     //
         XCTAssertEqual(utcToDTG20(30000.0), "2032/050 0000 00.000")     //
         XCTAssertEqual(utcToDTG20(50000.0), "2086/326 0000 00.000")     // (above limit?)
@@ -45,7 +44,10 @@ final class TimeTests: XCTestCase {
         XCTAssertEqual(dtgToUTC("1977/138.00000000"), 10000.0)          // "YYYY/DDD.DDDDDDD"    (17)
         XCTAssertEqual(dtgToUTC("77138000000.000"), 10000.0)            // "YYDDDHHMMSS.SSS"     (15)
 
-        XCTAssertEqual(dtgToUTC("77138"), 10000.0)                      // Just wrong! (5)
+        XCTAssertEqual(dtgToUTC("77138"), 10000.0)                      // .. wrong, but works!   (5)
+
+        XCTAssertEqual(dtgToUTC("1977Feb28000000.000"), 9921.0)         // "YYYYMonDDHHMMSS.SSS" (20)
+        XCTAssertEqual(dtgToUTC("1977Feb29000000.000"), 0.0)            // "1977Feb29 - bad date = 0.0" (20)
 
         XCTAssertEqual(dtgToUTC(utcToDTG19(0.0)), 2192.0, accuracy: 0.0000001)
 

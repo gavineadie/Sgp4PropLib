@@ -935,6 +935,7 @@ public func TleGPFieldsToCsv( _ satNum: Int32,
 
 // Constructs a TLE from GP data stored in the input parameters.
 // This function only parses data from the input data but DOES NOT load/add the TLE to memory.
+// <br>
 // Returned line1 and line2 will be empty if the function fails to construct the lines as requested.
 public func TleGPArrayToLines( _ xa_tle: UnsafeMutablePointer<Double>,
                                _ xs_tle: UnsafeMutablePointer<CChar>,
@@ -1124,68 +1125,6 @@ public func TleUpdateSatFrArray( _ satKey: Int64,
 }
 
 // Retrieves TLE data and stored it in the passing parameters
-// <br>
-// The following table lists the values for the XA_TLE array:
-// <table summary="">
-// <tr>
-// <td>name</td>
-// <td>index</td>
-// <td>index Interpretation</td>
-// </tr>
-// <tr><td>XA_TLE_SATNUM        </td><td>  0</td><td>Satellite number</td></tr>
-// <tr><td>XA_TLE_EPOCH         </td><td>  1</td><td>Satellite's epoch time in DS50UTC</td></tr>
-// <tr><td>XA_TLE_NDOT          </td><td>  2</td><td>GP Mean motion derivative (rev/day /2)</td></tr>
-// <tr><td>XA_TLE_NDOTDOT       </td><td>  3</td><td>GP Mean motion second derivative (rev/day**2 /6)</td></tr>
-// <tr><td>XA_TLE_BSTAR         </td><td>  4</td><td>GP B* drag term (1/er)  </td></tr>
-// <tr><td>XA_TLE_EPHTYPE       </td><td>  5</td><td>Satellite ephemeris type: 0=SGP, 2=SGP4, 6=SP</td></tr>
-// <tr><td>XA_TLE_OBJTYPE       </td><td>  6</td><td>Object type; 0=unknown, 1=payload, 2=rocket body, 3=platform, 4=debris,
-// 5=manned</td></tr>
-// <tr><td>XA_TLE_EXTRPLTNTYPE  </td><td>  7</td><td>Extrapolation theory used to generate element set: 0=no extrapolation DC
-// </td></tr>
-// <tr><td>XA_TLE_RCSBIN        </td><td>  8</td><td>RCS size bin</td></tr>
-// <tr><td>XA_TLE_INCLI         </td><td> 20</td><td>Orbit inclination (deg)</td></tr>
-// <tr><td>XA_TLE_NODE          </td><td> 21</td><td>Right ascension of ascending node (deg)</td></tr>
-// <tr><td>XA_TLE_ECCEN         </td><td> 22</td><td>Eccentricity</td></tr>
-// <tr><td>XA_TLE_OMEGA         </td><td> 23</td><td>Argument of perigee (deg)</td></tr>
-// <tr><td>XA_TLE_MNANOM        </td><td> 24</td><td>Mean anomaly (deg)</td></tr>
-// <tr><td>XA_TLE_MNMOTN        </td><td> 25</td><td>Mean motion (rev/day) (ephType=0: Kozai, ephType=2: Brouwer)</td></tr>
-// <tr><td>XA_TLE_REVNUM        </td><td> 26</td><td>Revolution number at epoch </td></tr>
-// <tr><td>XA_TLE_ELSETNUM      </td><td> 30</td><td>Element set number</td></tr>
-// <tr><td>XA_TLE_ERRGRWRATE    </td><td> 31</td><td>Error growth rate km/day</td></tr>
-// <tr><td>XA_TLE_LSTOBSTIME    </td><td> 32</td><td>+/- time of last observation offset relative to epoch (+/- ddd.ddddd
-// fractional days)</td></tr>
-// <tr><td>XA_TLE_RADARXSECT    </td><td> 33</td><td>Radar cross section (in meters squared, followed by character designating
-// radar frequency type used)</td></tr>
-// <tr><td>XA_TLE_VISMAG        </td><td> 34</td><td>Median visual magnitude of object scaled to 36000km</td></tr>
-// <tr><td>XA_TLE_DRAGCOEFF     </td><td> 35</td><td>Drag coefficient</td></tr>
-// <tr><td>XA_TLE_AGOMGP        </td><td> 38</td><td>Radiation Pressure Coefficient GP</td></tr>
-// <tr><td>XA_TLE_SP_BTERM      </td><td>  2</td><td>SP ballistic coefficient (m2/kg)</td></tr>
-// <tr><td>XA_TLE_SP_OGPARM     </td><td>  3</td><td>SP outgassing parameter (km/s2)</td></tr>
-// <tr><td>XA_TLE_SP_AGOM       </td><td>  4</td><td>SP Radiation Pressure Coefficient</td></tr>
-// <tr><td>XA_TLE_SIZE          </td><td> 64</td><td></td></tr>
-// </table>
-// <br>
-// The following table lists the values for the XS_TLE array:
-// <table summary="">
-// <tr>
-// <td>name</td>
-// <td>index</td>
-// <td>index Interpretation</td>
-// </tr>
-// <tr><td>XS_TLE_SECCLASS_1   </td><td>  0</td><td>Security classification of line 1 and line 2</td></tr>
-// <tr><td>XS_TLE_SATNAME_12   </td><td>  1</td><td>Satellite name</td></tr>
-// <tr><td>XS_TLE_SECCLASSL3_1 </td><td> 13</td><td>Security classification of line 3 </td></tr>
-// <tr><td>XS_TLE_DISTMARKING_4</td><td> 14</td><td>Distribution marking</td></tr>
-// <tr><td>XS_TLE_OBJSTAT_1    </td><td> 18</td><td>Object status: 'A'=Active, 'D'=Dead, 'U'=Unknown</td></tr>
-// <tr><td>XS_TLE_MSSNCODE_2   </td><td> 19</td><td>Primary payload mission code</td></tr>
-// <tr><td>XS_TLE_MSSNSTAT_1   </td><td> 21</td><td>Primary mission status (table lookup)</td></tr>
-// <tr><td>XS_TLE_MANEUV_1     </td><td> 22</td><td>Maneuverability 'Y'=Yes, 'N'=No, 'U'=Unknown</td></tr>
-// <tr><td>XS_TLE_OOCNTRY_4    </td><td> 23</td><td>Payload Owner/Operator </td></tr>
-// <tr><td>XS_TLE_FREQBAND_1   </td><td> 27</td><td>Frequency Band of the RCS: U=UHF, C=C-Band, L=L-Band, S=S-Band, X=X-Band
-// </td></tr>
-// <tr><td>XS_TLE_TBLERATE_1   </td><td> 28</td><td>Tumble rate </td></tr>
-// <tr><td>XS_TLE_SIZE         </td><td> 512</td><td></td></tr>
-// </table>
 public func TleDataToArray( _ satKey: Int64,
                             _ xa_tle: UnsafeMutablePointer<Double>,
                             _ xs_tle: UnsafeMutablePointer<CChar> ) -> Int32 {

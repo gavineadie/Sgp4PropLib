@@ -9,10 +9,10 @@ fileprivate let libHandle = loadDll("TimeFunc.dll")
 fileprivate let libHandle = loadDll("libtimefunc.dylib")
 #endif
 
-// Notes: This function has been deprecated since v9.0.
-// Initializes the TimeFunc DLL for use in the program.
+// Notes: This function has been deprecated since v9.0. 
+// Initializes the TimeFunc DLL for use in the program. 
 // If this function returns an error, it is recommended that you stop the program immediately.
-//
+// 
 // An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section of the accompanying documentation, before using this DLL.
 public func TimeFuncInit( _ apAddr: Int64 ) -> Int32 {
 
@@ -36,9 +36,9 @@ public func TimeFuncGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 
 // Loads timing constants data from an input file.
 // Time constants can be included directly in the main input file or they can be read from a separate file identified with "TIMFIL=[pathname\filename]".
-//
+// 
 // The input file is read in two passes. The function first looks for "TIMFIL=" lines, then it looks for timing constant data which was included directly. The result of this is that data entered using both methods will be processed, but the "TIMFIL=" data will be processed first.
-//
+// 
 // The time constants are also read in from each VCM. However, only the most recent time constants among VCMs are stored in the memory, see VCM.dll documentation.
 // See the "Time Constants Data Description" section in the accompanying TimeFunc documentation file for supported formats.
 public func TConLoadFile( _ tconFile: UnsafeMutablePointer<CChar> ) -> Int32 {
@@ -52,9 +52,9 @@ public func TConLoadFile( _ tconFile: UnsafeMutablePointer<CChar> ) -> Int32 {
 
 // Loads timing constants data and prediction control (6P-card) from an input file.
 // Time constants can be included directly in the main input file or they can be read from a separate file identified with "TIMFIL=[pathname\filename]".
-//
+// 
 // The input file is read in two passes. The function first looks for "TIMFIL=" lines, then it looks for timing constant data which was included directly. The result of this is that data entered using both methods will be processed, but the "TIMFIL=" data will be processed first.
-//
+// 
 // The time constants are also read in from each VCM. However, only the most recent time constants among VCMs are stored in the memory, see VCM.dll documentation.
 public func TimeFuncLoadFile( _ tconFile: UnsafeMutablePointer<CChar> ) -> Int32 {
 
@@ -92,6 +92,7 @@ public func TConSaveFile( _ tconFile: UnsafeMutablePointer<CChar>,
 }
 
 // Adds a timing constant record to memory. Note that this function is solely for backward compatible with legacy software.
+// Notes: only the latest timing record is stored in memory using this method. Input timing record will be skipped/ignored if it's earlier than the existing one
 // The users should use TConLoadFile or TimeFuncLoadFile to load timing constants file instead.
 public func TConAddARec( _ refDs50UTC: Double,
                          _ leapDs50UTC: Double,
@@ -220,7 +221,7 @@ public func UTCToDTG15( _ ds50UTC: Double, _ dtg15: UnsafeMutablePointer<CChar> 
 // Converts a time in one of the DTG formats to a time in ds50UTC. DTG15, DTG17, DTG19, and DTG20 formats are accepted.
 // See "UTCToDTG20" for an example.
 // During the conversion, this function processes only numbers and the '.' character. This means that you can format dtgStr in a format that makes sense. You can use spaces and the '/' character for example if you wish.
-//
+// 
 // The function can process dates from 1950 to 2049. Any input outside this range will yield "0.0".
 // This function supports DTG19 inputs in both "YY DDD HH MM SS.SSS" and "YYYYMonDDHHMMSS.SSS" formats.
 public func DTGToUTC( _ dtg: UnsafeMutablePointer<CChar> ) -> Double {
@@ -232,7 +233,7 @@ public func DTGToUTC( _ dtg: UnsafeMutablePointer<CChar> ) -> Double {
     return function(dtg)
 }
 
-// Converts a time in ds50UTC to a time in ds50TAI using timing constants records in memory.
+// Converts a time in ds50UTC to a time in ds50TAI using timing constants records in memory. 
 // If no timing constants records were loaded, ds50UTC and ds50TAI are the same.
 // Partial days may be returned.
 public func UTCToTAI( _ ds50UTC: Double ) -> Double {
@@ -244,8 +245,8 @@ public func UTCToTAI( _ ds50UTC: Double ) -> Double {
     return function(ds50UTC)
 }
 
-// Converts a time in ds50UTC to a time in ds50UT1 using timing constants records in memory.
-// If no timing constants records were loaded, ds50UTC and ds50UT1 are the same.
+// Converts a time in ds50UTC to a time in ds50UT1 using timing constants records in memory. 
+// If no timing constants records were loaded, ds50UTC and ds50UT1 are the same. 
 // Partial days may be returned.
 public func UTCToUT1( _ ds50UTC: Double ) -> Double {
 
@@ -256,8 +257,8 @@ public func UTCToUT1( _ ds50UTC: Double ) -> Double {
     return function(ds50UTC)
 }
 
-// Converts a time in ds50UTC to a time in ds50ET using timing constants records in memory.
-// If no timing constants records were loaded, ds50UTC and ds50UT1 are the same.
+// Converts a time in ds50UTC to a time in ds50ET using timing constants records in memory. 
+// If no timing constants records were loaded, ds50UTC and ds50UT1 are the same. 
 // Partial days may be returned.
 public func UTCToET( _ ds50UTC: Double ) -> Double {
 
@@ -268,8 +269,8 @@ public func UTCToET( _ ds50UTC: Double ) -> Double {
     return function(ds50UTC)
 }
 
-// Converts a time in ds50TAI to a time in ds50UTC using timing constants records in memory.
-// If no timing constants records were loaded, ds50TAI and ds50UTC are the same.
+// Converts a time in ds50TAI to a time in ds50UTC using timing constants records in memory. 
+// If no timing constants records were loaded, ds50TAI and ds50UTC are the same. 
 // Partial days may be returned.
 public func TAIToUTC( _ ds50TAI: Double ) -> Double {
 
@@ -280,8 +281,8 @@ public func TAIToUTC( _ ds50TAI: Double ) -> Double {
     return function(ds50TAI)
 }
 
-// Converts a time in ds50TAI to a time in ds50UT1 using timing constants records in memory.
-// If no timing constants records were loaded, ds50TAI and ds50UT1 are the same.
+// Converts a time in ds50TAI to a time in ds50UT1 using timing constants records in memory. 
+// If no timing constants records were loaded, ds50TAI and ds50UT1 are the same. 
 // Partial days may be returned.
 public func TAIToUT1( _ ds50TAI: Double ) -> Double {
 
@@ -292,7 +293,7 @@ public func TAIToUT1( _ ds50TAI: Double ) -> Double {
     return function(ds50TAI)
 }
 
-// Converts a year and a number of days to a time in ds50UTC.
+// Converts a year and a number of days to a time in ds50UTC. 
 // Partial days may be returned.
 public func YrDaysToUTC( _ year: Int32, _ dayOfYear: Double ) -> Double {
 
@@ -319,7 +320,7 @@ public func UTCToYrDays( _ ds50UTC: Double,
     function(ds50UTC, year, dayOfYear)
 }
 
-// Converts a set of time components (year, day of year, hour, minute, second) to a time in ds50UTC.
+// Converts a set of time components (year, day of year, hour, minute, second) to a time in ds50UTC. 
 // Partial days may be returned.
 // See "TimeComps2ToUTC" for a function which takes a month and day instead of a day of year value.
 public func TimeComps1ToUTC( _ year: Int32,
@@ -361,7 +362,7 @@ public func UTCToTimeComps1( _ ds50UTC: Double,
     function(ds50UTC, year, dayOfYear, hh, mm, sss)
 }
 
-// Converts a set of time components (year, month, day of month, hour, minute, second) to a time in ds50UTC.
+// Converts a set of time components (year, month, day of month, hour, minute, second) to a time in ds50UTC. 
 // Partial days may be returned.
 // See "TimeComps1ToUTC" for a function which takes a day of year value instead of a month and day.
 public func TimeComps2ToUTC( _ year: Int32,
@@ -407,7 +408,7 @@ public func UTCToTimeComps2( _ ds50UTC: Double,
     function(ds50UTC, year, month, dayOfMonth, hh, mm, sss)
 }
 
-// Computes right ascension of Greenwich at the specified time in ds50UT1.
+// Computes right ascension of Greenwich at the specified time in ds50UT1. 
 // The Fk constants as you currently have them set up in EnvConst.dll are used.
 // EnvConst.dll is not marked as a direct dependency of TimeFunc.dll. However, it obviously must be loaded in order to be able to use this function since you must first obtain a handle via the EnvGetFkPtr() function.
 public func ThetaGrnwch( _ ds50UT1: Double, _ lenvFk: Int64 ) -> Double {
@@ -502,5 +503,4 @@ public func Get6PCardLine( _ card6PLine: UnsafeMutablePointer<CChar> ) {
 
     function(card6PLine)
 }
-
 // ========================= End of auto generated code ==========================

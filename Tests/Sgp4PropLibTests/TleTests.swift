@@ -132,6 +132,38 @@ final class TleTests: XCTestCase {
 
     }
 
+    func testGetEpoch() {
+
+        _ = Sgp4RemoveAllSats()
+        _ = TleRemoveAllSats()
+
+        var satKey = tleAddSatFrLines(testLine1, testLine2)
+        print(getLastErrMsg())
+
+        let dateTimeGroup = tleGetField(satKey, XF_TLE_EPOCH)!
+        let ds1950UTC = dtgToUTC(dateTimeGroup)
+
+        XCTAssertEqual(ds1950UTC, 18313.47568104)
+
+        XCTAssertEqual(tleGetEpochUTC(satKey), 18313.47568104)
+
+        // test advancing one (leap) year ..
+        satKey = tleAddSatFrLines("1 90021U RELEAS14 01051.47568104 +.00000184 +00000+0 +00000-4 0 0814 ",
+                                  "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199 ")
+        XCTAssertEqual(tleGetEpochUTC(satKey), 18313.47568104 + 366.0)          // leap year
+
+        // test advancing another (non-leap) year ..
+        satKey = tleAddSatFrLines("1 90021U RELEAS14 02051.47568104 +.00000184 +00000+0 +00000-4 0 0814 ",
+                                  "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199 ")
+        XCTAssertEqual(tleGetEpochUTC(satKey), 18313.47568104 + 366.0 + 365.0)
+
+        // test failure gives 0.0 ..
+        satKey = tleAddSatFrLines("1 90021U RELEAS14 99951.47568104 +.00000184 +00000+0 +00000-4 0 0814 ",
+                                  "2 90021   0.0222 182.4923 0000720  45.6036 131.8822  1.00271328 1199 ")
+        XCTAssertEqual(tleGetEpochUTC(satKey), 0.0)
+
+    }
+
     func testTLEs() {
 
         let tleFilePath = tleString.stringToTmpFile("brightest.2le")

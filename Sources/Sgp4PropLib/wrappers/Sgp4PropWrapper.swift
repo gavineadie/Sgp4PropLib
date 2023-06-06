@@ -286,7 +286,7 @@ public func Sgp4PosVelToKep( _ yr: Int32,
                              _ vel: UnsafeMutablePointer<Double>,
                              _ posNew: UnsafeMutablePointer<Double>,
                              _ velNew: UnsafeMutablePointer<Double>,
-                             _ sgp4MeanKep: UnsafeMutablePointer<Double> ) -> Int32 {
+                             _ xa_kep: UnsafeMutablePointer<Double> ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int32,
                                                    Double,
@@ -298,7 +298,7 @@ public func Sgp4PosVelToKep( _ yr: Int32,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4PosVelToKep"), to: FunctionSignature.self)
 
-    return function(yr, day, pos, vel, posNew, velNew, sgp4MeanKep)
+    return function(yr, day, pos, vel, posNew, velNew, xa_kep)
 }
 
 // Converts osculating position and velocity vectors to TLE array - allows bstar/bterm, drag values to be used in the conversion if desired
@@ -399,8 +399,8 @@ public func Sgp4GenEphems( _ satKey: Int64,
 }
 
 // Generates ephemerides for the input TLE - in an array format - for the specified time span and step size (IOC - In Once Call)
-// Notes: 
-// - This function takes in TLE data directly and doesn't need to go through loading/geting satKey/initializing steps
+// Notes: <br>
+// - This function takes in TLE data directly and doesn't need to go through loading/geting satKey/initializing steps<br>
 // - if arrSize isn't big enough to store all the ephemeris points, the function will exit when the ephemArr reaches
 //   that many points (arrSize) and the errCode is set to IDX_ERR_WARN
 public func Sgp4GenEphems_OS( _ xa_tle: UnsafeMutablePointer<Double>,
@@ -445,6 +445,23 @@ public func Sgp4PropAllSats( _ satKeys: UnsafeMutablePointer<Int64>,
 
     return function(satKeys, numOfSats, ds50UTC, _ephemArr)
 }
+// Different return values of errCode from Sgp4 propagation
+//SGP4 propagates successfully
+public let GP_ERR_NONE        = 0
+//Bad FK model (FK5 must be selected)
+public let GP_ERR_BADFK       = 1
+//A is negative
+public let GP_ERR_ANEGATIVE   = 2
+//A is to large
+public let GP_ERR_ATOOLARGE   = 3
+//Eccentricity is hyperbolic
+public let GP_ERR_EHYPERPOLIC = 4
+//Eccentricity is negative
+public let GP_ERR_ENEGATIVE   = 5
+//Mean anomaly is too large
+public let GP_ERR_MATOOLARGE  = 6
+//e**2 is too large
+public let GP_ERR_E2TOOLARGE  = 7
 
 // Different time types for passing to Sgp4PropAll
 //propagation time is in minutes since epoch
@@ -532,28 +549,5 @@ public let SGP4_EPHEM_J2K   = 2
 public let DYN_SS_BASIC  = -1
 
 //*******************************************************************************
-
-
-// Different return values of errCode from Sgp4 propagation
-//SGP4 propagates successfully
-public let GP_ERR_NONE        = 0
-//Bad FK model (FK5 must be selected)
-public let GP_ERR_BADFK       = 1
-//A is negative
-public let GP_ERR_ANEGATIVE   = 2
-//A is to large
-public let GP_ERR_ATOOLARGE   = 3
-//Eccentricity is hyperbolic
-public let GP_ERR_EHYPERPOLIC = 4
-//Eccentricity is negative
-public let GP_ERR_ENEGATIVE   = 5
-//Mean anomaly is too large
-public let GP_ERR_MATOOLARGE  = 6
-//e**2 is too large
-public let GP_ERR_E2TOOLARGE  = 7
-
-
-//*******************************************************************************
-
 
 // ========================= End of auto generated code ==========================

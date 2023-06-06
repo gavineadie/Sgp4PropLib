@@ -1,4 +1,4 @@
-//===-------------------------- Loader.swift ------------------------------===//
+//===-------------------------  Loader.swift  -----------------------------===//
 //
 // This source file is based on part of the Swift.org open source project
 //
@@ -54,12 +54,12 @@ extension Loader {
     static func load(_ path: String?, mode: Int32) -> LibHandle? {
 #if os(Windows)
         guard let libHandle = path?.withCString(encodedAs: UTF16.self, LoadLibraryW) else {
-            print("LoadLibraryW failure: error #\(GetLastError())")
+            print("LoadLibraryW failure: \(GetLastError())")
             return nil
         }
 #else
         guard let libHandle = dlopen(path, mode) else {
-            print("dlopen failure: \(String(cString: dlerror()))")
+            print("dlopen failure")
             return nil
         }
 #endif
@@ -69,11 +69,11 @@ extension Loader {
     static func lookup(_ functionName: String, in libHandle: LibHandle) -> FunctionPtr {
 #if os(Windows)
         guard let functionPointer = GetProcAddress(libHandle, functionName) else {
-            fatalError("GetProcAddress failure: error #\(GetLastError())")
+            fatalError("GetProcAddress failure:")
         }
 #else
         guard let functionPointer = dlsym(libHandle, functionName) else {
-            fatalError("dlsym failure: \(String(cString: dlerror()))")
+            fatalError("dlsym failure:")
         }
 #endif
         return functionPointer
@@ -82,11 +82,11 @@ extension Loader {
     static func unload(_ libHandle: LibHandle) {
 #if os(Windows)
         guard FreeLibrary(libHandle) else {
-            fatalError("FreeLibrary failure:  error #\(GetLastError())")
+            fatalError("FreeLibrary failure: \(GetLastError())")
         }
 #else
         guard dlclose(libHandle) == 0 else {
-            fatalError("dlclose failure: \(String(cString: dlerror()))")
+            fatalError("dlclose failure")
         }
 #endif
     }
@@ -94,14 +94,14 @@ extension Loader {
 }
 
 //
-//MARK: Environment Variables
+//TODO: I'm not too proud of this .. I need a better way
 //
 
 #if os(Windows)
 func getDylibPath() -> String { "" }
 #else
 func getDylibPath() -> String {
-    if let value = getEnVariable("LD_LIBRARY_PATH"), !value.isEmpty {
+    if let value = getEnVariable("LD_LIBRARY_PATH") {
         if value.contains(":") {
             fatalError("the environment variable LD_LIBRARY_PATH must contain ONLY the file path to the AS libraries")
         } else {
@@ -115,9 +115,11 @@ func getDylibPath() -> String {
 
 func getEnVariable (_ variable: String) -> String? {
 
-    guard let value = getenv(variable) else { return nil }
-
-    return String(cString: value)
+    if let value = getenv(variable) {
+        return String(cString: value)
+    } else {
+        return nil
+    }
 
 }
 
