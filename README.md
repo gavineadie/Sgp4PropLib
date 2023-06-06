@@ -2,7 +2,7 @@
 
 Change notes are accumulated in the CHANGES.md file.
 
-* Lastest change: 2023 Feb 01 : v0.2.0
+* Lastest change: 2023 Jun 05 : v0.2.2 • _Second public release (corresponds to Space-Track v9.1)_
 ___
 # The Sgp4Prop Package
 
