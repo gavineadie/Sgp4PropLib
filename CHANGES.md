@@ -1,5 +1,7 @@
 # Change Note Summary
 
+### 2023 Sep 30 : v0.2.3 • _Third public release (corresponds to Space-Track v9.2)_
+
 ### 2023 Jun 05 : v0.2.2 • _Second public release (corresponds to Space-Track v9.1)_
 
 - **Library Error Fixed**: the bug referenced below at v0.2.1 `Sgp4GenEphems` has been corrected in the v9.1 base library.
