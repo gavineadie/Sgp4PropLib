@@ -982,6 +982,7 @@ public func RotRADec_EqnxToDate( _ nutationTerms: Int32,
 // Rotates the Equinoctial covariance to UVW
 // Note: This method uses the global Earth constants so make sure that you select the right Earth model by calling the EnvConst/EnvSetGeoIdx method
 // The n terms must be normalized by n
+// The input position, velocity and covariance must all have the same reference equator and equinox.
 public func CovMtxEqnxToUVW( _ pos: UnsafeMutablePointer<Double>,
                              _ vel: UnsafeMutablePointer<Double>,
                              _ covMtxEqnx: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double)>,
@@ -1003,6 +1004,7 @@ public func CovMtxEqnxToUVW( _ pos: UnsafeMutablePointer<Double>,
 // Rotates the UVW covariance to Equinoctial
 // Note: This method uses the global Earth constants so make sure that you select the right Earth model by calling the EnvConst/EnvSetGeoIdx method
 // The n terms are normalized by n
+// The input position, velocity reference equator and equinox determine the output covariance reference frame.
 public func CovMtxUVWToEqnx( _ pos: UnsafeMutablePointer<Double>,
                              _ vel: UnsafeMutablePointer<Double>,
                              _ covMtxUVW: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double)>,
@@ -1258,7 +1260,6 @@ public func CovMtxUpdate( _ rmsIn: Double,
 }
 
 // Annual Aberration calculated using equations from Astronomical Algorithms, Jean Meeus, 2nd Edition with Corrections as of June 15, 2005
-// Diurnal Aberration calculated using equations from Explanatory Supplement to the Astronomical Almanac 3rd Edition, 2013
 public func AberrationAnnual( _ ra: Double,
                               _ decl: Double,
                               _ dS50UTC: Double,
@@ -1295,6 +1296,89 @@ public func AberrationDiurnal( _ ra: Double,
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AberrationDiurnal"), to: FunctionSignature.self)
 
     function(ra, decl, dS50UTC, senPos, raDelta, decDelta)
+}
+
+// Sets JPL parameters
+// Notes: Set JPL parameters will be used by SP, SPG4-XP, and anything that requires access to JPL data
+public func JplSetParameters( _ jplFile: UnsafeMutablePointer<CChar>,
+                              _ ds50Start: Double,
+                              _ ds50Stop: Double ) {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+                                                   Double,
+                                                   Double ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "JplSetParameters"), to: FunctionSignature.self)
+
+    function(jplFile, ds50Start, ds50Stop)
+}
+
+// Gets JPL parameters
+public func JplGetParameters( _ jplFile: UnsafeMutablePointer<CChar>,
+                              _ ds50Start: UnsafeMutablePointer<Double>,
+                              _ ds50Stop: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "JplGetParameters"), to: FunctionSignature.self)
+
+    function(jplFile, ds50Start, ds50Stop)
+}
+
+// Resets JPL parameters & removes JPL ephemeris data
+public func JplReset(  ) {
+
+    typealias FunctionSignature = @convention(c) (  ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "JplReset"), to: FunctionSignature.self)
+
+    function()
+}
+
+// Computes various Sun and Moon vectors base on loaded JPL data at the specified time.
+// Note: if JPL data isn't loaded or available, all output parameters are set to zero
+public func JplCompSunMoonVec( _ ds50UTC: Double,
+                               _ uvecSun: UnsafeMutablePointer<Double>,
+                               _ sunVecMag: UnsafeMutablePointer<Double>,
+                               _ uvecMoon: UnsafeMutablePointer<Double>,
+                               _ moonVecMag: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "JplCompSunMoonVec"), to: FunctionSignature.self)
+
+    function(ds50UTC, uvecSun, sunVecMag, uvecMoon, moonVecMag)
+}
+
+// Computes Sun and Moon position vectors base on loaded JPL data at the specified time.
+// Note: if JPL data isn't loaded or available, all output parameters are set to zero
+public func JplCompSunMoonPos( _ ds50UTC: Double,
+                               _ sunVec: UnsafeMutablePointer<Double>,
+                               _ moonVec: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "JplCompSunMoonPos"), to: FunctionSignature.self)
+
+    function(ds50UTC, sunVec, moonVec)
+}
+
+// Removes the JPL ephemeris from memory
+public func RemoveJpl(  ) {
+
+    typealias FunctionSignature = @convention(c) (  ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RemoveJpl"), to: FunctionSignature.self)
+
+    function()
 }
 
 // Index of Keplerian elements

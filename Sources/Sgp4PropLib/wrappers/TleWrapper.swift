@@ -494,7 +494,8 @@ public func TleUpdateSatFrFieldsSP( _ satKey: Int64,
 // <br>
 // The table below indicates which index values correspond to which fields. Make sure to use the appropriate field index for GP TLEs and SP TLEs.  For indexes 5, 15 and 16, the interpretation depends on the ephemeris type of the TLE.
 // satNum (1), Epoch (4), and Ephemeris Type (5) cannot be altered.
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // 	<td>index</td>
 // 	<td>index Interpretation</td>
@@ -535,7 +536,8 @@ public func TleSetField( _ satKey: Int64,
 // Retrieves the value of a specific field of a TLE. 
 // <br>
 // The table below indicates which index values correspond to which fields. Make sure to use the appropriate field index for GP TLEs and SP TLEs.  For indexes 5, 15 and 16, the interpretation depends on the ephemeris type of the TLE.
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // 	<td>index</td>
 // 	<td>index Interpretation</td>
@@ -1349,11 +1351,20 @@ public let XA_TLE_SIZE          = 64
 public let XS_TLE_SECCLASS_1   =  0
 //Satellite name
 public let XS_TLE_SATNAME_12   =  1
-//Object Type (Payload, Rocket Body, Platform, Debris, Unknown)
+//Object Type (Payload, Rocket Body, Platform, Debris, Unknown) - csv only
 public let XS_TLE_OBJTYPE_11   = 13
 
-
 public let XS_TLE_SIZE         = 512
+
+// TLE's text data fields - new convention (start index, string length)
+//Security classification of line 1 and line 2
+public let XS_TLE_SECCLASS_0_1  =  0
+//Satellite name
+public let XS_TLE_SATNAME_1_12  =  1
+//Object Type (Payload, Rocket Body, Platform, Debris, Unknown) - csv only
+public let XS_TLE_OBJTYPE_13_1  = 13
+
+public let XS_TLE_LENGTH        = 512
 
 // Indexes of different TLE file's formats
 //Original TLE format

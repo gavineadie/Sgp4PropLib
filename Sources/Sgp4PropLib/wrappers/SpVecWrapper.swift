@@ -239,7 +239,8 @@ public func SpVecUpdateSatFrFields( _ satKey: Int64,
 // Retrieves the value of a specific field of an SpVec
 // <br>
 // The table below shows the values for the xf_SpVec parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -663,6 +664,15 @@ public let XS_SPVEC_SECCLASS_1 =  0
 public let XS_SPVEC_SATNAME_8  =  1
 
 public let XS_SPVEC_SIZE       = 512
+
+// SPVEC's text data fields - new convention (start index, string length)
+//Security classification
+public let XS_SPVEC_SECCLASS_0_1 =  0
+//Satellite common name
+public let XS_SPVEC_SATNAME_1_8  =  1
+
+public let XS_SPVEC_LENGTH     = 512
+
 
 // Different input coordinate for SpVec
 //Use input coordinate specified in 4P-card

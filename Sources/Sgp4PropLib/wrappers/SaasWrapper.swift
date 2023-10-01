@@ -64,7 +64,8 @@ public func SaasGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 // <br>
 // INPUTS include:
 // <br>
-// <table summary="">
+// <table>
+//   <caption>table</caption>
 //   <tr><td>(a)</td><td> a set of target input SGP4 two-line element sets (TLEs)</td></tr>
 //   <tr><td>(b)</td><td> coefficient-based missile profile used for the direct ascent attack trajectory</td></tr>
 //   <tr><td>(c)</td><td> missile profile limits including min and max height, maximum sun angle, and maximum
@@ -80,7 +81,8 @@ public func SaasGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 //        a launch site within the specified period of interest
 // <br>
 // Order of elements in the input xa_msl array:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -107,7 +109,8 @@ public func SaasGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 //      the maximum will be accepted and returned.
 // <br>
 // Order of elements in the input xa_ls array:   
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -119,7 +122,8 @@ public func SaasGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 // </table>   
 // <br>
 // Order of elements in the input xa_saasRun array:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -138,7 +142,8 @@ public func SaasGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 // Order of elements in the returned in the first dimension of xa_satPen array (second array
 //  dimension allows similar same results Elements for other viable penetration solutions at
 //  different times during the assessment period of interest):
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -158,7 +163,8 @@ public func SaasGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 // </table>   
 // <br>
 // Order of elements in the output xa_Ret array:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -169,7 +175,8 @@ public func SaasGetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 // </table>   
 // <br>
 // xa_saasRet(16) - other saas output:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>

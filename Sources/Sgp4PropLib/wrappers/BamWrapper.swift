@@ -47,7 +47,8 @@ public func BamCompNumTSs( _ startDs50UTC: Double,
 // Computes and returns separate/missed distance data
 // <br>
 // The table below shows the indexes for the Separation Distance values contained in the extBamArr array:
-// <table summary="">
+// <table>
+//     <caption>table</caption>
 //     <tr>
 //         <td><b>Index</b></td>
 //         <td><b>Index Interpretation</b></td>
@@ -66,7 +67,8 @@ public func BamCompNumTSs( _ startDs50UTC: Double,
 // </table>
 // <br>
 // The table below shows the indexes for the Miss Distance values contained in the extBamArr array:
-// <table summary="">
+// <table>
+//     <caption>table</caption>
 //     <tr>
 //         <td><b>Index</b></td>
 //         <td><b>Index Interpretation</b></td>
@@ -111,7 +113,8 @@ public func BamCompute( _ satKeys: UnsafeMutablePointer<Int64>,
 // Retrieves other BAM data
 // <br>
 // The table below shows the indexes for the values for the xf_bam parameter:
-// <table summary="">
+// <table>
+//     <caption>table</caption>
 //     <tr>
 //         <td><b>Index</b></td>
 //         <td><b>Index Interpretation</b></td>

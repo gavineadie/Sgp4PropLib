@@ -98,7 +98,8 @@ public func EnvSetFkIdx( _ xf_FkMod: Int32 ) {
 // The GEO model is shared among all the Standardized Astrodynamic Algorithms DLLs in the program.
 // <br>
 // The following table lists possible values of the return value GEO setting:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Value</b></td>
 // <td><b>Value interpretation</b></td>
@@ -128,7 +129,8 @@ public func EnvGetGeoIdx(  ) -> Int32 {
 // The GEO model is globally shared among the Standardized Astrodynamic Algorithms DLLs. If its setting is changed, the new setting takes effect immediately
 // <br>
 // The following table lists possible values of the parameter value GEO setting:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Value</b></td>
 // <td><b>Value interpretation</b></td>
@@ -156,7 +158,8 @@ public func EnvSetGeoIdx( _ xf_GeoMod: Int32 ) {
 // Returns the name of the current Earth constants (GEO) model. 
 // <br>
 // The geoStr parameter may contain one of the following values:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr><td>WGS-84</td></tr>
 // <tr><td>EGM-96</td></tr>
 // <tr><td>EGM-08</td></tr>
@@ -182,7 +185,8 @@ public func EnvGetGeoStr( _ geoStr: UnsafeMutablePointer<CChar> ) {
 // The GEO model is globally shared among the Standardized Astrodynamic Algorithms DLLs. If its setting is changed, the new setting takes effect immediately.
 // <br>
 // The following table lists possible values of the parameter value GEO setting:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>geoStr (any string in the row)</b></td>
 // <td><b>Interpretation</b></td>
@@ -287,6 +291,8 @@ public let XF_GEOCON_KS2EK = 10
 public let XF_GEOCON_THDOT = 11
 //J5 (unitless)
 public let XF_GEOCON_J5    = 12
+//Gravitational parameter km^3/(solar s)^2
+public let XF_GEOCON_MU    = 13
 
 
 // Indexes of FK Constant fields

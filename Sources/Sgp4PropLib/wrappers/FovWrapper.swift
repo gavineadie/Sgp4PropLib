@@ -128,7 +128,8 @@ public func FovFindTargetPasses( _ startTimeDs50UTC: Double,
 // This function screens a potential victim satellite for penetrating the illumination cone between a source and a target (target is an elset).
 // <br>
 // The xa_emeDat array size is [numObs, 3].  The penetration time indexes are:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Name</b></td>
 // <td><b>Index</b></td>

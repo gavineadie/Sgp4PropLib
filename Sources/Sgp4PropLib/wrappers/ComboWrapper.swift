@@ -210,7 +210,8 @@ public func ComboSet7pField( _ xf_7P: Int32, _ valueStr: UnsafeMutablePointer<CC
 // If <i>absMinDs50UTC</i> = 0 or <i>absMinDist</i> = 1.0E20, this means no absolute minimum found. Otherwise, the <i>absMinDs50UTC</i> and <i>absMinDist</i> are returned whether or not <i>absMinDist</i> is greater than the specified "Close proximity limit".
 // <br>
 // Returns zero indicating the COMBO data was computed successfully. Other values indicate an error. Here is the list of possible error/warning code it returns:
-// <table summary="">
+// <table>
+//     <caption>table</caption>
 // <tr>
 // <td><b>Value</b></td>
 // <td><b>Value Interpretation</b></td>

@@ -185,7 +185,8 @@ public func SensorSetLocAll( _ senKey: Int64,
 // Make sure to use the appropriate field index for ground sensors and orbiting sensors.
 // <br>
 // The table below shows the values for the xf_SenLoc parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -394,7 +395,8 @@ public func SensorSet2L( _ senKey: Int64,
 // Make sure to use the appropriate field index for ground sensors and orbiting sensors.
 // <br>
 // The table below shows the values for the xf_SenLim parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -731,19 +733,21 @@ public let VT_BCT =   2
 public let VT_CON =   3
 //optical tracker
 public let VT_OPT =   4
-//orbing sensor (same as 'M' or 'O')
+//constant azimuth fan sweeping vertical plane
+public let VT_FAN =   7
+//orbiting sensor (same as 'M' or 'O')
 public let VT_ORB =   9
 //space fence's field of regard FOR ('R' = 86)
 public let VT_FOR  = 82
 //space fence's surveillance fan FOV ('V' = 82)
 public let VT_FOV  = 86
 
-// Different sensor location specification types
-//Sensor location is in ECR (km)
+// Different sensor location types
+//Sensor location is in ECR
 public let SENLOC_TYPE_ECR =  1
-//Sensor location is in EFG (km)
+//Sensor location is in EFG
 public let SENLOC_TYPE_EFG =  2
-//Sensor location is in LLH - latitude (deg) / longitude (deg) / height (km)
+//Sensor location is in LLH
 public let SENLOC_TYPE_LLH =  3
 
 
@@ -759,17 +763,22 @@ public let XA_SEN_GEN_MINRNG    =  3
 public let XA_SEN_GEN_MAXRNG    =  4
 //range rate/relative velocity limit (km/sec) (=0 no range rate check)
 public let XA_SEN_GEN_RRLIM     =  5
+//min/max range check (=0 apply min/max range limits, =1 accept all passes regardless of range)
+public let XA_SEN_GEN_RNGLIMFLG =  6
+//is special mobil sensor flag / column 9 in 1L card (=0 non mobile sensor, =1 mobile sensor)
+public let XA_SEN_GEN_SMSEN     =  7
+
 
 //*******************************************************************************
 
 // sensor location - for all ground-based sensor types (non-orbiting)
-//location type (ECR, EFG, LLH)
+//location type (see SENLOC_TYPE_? for available types)
 public let XA_SEN_GRN_LOCTYPE   = 10
-//sensor location position component 1
+//sensor location ECR/EFG X component (km) or LLH/Lat (deg)
 public let XA_SEN_GRN_POS1      = 11
-//sensor location position component 2
+//sensor location ECR/EFG Y component (km) or LLH/Lon (deg)
 public let XA_SEN_GRN_POS2      = 12
-//sensor location position component 3
+//sensor location ECR/EFG Z component (km) or LLH/Height (km)
 public let XA_SEN_GRN_POS3      = 13
 //astronomical latitude (deg) (+: North, -: South)
 public let XA_SEN_GRN_ASTROLAT  = 14
@@ -836,10 +845,19 @@ public let XA_SEN_OPT_TWILGHT   = 41
 public let XA_SEN_OPT_VISCHK    = 42
 
 //*******************************************************************************
+// Constant azimuth fan (VT_FAN)
+//fan's constant azimuth (deg) - fan sweeps a vertical plane  [0, 180)
+public let XA_SEN_FAN_AZ        = 20
+//fan's tilt angle (deg)  (-: North/West tilt, +: South/East tilt)
+public let XA_SEN_FAN_TILTANGLE = 21
+//fan's minimum elevation (deg) [0, 90]
+public let XA_SEN_FAN_MINEL     = 22
+
+
+//*******************************************************************************
 // Orbiting sensor (VT_ORB)
 //orbiting sensor's satellite number
 public let XA_SEN_ORB_SATNUM    = 10
-
 
 //orbiting sensor's off-boresight angle - low elevation limit #1 (deg)
 public let XA_SEN_ORB_ELMIN1    = 20
@@ -868,6 +886,8 @@ public let XA_SEN_ORB_LEA       = 42
 public let XA_SEN_ORB_MINILLUM  = 43
 //orbiting sensor allow earth in the back ground
 public let XA_SEN_ORB_EARTHBRND = 44
+//orbiting sensor planetary restriction
+public let XA_SEN_ORB_PLNTRYRES = 45
 
 //*******************************************************************************
 
@@ -882,6 +902,17 @@ public let XA_SEN_ORB_EARTHBRND = 44
 public let XA_SEN_FOV_BEAMWIDTH = 20
 //fence tilt angle (deg)
 public let XA_SEN_FOV_TILTANGLE = 21
+
+
+//*******************************************************************************
+
+// Output control parameters (shouldn't be part of sensor data - just for backward compatibility)
+//unit on range/range rate (0= km, km/sec; 1=nm, nm/sec)
+public let XA_SEN_GEN_UNIT      = 90
+//output interval (min)
+public let XA_SEN_GEN_INTERVAL  = 91
+//max number of points per pass
+public let XA_SEN_GEN_PTSPERPAS = 92
 
 
 // sensor sigmas/biases - ROTAS/BATCHDC
@@ -928,7 +959,7 @@ public let XS_SEN_ORB_BSVEC2_28_1   =  28
 //for VT_FOR only, az/el table file path (256-character length)
 public let XS_SEN_FOR_AZFILE_255_256 = 255
 
-public let XS_SEN_SIZE              = 512
+public let XS_SEN_LENGTH            = 512
 
 // Indexes of Sensor data fields
 //Sensor number
@@ -1064,5 +1095,37 @@ public let XAF_SENBS_RRBIAS  = 11
 public let XAF_SENBS_TIMEBIAS = 15
 
 public let XAF_SENBS_SIZE    = 16
+
+// Named constants for different obs types
+//obs contains range rate only data
+public let OT_RRATE          =  0
+//obs contains azimuth, elevation data
+public let OT_AZEL           =  1
+//obs contains azimuth, elevation, and range data
+public let OT_AZEL_RNG       =  2
+//obs contains azimuth, elevation, range, and range rate data
+public let OT_AZEL_RNGRRATE  =  3
+//obs contains azimuth, elevation, range, range rate, azimuth rate, elevation rate, and range acceleration data
+public let OT_AZEL_ALL       =  4
+//obs contains right ascention and declination data
+public let OT_RADEC          =  5
+//obs contains range only data
+public let OT_RNGONLY        =  6
+//obs contains azimuth, elevation, and sensor location data
+public let OT_AZEL_SENPOS    =  8
+//obs contains right ascension, declination, and sensor location data
+public let OT_RADEC_SENPOS   =  9
+//obs contains ECI position and velocity data
+public let OT_VEL            = 10
+//obs contains ECI position data
+public let OT_POS            = 11
+//obs contains Satellite Laser Ranging (SLR) - range only, with tropospheric refraction term data
+public let OT_SLR            = 16
+//obs contains azimuth, elevation, sensor location, and range data
+public let OT_M              = 18
+//obs contains right ascension, declination, sensor location, and range data
+public let OT_O              = 19
+//obs contains TDOA/FDOA data
+public let OT_RF             = 13
 
 // ========================= End of auto generated code ==========================

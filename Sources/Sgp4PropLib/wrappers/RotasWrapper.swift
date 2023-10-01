@@ -168,7 +168,8 @@ public func RotasSetPAll( _ rotasMode: UnsafeMutablePointer<CChar>,
 // Retrieves the value of a specified Rotas control parameter (P-card field)
 // <br>
 // The table below shows the values for the xf_RP parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -491,6 +492,10 @@ public let XA_OBSRES_CHI    = 36
 
 //Angular Separation between Obs and State (Deg)
 public let XA_OBSRES_ANGSEP = 38
+//TDOA Time Difference of Arrival residual (nano-second)
+public let XA_OBSRES_TDOA   = 39
+//FDOA Frequency Differecnce of Arrival (Hz)
+public let XA_OBSRES_FDOA   = 40
 
 public let XA_OBSRES_SIZE   = 100
 
@@ -545,7 +550,10 @@ public let XA_RT_PARMS_LTC         =  6
 public let XA_RT_PARMS_DEBIAS      =  7
 //Residual computation method: 1=DELTA/427M, 2=SPADOC-4(default)
 public let XA_RT_PARMS_RESCOMPMETH =  8
-
+//Flag for Annual Aberration 0 = do not apply, 1 = apply aberration correction
+public let XA_RT_PARMS_ANNUALAB	   =  9
+//Flag for Diurnal Aberration 0 = do not apply, 1 = apply aberration correction
+public let XA_RT_PARMS_DIURNALAB   = 10
 public let XA_RT_PARMS_SIZE        = 16
 
 // ROTAS Association Multipliers

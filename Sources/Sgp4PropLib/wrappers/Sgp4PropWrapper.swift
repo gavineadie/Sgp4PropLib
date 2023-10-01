@@ -35,6 +35,31 @@ public func Sgp4GetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
     function(infoStr)
 }
 
+// Loads SGP4-related parameters (prediction controls, JPL settings) and SGP4 elsets from a text file
+public func Sgp4LoadFileAll( _ sgp4InputFile: UnsafeMutablePointer<CChar> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4LoadFileAll"), to: FunctionSignature.self)
+
+    return function(sgp4InputFile)
+}
+
+// Saves currently loaded SGP4-related parameters (SGP4 application controls, prediction controls, integration controls) to a file
+// The purpose of this function is to save the current SGP4-related settings, usually used in GUI applications, for future use.
+public func Sgp4SaveFile( _ sgp4File: UnsafeMutablePointer<CChar>,
+                          _ saveMode: Int32,
+                          _ saveForm: Int32 ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+                                                   Int32,
+                                                   Int32 ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4SaveFile"), to: FunctionSignature.self)
+
+    return function(sgp4File, saveMode, saveForm)
+}
+
 // Initializes an SGP4 satellite from an SGP or SGP4 TLE.
 // Internally, when this function is called, Tle.dll's set of TLEs is searched for the provided satKey. If found, the associated TLE data will be used to create an SGP4 satellite which then will be added to Sgp4Prop.dll's set of satellites. Subsequent calls to propagate this satellite will use the data in this set to compute the satellite's new state.
 // 
@@ -230,7 +255,8 @@ public func Sgp4PropDs50UtcPos( _ satKey: Int64,
 // Note: This function is not thread safe, please use Sgp4PropAll() instead 
 // <br>
 // The table below shows the values for the xf_Sgp4Out parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>

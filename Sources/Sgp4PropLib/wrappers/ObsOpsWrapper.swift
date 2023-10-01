@@ -126,7 +126,8 @@ public func IomodSetIpAll( _ printIOHG: Int32,
 // Retrieves the value of a specified IOMOD parameter
 // <br>
 // The table below indicates which index values for the xf_IP parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>xf_IP named constants/values</b></td>
 // <td><b>Interpretation</b></td>
@@ -607,7 +608,7 @@ public let XA_TRI_USEDEFAULT       =  0
 public let XA_TRI_OBSTYPEOUT       =  1
 //I - Flag to specify whether or not to apply sensor bias: =[1]: apply bias, =0: not apply bias
 public let XA_TRI_APPLYBIAS        =  2
-//I - apply applyLTC time correction (applyLTC) flag: 0=do no apply, [1]= aplly applyLTC
+//I - apply light time correction (applyLTC) flag: 0=do no apply LTC, [1]=apply LTC
 public let XA_TRI_LTC              =  3
 //I - number of obs created for each overlap track
 public let XA_TRI_CREATEOBSSIZE    =  4
@@ -629,7 +630,7 @@ public let XA_TRI_SEPSATNO         = 11
 public let XA_TRI_RARMSLIM         = 12
 //D - limit RMS for Dec (arcsec)
 public let XA_TRI_DECRMSLIM        = 13
-//D- limit RMS for Range (km)
+//D - limit RMS for Range (km)
 public let XA_TRI_RANGERMSLIM      = 14
 //D - track separation criteria (minutes)
 public let XA_TRI_TRKSEPARATION    = 15

@@ -139,7 +139,8 @@ public func VcmAddSatFrLinesML( _ vcmString: UnsafeMutablePointer<CChar>, _ satK
 // Adds a VCM using its individually provided field values
 // <br>
 // The table below indicates starting character position for each field in the xs_vcm parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td>Starting Character Position</td>
 // <td>Input Description</td>
@@ -161,7 +162,8 @@ public func VcmAddSatFrLinesML( _ vcmString: UnsafeMutablePointer<CChar>, _ satK
 // </table>
 // <br> 
 // The table below indicates the index for each field in the xa_vcm array:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td>Index (xa_vcm)</td>
 // <td>index Interpretation</td>
@@ -283,7 +285,8 @@ public func VcmUpdateSatFrFields( _ satKey: Int64,
 // Retrieves the value of a specific field of a VCM
 // <br>
 // The table below shows the values for the xf_Vcm parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td>index</td>
 // <td>index Interpretation</td>
@@ -596,6 +599,38 @@ public let XS_VCM_FIXEDSTEP     =  86
 public let XS_VCM_STEPSEL       =  89
 
 public let XS_VCM_SIZE          = 512
+
+// VCM's text data fields - new convention (start index, string length)
+//satellite name A8
+public let XS_VCM_SATNAME_0_8      =   0
+//common satellite name A25
+public let XS_VCM_COMMNAME_8_25    =   8
+//geopotential name A6 (WGS-72, WGS-84, EGM-96, ...)
+public let XS_VCM_GEONAME_33_6     =  33
+//drag model A12
+public let XS_VCM_DRAGMOD_39_12    =  39
+//lunar solar pertubations A3 (ON, OFF)
+public let XS_VCM_LUNAR_51_3       =  51
+//radiation pressure pertubations A3 (ON, OFF)
+public let XS_VCM_RADPRESS_54_3    =  54
+//Earth + ocean tides pertubation A3 (ON, OFF)
+public let XS_VCM_EARTHTIDES_57_3  =  57
+//intrack thrust A3 (ON, OFF)
+public let XS_VCM_INTRACK_60_3     =  60
+//integration mode A6 (ASW, OSW, SPADOC, ...)
+public let XS_VCM_INTEGMODE_63_6   =  63
+//coordinate system A5
+public let XS_VCM_COORDSYS_69_5    =  69
+//type of partial derivatives A8
+public let XS_VCM_PARTIALS_74_8    =  74
+//step mode A4 (AUTO, TIME, S)
+public let XS_VCM_STEPMODE_82_4    =  82
+//fixed step size indicator A3 (ON, OFF)
+public let XS_VCM_FIXEDSTEP_86_3   =  86
+//initial step size selection A6 (AUTO, MANUAL)
+public let XS_VCM_STEPSEL_89_6     =  89
+
+public let XS_VCM_LENGTH           = 512
 
 // Indexes to access data from an array containing VCM numerical data fields
 //satellite number

@@ -88,7 +88,8 @@ public func BatchDCSaveFile( _ batchDCFile: UnsafeMutablePointer<CChar>,
 // Gets BatchDC parameter data (P Card) - all fields
 // <br>
 // The table below shows the structure of the integer array xai_ctrl:
-// <table summary="">
+// <table>
+//     <caption>table</caption>
 //     <tr>
 //         <td><b>Index</b></td>
 //         <td><b>Index Interpretation</b></td>
@@ -121,7 +122,8 @@ public func BatchDCSaveFile( _ batchDCFile: UnsafeMutablePointer<CChar>,
 // </table>
 // <br>
 // The table below shows the structure of the real array xar_ctrl:
-// <table summary="">
+// <table>
+//     <caption>table</caption>
 //     <tr>
 //         <td><b>Index</b></td>
 //         <td><b>Index Interpretation</b></td>
@@ -190,7 +192,8 @@ public func BatchDCInitSat( _ satKey: Int64,
 // See BatchDCGetParams for the structure of the xai_dcElts array.
 // <br>
 // The table below shows the structure of the integer array xar_dcElts:
-// <table summary="">
+// <table>
+//     <caption>table</caption>
 //     <tr>
 //         <td><b>Index</b></td>
 //         <td><b>Index Interpretation</b></td>
@@ -294,7 +297,8 @@ public func BatchDCRemoveSat( _ satKey: Int64 ) -> Int32 {
 // xa_ObsRes size is [numObs, 100].  xa_rejFlg size is [numObs, 32].
 // <br>
 // The table below shows the values contained in xa_ObsRes for each ob:
-// <table summary="">
+// <table>
+//     <caption>table</caption>
 //     <tr>
 //         <td><b>Index</b></td>
 //         <td><b>Index Interpretation</b></td>
@@ -591,6 +595,9 @@ public let XA_EGPCTRL_NEWEPOCH   =  8
 public let XA_EGPCTRL_BVAL       =  9
 //Addtional option if input is external ephemeris file - agom value if XA_EGPCTRL_AGOMCOR is set (= 1)
 public let XA_EGPCTRL_AGOMVAL    = 10
+
+//correction order
+public let XA_EGPCTRL_ORDERCOR   = 11
 
 public let XA_EGPCTRL_SIZE       = 64
 

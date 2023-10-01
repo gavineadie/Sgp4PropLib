@@ -242,7 +242,8 @@ public func ExtEphGetAllFields( _ satKey: Int64,
 // Retrieves the value of a specific field of an EXTEPHEM
 // <br>
 // When using xf_ExtEph = 11, the input coordinate system is returned as an integer value.  The table below shows the coordinate system values:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Value</b></td>
 // <td><b>Coordinate System</b></td>

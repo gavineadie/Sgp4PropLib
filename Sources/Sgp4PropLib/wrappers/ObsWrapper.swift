@@ -861,7 +861,8 @@ public func ObsResetSelObs(  ) {
 // Computes other states of the input observation
 // <br>
 // The table below indicates which index values correspond to which fields in the xa_obState array.
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -1013,6 +1014,8 @@ public let OBSFORM_B3   = 0
 public let OBSFORM_TTY  = 1
 //CSV obs format
 public let OBSFORM_CSV  = 2
+//Radio Frequency (TDOA/FDOA) observations
+public let OBSFORM_RF   = 3
 
 public let BADOBSKEY = -1
 public let DUPOBSKEY = 0
@@ -1151,6 +1154,8 @@ public let XA_OBS_VELY         = 20
 public let XA_OBS_VELZ         = 21
 //year of equinox indicator for obs type 5/9 (0= Time of obs, 1= 0 Jan of date, 2= J2000, 3= B1950)
 public let XA_OBS_YROFEQNX     = 22
+//aberration indicator, 0-not corrected, 1-corrceted
+public let XA_OBS_ABERRATION   = 23
 
 //AZ/RA bias (deg)
 public let XA_OBS_AZORRABIAS   = 33
@@ -1414,6 +1419,8 @@ public let XA_OT5_DECL      =  4
 public let XA_OT5_RIGHTASC  =  5
 //year of equinox indicator (0= Time of obs, 1= 0 Jan of date, 2= J2000, 3= B1950)
 public let XA_OT5_YROFEQNX  = 22
+//ABERRATION INDICATOR, 0-NOT CORRECTED, 1-CORRCETED
+public let XA_OT5_ABERRATION = 23
 
 //observation time in days since 1950 UTC
 public let XA_OT6_DS50UTC   =  3
@@ -1451,6 +1458,8 @@ public let XA_OT9_POSF      = 17
 public let XA_OT9_POSG      = 18
 //year of equinox indicator (0= Time of obs, 1= 0 Jan of date, 2= J2000, 3= B1950)
 public let XA_OT9_YROFEQNX  = 22
+//ABERRATION INDICATOR, 0-NOT CORRECTED, 1-CORRCETED
+public let XA_OT9_ABERRATION = 23
 
 //observation time in days since 1950 UTC
 public let XA_OTP_DS50UTC   =  3
@@ -1475,5 +1484,7 @@ public let XA_OTV_VELX      = 19
 public let XA_OTV_VELY      = 20
 //velocity Z/ECI (km/s)  (or Gdot/EFG (km) for ob type 7 TTY)
 public let XA_OTV_VELZ      = 21
+
+public let XA_OT_SIZE         = 64
 
 // ========================= End of auto generated code ==========================

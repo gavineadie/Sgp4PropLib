@@ -85,7 +85,8 @@ public func ElCompSetCriteria( _ xa_ecdiff: UnsafeMutablePointer<Double> ) {
 // </ol>
 // <br>
 // Order of elements in the input xa_ecdiff array:
-// <table summary="">
+// <table>
+//     <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -161,7 +162,8 @@ public func ElCompGetCriteria( _ xa_ecdiff: UnsafeMutablePointer<Double> ) {
 // <br>
 // <br>
 // INPUTS include:
-// <table summary="">
+// <table>
+//   <caption>table</caption>
 //   <tr><td>(a)</td><td> Primary element set to compare</td></tr>
 //   <tr><td>(b)</td><td> Secondary element set to be compared against</td></tr>
 //   <tr>
@@ -188,7 +190,8 @@ public func ElCompGetCriteria( _ xa_ecdiff: UnsafeMutablePointer<Double> ) {
 //       set pair
 // <br>
 // Order of the input xa_elcom_pri(16) array - primary TLE satellite data:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -205,7 +208,8 @@ public func ElCompGetCriteria( _ xa_ecdiff: UnsafeMutablePointer<Double> ) {
 // Order of the input xa_elcomp_sec(16) array - secondary TLE sat data, is same order as primary
 // <br>
 // Order of the output xa_elcomp_deltas(16) array - delta quantities between primary and secondary
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -223,7 +227,8 @@ public func ElCompGetCriteria( _ xa_ecdiff: UnsafeMutablePointer<Double> ) {
 // </table>   
 // <br>
 //  elcom_astat possible return values:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Value</b></td>
 // <td><b>Interpretation</b></td>
@@ -297,7 +302,8 @@ public func CocoSetCriteria( _ xa_ecdiff: UnsafeMutablePointer<Double> ) {
 // Retrieves criteria settings for Coco
 // <br>
 // Order of elements in the input xa_ecdiff array:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>

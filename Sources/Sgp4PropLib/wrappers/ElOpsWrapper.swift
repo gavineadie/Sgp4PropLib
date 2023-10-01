@@ -92,6 +92,30 @@ public func SatNumOf( _ satKey: Int64 ) -> Int32 {
     return function(satKey)
 }
 
+// Adds an impulsive maneuver (using VP-card string format) to the specified elset (VCM, SpVec, or Tle type 6) represented by its satKey
+// Note: All maneuvers have to be entered before the satellite's initialization step
+public func AddManeuverVPStr( _ satKey: Int64, _ vpString: UnsafeMutablePointer<CChar> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   UnsafeMutablePointer<CChar> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AddManeuverVPStr"), to: FunctionSignature.self)
+
+    return function(satKey, vpString)
+}
+
+// Adds an impulsive maneuver (using VP-card array format) to the specified elset (VCM, SpVec, or Tle type 6) represented by its satKey
+// Note: All maneuvers have to be entered before the satellite's initialization step
+public func AddManeuverVPArr( _ satKey: Int64, _ xa_vp: UnsafeMutablePointer<Double> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   UnsafeMutablePointer<Double> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AddManeuverVPArr"), to: FunctionSignature.self)
+
+    return function(satKey, xa_vp)
+}
+
 // Satellite maintenance category
 //Synchronous
 public let SATCAT_SYNCHRONOUS = 1
@@ -200,10 +224,39 @@ public let XA_SATPARM_OET      = 25
 public let XA_SATPARM_PROPTYPE = 26
 //satellite's element number
 public let XA_SATPARM_ELSETNUM = 27
+//sin(incl)*sin(r.a. node)
+public let XA_SATPARM_WX       = 28
+//-sin(incl)*cos(r.a. node)
+public let XA_SATPARM_WY       = 29
+//cos(incl)
+public let XA_SATPARM_WZ       = 30
 
 public let XA_SATPARM_SIZE     = 32
 
-//*******************************************************************************
+// Different input time options of VP card
+//VP's input time is in days since 1950 UTC
+public let VP_TIME_DS50UTC = 0
+//VP's input time is in minutes since epoch
+public let VP_TIME_MSE     = 1
 
+// VP record arrangement in array format
+//VP's input time types (VP_TIME_DS50UTC or VP_TIME_MSE)
+public let XA_VP_TIMETYPE    = 0
+//VP's input time types (VP_TIME_DS50UTC or VP_TIME_MSE)
+public let XA_VP_TIMEVAL     = 1
+//impulse U-component of delta-velocity (km/sec)
+public let XA_VP_IMPULSE_U   = 2
+//impulse V-component of delta-velocity (km/sec)
+public let XA_VP_IMPULSE_V   = 3
+//impulse W-component of delta-velocity (km/sec)
+public let XA_VP_IMPULSE_W   = 4
+//apply above delta-v this number of times at the interval specified below
+public let XA_VP_REPETITIONS = 5
+//time interval in minutes between repetitions specified above
+public let XA_VP_INTERVAL    = 6
+
+public let XA_VP_SIZE        = 16
+
+//*******************************************************************************
 
 // ========================= End of auto generated code ==========================

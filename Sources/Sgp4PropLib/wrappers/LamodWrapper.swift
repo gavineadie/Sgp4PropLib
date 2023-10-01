@@ -195,7 +195,8 @@ public func LamodSet1pAll( _ timeFlg: Int32,
 // Remember to convert <i>valueStr</i> to the correct data type that it represents.
 // <br>
 // The table below shows the values for the xf_1P parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -361,7 +362,8 @@ public func LamodGetSenSatDataAll( _ senSatKey: Int64,
 // Remember to convert <i>valueStr</i> to the correct data type that it represents.
 // <br>
 // The table below shows the values for the xf_SenSat parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -412,10 +414,9 @@ public func LamodGetNumPasses( _ senSatKey: Int64 ) -> Int32 {
 // Returns an array of rise, culmination, and set times of all possible passes of a sensor/satellite pair during the requested time span
 // See LamodGetNumPasses for example.
 // If a possible culmination time of the last pass is after the requested stop time, only the rise time is returned. The culmination and set times are set to zeros. Since there is no culmination time in this case, the host program should switch to step mode to compute look angles.
-// 
 // There are cases when multiple maximum elevations are detected in one pass. In these cases, the culmination times will be set to -1.0. The users need to check for this condition and switch to step mode.
-// 
 // For external ephemeris files, if the provided ephemerides don't cover the requested time span, the possible rise and set times will not be available and will be set to -1.0.
+// Note: For Fence/Fan typed sensors this function returns enter/penetration-cross/exit times in place of rise/culmination/set times
 public func LamodGetRiseCulmSetTimes( _ senSatKey: Int64, _ rcsTimeArr: UnsafeMutablePointer<(Double, Double, Double)> ) -> Int32 {
 
     let _rcsTimeArr = UnsafeMutableRawPointer(rcsTimeArr).bindMemory(to: Double.self, capacity: 0)
@@ -515,7 +516,8 @@ public func LamodGetOrbSenViewdata( _ senSatKey: Int64,
 // The <i>retArray</i> Arrangement column lists the order of the elements in the array. It is not necessarily the subscript of the element in the array since this is language-dependent. For example, in C/C++ the first element in every array is the zero-subscripted element.
 // <br>
 // The table below shows the values for the xf_View parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -539,7 +541,8 @@ public func LamodGetOrbSenViewdata( _ senSatKey: Int64,
 // </table>	
 // <br>
 // The table below shows the values for the limit check flags (xf_View = 13):
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>

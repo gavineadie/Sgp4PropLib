@@ -127,7 +127,8 @@ public func SpReset(  ) {
 // Retrieves the value of an SP application control parameter
 // <br>
 // The table below shows the values for the xf_SpApp parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -215,7 +216,8 @@ public func SpSetApCtrlAll( _ geoDir: UnsafeMutablePointer<CChar>,
 // Retrieves the value of a numerical integration control parameter
 // <br>
 // The table below shows the values for xf_4P parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
@@ -308,7 +310,8 @@ public func SpSetPredCtrl( _ startFrEpoch: Int32,
 // Retrieves the value of a field of an SP satellite
 // <br>
 // The table below shows the values for the xf_SpSat parameter:
-// <table summary="">
+// <table>
+// <caption>table</caption>
 // <tr>
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
