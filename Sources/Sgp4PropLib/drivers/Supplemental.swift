@@ -83,7 +83,11 @@ public func sgp4GenEphems(_ satKey: Int64, _ startTime: Double, _ endTime: Doubl
     let errorCode = Int(Sgp4GenEphems(satKey, startTime, endTime, stepSize,
                                       Int32(sgp4_ephem), Int32(arrSize), ephemArr, &int32))
     var int64 = Int(int32)
+#if compiler(>=5.8)
     genEphemPts.update(from: &int64, count: 1)
+#else
+    genEphemPts.assign(from: &int64, count: 1)
+#endif
 
     return errorCode
 }

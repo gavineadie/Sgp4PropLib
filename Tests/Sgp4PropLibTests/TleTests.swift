@@ -287,7 +287,7 @@ final class TleTests: XCTestCase {
 
         let threeInts = getCheckSums(testLine1, testLine2)
         if threeInts.2 == 0 {
-            print("\nCHK_L1 = \(threeInts.0), CHK_2 = \(threeInts.1)\n")
+            print("\nCHK_L1 = \(threeInts.0), CHK_L2 = \(threeInts.1)\n")
         } else {
             print("getCheckSums error code: \(threeInts.2)")
         }

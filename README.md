@@ -2,7 +2,7 @@
 
 Change notes are accumulated in the CHANGES.md file.
 
-* Lastest change: 2023 Jun 05 : v0.2.2 • _Second public release (corresponds to Space-Track v9.1)_
+* Lastest change: 2023 Dec 23 : v0.2.4 • _Cater for a minor API change in Swift 5.8_
 ___
 # The Sgp4Prop Package
 

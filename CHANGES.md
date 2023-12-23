@@ -1,5 +1,14 @@
 # Change Note Summary
 
+### 2023 Dec 23 : v0.2.4 • _Cater for a minor API change in Swift 5.8 (no functional change)_
+
+- Swift is a language which improves in an evolutionary manner.  In Swift 5.8 a little used API was deprecated 
+after much careful consideration.  Such changes do not break existing programs but, if the over zealous
+programmer adjusts code to the new usage, that **will** cause an error in older compilers - I'm guilty of that.
+Any compiler earlier than Swift 5.8 would fail to compile the new usage, `UnsafeMutablePointer.assign(..)`.
+The previous form, `UnsafeMutablePointer.update(..)` was left in the Swift library and would have caused no 
+trouble (while generating reminders of the depreciated usage) if I had left it alone.
+
 ### 2023 Sep 30 : v0.2.3 • _Third public release (corresponds to Space-Track v9.2)_
 
 ### 2023 Jun 05 : v0.2.2 • _Second public release (corresponds to Space-Track v9.1)_
