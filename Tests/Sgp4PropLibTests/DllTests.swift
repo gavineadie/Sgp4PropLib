@@ -19,6 +19,22 @@ final class DllTests: XCTestCase {
         XCTAssert(handle2 == nil)
 
     }
+    
+    func testVersion() {
+        
+        let dllVersion = dllMainGetInfo()
+        
+        if dllVersion.contains("Version: v9.0") {
+            print("!!! DLL V9.0 is not a current version .. update to V9.2 !!!")
+        } else if dllVersion.contains("Version: v9.1") {
+            print("!!! DLL V9.1 is not a current version .. update to V9.2 !!!")
+        } else if dllVersion.contains("Version: v9.2") {
+            print("DLL V9.2 is the current version .. ")
+        } else {
+            print("!!! DLL version is unknown !!!")
+        }
+
+    }
 
     func testLastErrMsg() {
 
