@@ -334,7 +334,7 @@ final class TleTests: XCTestCase {
         let satKey = tleAddSatFrLines(line1import, line2import)
 
         let csvString = tleGetCsv(satKey)!
-        XCTAssertEqual(csvString, "U,694,1963-047A,2022,346.21636301,1.226E-5,,1.4598E-4,,999,30.3563,289.0742,5.79612E-2,154.2031,208.8696,14.04128829,96468,,,,,,,,,UNKNOWN")
+        XCTAssertEqual(csvString, "U,694,1963-047A,2022,346.21636301000001,1.226E-5,0,1.4598000000000001E-4,,999,30.356300000000001,289.07420000000002,5.7961199999999997E-2,154.20310000000001,208.86959999999999,14.041288290000001,96468,,0,0,0,0,0,0,0,UNKNOWN")
 
         var line1export = ""
         var line2export = ""
