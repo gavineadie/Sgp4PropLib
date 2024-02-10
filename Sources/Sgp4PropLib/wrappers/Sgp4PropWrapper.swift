@@ -303,9 +303,11 @@ public func Sgp4PropAll( _ satKey: Int64,
 }
 
 // Converts osculating position and velocity vectors to a set of mean Keplerian SGP4 elements.
-// The new position and velocity vectors are the results of using SGP4 propagator to propagate the computed sgp4MeanKep to the time specified in year and day of epoch time. They should be closely matched with the input osculating position and velocity vectors.
+// The new position and velocity vectors are the results of using SGP4 propagator to propagate the computed sgp4MeanKep to the time specified in year and day of epoch time. 
+// They should be closely matched with the input osculating position and velocity vectors.
 // 
 // The mean Keplerian elements are SGP4's Brouwer mean motion not SGP's Kozai mean motion.
+// Notes: Even if the function fails, the less acurate results may still be availalbe 
 public func Sgp4PosVelToKep( _ yr: Int32,
                              _ day: Double,
                              _ pos: UnsafeMutablePointer<Double>,
@@ -331,6 +333,7 @@ public func Sgp4PosVelToKep( _ yr: Int32,
 // The function is similar to Sgp4PosVelToKep but allows the user to specify agom (XP mode) and bstar/bterm values, if desired, to be used in solving for the new Keplerian elements.
 // 
 // The updated elements returned in the xa_tle array is of type SGP and the mean motion is Kozai mean motion.
+// Notes: Even if the function fails, the less acurate results may still be availalbe 
 public func Sgp4PosVelToTleArr( _ pos: UnsafeMutablePointer<Double>,
                                 _ vel: UnsafeMutablePointer<Double>,
                                 _ xa_tle: UnsafeMutablePointer<Double> ) -> Int32 {

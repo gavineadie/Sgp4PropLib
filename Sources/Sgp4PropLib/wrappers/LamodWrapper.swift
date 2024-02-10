@@ -676,6 +676,25 @@ public func LamodReset(  ) {
     function()
 }
 
+// Computes all look and view data of the input sensor/satellite at the specified time using their input data directly (no need to provide senSatKey)
+// <br>
+// Note: This function doesn't check for sensor limits so all limit flags are returned as passed
+// <br>
+public func LamodSenSatDirect_OS( _ ds50TAI: Double,
+                                  _ xa_locSen: UnsafeMutablePointer<Double>,
+                                  _ xa_pvSat: UnsafeMutablePointer<Double>,
+                                  _ xa_lv: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "LamodSenSatDirect_OS"), to: FunctionSignature.self)
+
+    function(ds50TAI, xa_locSen, xa_pvSat, xa_lv)
+}
+
 // Indexes of SenSatData fields
 //Step mode flag: 0= use culmination mode, 1= use step mode, 2= use task mode
 public let XF_SENSAT_STEPMODE     = 1
@@ -819,7 +838,7 @@ public let XF_1P_MAXSAA   = 11
 //*******************************************************************************
 
 // Indexes of limit test flags in the returned array
-//az limits test flag (0=failed, 1=passed)
+//az limits/off-boresight (constant azimuth fan) test flag (0=failed, 1=passed)
 public let XA_LIMFLG_AZLIM    =  0
 //el limits test flag (0=failed, 1=passed)
 public let XA_LIMFLG_ELLIM    =  1
@@ -987,6 +1006,10 @@ public let XA_LV_SOLAA    =  61
 public let XA_LV_VIS      =  62
 //relative velocity (km/s)
 public let XA_LV_RELVEL   =  63
+//off-boresight angle (deg) - constant azimuth fan only
+public let XA_LV_OBSANGLE =  64
+//angle to fan (deg) - constant azimuth fan only
+public let XA_LV_ANG2FAN  =  65
 
 //pass azimuth check (0=failed, 1=passed)
 public let XA_LV_AZLIM    =  70
@@ -1084,5 +1107,51 @@ public let XA_LA_PARMS_XMSAA       =  6
 
 public let XA_LA_PARMS_SIZE        = 16
 
+// Different sensor location types
+//Sensor location is in ECI - specific to LAMOD
+public let SENLOC_TYPE_ECI =  4
+
+// Sensor location - for use in LamodSenSatDirect_OS() all ground-based sensor types and also orbiting
+//location type (see SENLOC_TYPE_? for available types)
+public let XA_LOCSEN_LOCTYPE   =  0
+//sensor location ECR/EFG X component (km) or LLH/Lat (deg) / orbiting sensor ECI/X component (km) (SENLOC_TYPE_ECI)
+public let XA_LOCSEN_POS1      =  1
+//sensor location ECR/EFG Y component (km) or LLH/Lon (+: East/-: West) (deg) / orbiting sensor ECI/Y component (km) (SENLOC_TYPE_ECI)
+public let XA_LOCSEN_POS2      =  2
+//sensor location ECR/EFG Z component (km) or LLH/Height (km) / or orbiting sensor ECI/Z component (km) (SENLOC_TYPE_ECI)
+public let XA_LOCSEN_POS3      =  3
+
+// for ground sensor
+//astronomical latitude (deg) (+: North, -: South)
+public let XA_LOCSEN_ASTROLAT  =  4
+//astronomical longitude (deg) (+: West, -: East)
+public let XA_LOCSEN_ASTROLON  =  5
+
+// for orbiting sensor
+//orbiting sensor velocity in ECI/X component (km/s)
+public let XA_LOCSEN_VEL1      =  4
+//orbiting sensor velocity in ECI/Y component (km/s)
+public let XA_LOCSEN_VEL2      =  5
+//orbiting sensor velocity in ECI/Z component (km/s)
+public let XA_LOCSEN_VEL3      =  6
+
+public let XA_LOCSEN_SIZE      = 16
+
+
+// Satellite state data
+//satellite ECI position X (km) in TEME of Date
+public let XA_PVSAT_POSX    =  0
+//satellite ECI position Y (km) in TEME of Date
+public let XA_PVSAT_POSY    =  1
+//satellite ECI position Z (km) in TEME of Date
+public let XA_PVSAT_POSZ    =  2
+//satellite ECI velocity X (km/sec) in TEME of Date
+public let XA_PVSAT_VELX    =  3
+//satellite ECI velocity Y (km/sec) in TEME of Date
+public let XA_PVSAT_VELY    =  4
+//satellite ECI velocity Z (km/sec) in TEME of Date
+public let XA_PVSAT_VELZ    =  5
+
+public let XA_PVSAT_SIZE    = 6
 
 // ========================= End of auto generated code ==========================

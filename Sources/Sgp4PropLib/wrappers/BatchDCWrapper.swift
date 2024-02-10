@@ -163,6 +163,26 @@ public func BatchDCSetParams( _ xai_ctrl: UnsafeMutablePointer<Int32>,
     function(xai_ctrl, xar_ctrl, xas_ctrl)
 }
 
+// Returns DC control parameters using array format
+public func BatchDCGetCtrlArr( _ xa_dcCtrl: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "BatchDCGetCtrlArr"), to: FunctionSignature.self)
+
+    function(xa_dcCtrl)
+}
+
+// Sets DC control parameters using array format
+public func BatchDCSetCtrlArr( _ xa_dcCtrl: UnsafeMutablePointer<Double> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "BatchDCSetCtrlArr"), to: FunctionSignature.self)
+
+    return function(xa_dcCtrl)
+}
+
 // Initializes DC parameters for the satellite
 // See BatchDCGetParams for the structure of the xai_dcElts and xar_dcElts arrays.
 public func BatchDCInitSat( _ satKey: Int64,
@@ -182,6 +202,55 @@ public func BatchDCInitSat( _ satKey: Int64,
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "BatchDCInitSat"), to: FunctionSignature.self)
 
     return function(satKey, numObs, obsKeys, xai_dcElts, xar_dcElts, xas_dcElts)
+}
+
+// Initializes DC parameters for the satellite using only the provided/preselected obsKeys (not all loaded obs) (Thread-Safe)
+// See BatchDCGetParams for the structure of the xai_dcElts and xar_dcElts arrays.
+public func BatchDCInitSatObsKeys( _ satKey: Int64,
+                                   _ xa_dcCtrl: UnsafeMutablePointer<Double>,
+                                   _ numObs: Int32,
+                                   _ obsKeys: UnsafeMutablePointer<Int64>,
+                                   _ xai_dcElts: UnsafeMutablePointer<Int32>,
+                                   _ xar_dcElts: UnsafeMutablePointer<Double>,
+                                   _ xas_dcElts: UnsafeMutablePointer<CChar> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   UnsafeMutablePointer<Double>,
+                                                   Int32,
+                                                   UnsafeMutablePointer<Int64>,
+                                                   UnsafeMutablePointer<Int32>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<CChar> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "BatchDCInitSatObsKeys"), to: FunctionSignature.self)
+
+    return function(satKey, xa_dcCtrl, numObs, obsKeys, xai_dcElts, xar_dcElts, xas_dcElts)
+}
+
+// Initializes DC parameters for the satellite using only obs that match the provided obs selection criteria (not all loaded obs) (Thread-Safe)
+// See BatchDCGetParams for the structure of the xai_dcElts and xar_dcElts arrays.
+// Note: This can be accomplished by using ObsGetSelected() and BatchDCInitSatObsKeys() as well
+public func BatchDCInitSatObsSel( _ satKey: Int64,
+                                  _ xa_dcCtrl: UnsafeMutablePointer<Double>,
+                                  _ xa_selob: UnsafeMutablePointer<Double>,
+                                  _ numObs: UnsafeMutablePointer<Int32>,
+                                  _ obsKeys: UnsafeMutablePointer<Int64>,
+                                  _ xai_dcElts: UnsafeMutablePointer<Int32>,
+                                  _ xar_dcElts: UnsafeMutablePointer<Double>,
+                                  _ xas_dcElts: UnsafeMutablePointer<CChar> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int32>,
+                                                   UnsafeMutablePointer<Int64>,
+                                                   UnsafeMutablePointer<Int32>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<CChar> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "BatchDCInitSatObsSel"), to: FunctionSignature.self)
+
+    return function(satKey, xa_dcCtrl, xa_selob, numObs, obsKeys, xai_dcElts, xar_dcElts, xas_dcElts)
 }
 
 // Performs batch-least-square differential corrections to the specified satellite and
@@ -531,6 +600,26 @@ public func ExtEphemToEGP( _ extEphFile: UnsafeMutablePointer<CChar>,
 
     return function(extEphFile, xa_egpCtrl, xai_dcElts, xar_dcElts, xas_dcElts)
 }
+
+// Performs IOMOD/IODET and then batch-least-square differential corrections on the input observations via their obsKeys (Thread-Safe) 
+public func IomodDC( _ numObs: Int32,
+                     _ obsKeys: UnsafeMutablePointer<Int64>,
+                     _ xa_iomdc: UnsafeMutablePointer<Double>,
+                     _ xai_dcElts: UnsafeMutablePointer<Int32>,
+                     _ xar_dcElts: UnsafeMutablePointer<Double>,
+                     _ xas_dcElts: UnsafeMutablePointer<CChar> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int32,
+                                                   UnsafeMutablePointer<Int64>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int32>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<CChar> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "IomodDC"), to: FunctionSignature.self)
+
+    return function(numObs, obsKeys, xa_iomdc, xai_dcElts, xar_dcElts, xas_dcElts)
+}
 // Different DC propagation method
 //DC propagator method is GP
 public let DCPROPTYPE_GP =  0
@@ -586,7 +675,7 @@ public let XA_EGPCTRL_STEPMIN    =  4
 public let XA_EGPCTRL_DRAGCOR    =  5
 //agom correction: 0=no correction, 1=correct agom (only when DC element = SGP4-XP)
 public let XA_EGPCTRL_AGOMCOR    =  6
-//Epoch placement flag - see EPFLG_? for description
+//Epoch placement flag - see EPFLG_? for available options
 public let XA_EGPCTRL_EPFLG      =  7
 //Time of specified Epoch in Ds50UTC (only for XA_EGPCTRL_EPFLG = 2 or 4)                 *
 public let XA_EGPCTRL_NEWEPOCH   =  8
@@ -598,6 +687,11 @@ public let XA_EGPCTRL_AGOMVAL    = 10
 
 //correction order
 public let XA_EGPCTRL_ORDERCOR   = 11
+//Max # of iterations before declaring divergence [10]
+public let XA_EGPCTRL_MAXOFITERS = 12
+
+//satellite number
+public let XA_EGPCTRL_SATNUM     = 63
 
 public let XA_EGPCTRL_SIZE       = 64
 
@@ -633,7 +727,7 @@ public let XAI_CTRL_PRINTOPTION  =  0
 public let XAI_CTRL_DEBIASOBS    =  1
 //Weighed DC flag
 public let XAI_CTRL_WEIGHTEDDC   =  2
-//Epoch placement control
+//Epoch placement flag - see EPFLG_? for available options
 public let XAI_CTRL_EPOCHOPTION  =  3
 //Element correction flag - Ag
 public let XAI_CTRL_CORRECT_AG   =  4
@@ -903,5 +997,121 @@ public let XA_AC_SIZE         =  64
 public let XAS_DCELTS_SATNAME_0TO7 =   0
 
 public let XAS_DCELTS_SIZE         = 512
+
+// Different DC control modes
+//Use DC global settings settings
+public let DCCTRL_MODE_GLOBAL   = 0
+//Use provided/local DC settings
+public let DCCTRL_MODE_LOCAL    = 1
+
+
+// indexes of DC control parameters
+//DC control mode: 0= use global settings (ignore the rest), 1= use the provided/local settings (thread-safe) - N/A for BatchDC(Get/Set)CtrlArr()
+public let XA_DCCTRL_MODE             =  0
+//propagation method: SGP4 = 0, SP = 99, XP = 4, or see PROPTYPE_? for available options
+public let XA_DCCTRL_PROPMETHOD 		=  1
+//debias obs flag: 0= do not debias obs, 1= debias obs
+public let XA_DCCTRL_DEBIASOBS    		=  2
+//element correction order
+public let XA_DCCTRL_CORRECTORDER		=  3
+//epoch placement flag - see EPFLG_? for available options
+public let XA_DCCTRL_EPOCHOPTION  		=  4
+//use predicted RMS versus previous RMS for convergenece testing
+public let XA_DCCTRL_USEPREDRMS		   =  5
+//residual computation selection
+public let XA_DCCTRL_RESIDSELECT      =  6
+//correct by the specified correction order for 1 iteration only
+public let XA_DCCTRL_FOR1ITERONLY		=  7
+//max # of iterations before declaring divergence
+public let XA_DCCTRL_MAXOFITERS       =  8
+//apply weighed DC flag
+public let XA_DCCTRL_WEIGHTEDDC		   =  9
+//light time correction control
+public let XA_DCCTRL_LTC              = 10
+//number of iteration to allow no auto rejection of residuals
+public let XA_DCCTRL_BRUCE            = 11
+//flag; if set, deweight according to # of obs per track
+public let XA_DCCTRL_DWOBSPERTRCK     = 12
+//partials method
+public let XA_DCCTRL_PARTIALMETH      = 13
+//Element correction flag - Ag
+public let XA_DCCTRL_CORRECT_AG    	= 20
+//Element correction flag - Af
+public let XA_DCCTRL_CORRECT_AF    	= 21
+//Element correction flag - Psi
+public let XA_DCCTRL_CORRECT_PSI   	= 22
+//Element correction flag - Chi
+public let XA_DCCTRL_CORRECT_CHI   	= 23
+//Element correction flag - L
+public let XA_DCCTRL_CORRECT_L     	= 24
+//Element correction flag - N
+public let XA_DCCTRL_CORRECT_N     	= 25
+//Element correction flag - B* (SGP4) B (SP)
+public let XA_DCCTRL_CORRECT_B     	= 26
+//Element correction flag - Agom (SP)
+public let XA_DCCTRL_CORRECT_AGOM  	= 27
+//Convergence criteria on time (%) [5.0%]
+public let XA_DCCTRL_CNVCRITONT       = 30
+//First pass delta-t rejection criteria Convergence criteria on time correction (min) [20 minutes]
+public let XA_DCCTRL_1STPASDELTAT     = 31
+//Convergence criteria on 7-elt correction (%) [1.0%]
+public let XA_DCCTRL_CNVCRITON7ELT    = 32
+//RMS multiplier [4.0]
+public let XA_DCCTRL_RMSMULT          = 33
+//reset value for B term in subset correction [0.01]
+public let XA_DCCTRL_BRESET           = 34
+//user's specified epoch - only when epoch placement option = 4 exact at specified time
+public let XA_DCCTRL_USEREPOCH        = 35
+//SP only - density consider parameter
+public let XA_DCCTRL_CONSIDER         = 40
+//GP only - residual computation method
+public let XA_DCCTRL_GPRCM 			   = 40
+//GP only - SGP4: correct B* vs X, SGP4-XP: correct B
+public let XA_DCCTRL_CORRECTBVSX		= 41
+
+public let XA_DCCTRL_SIZE             = 64
+
+// Indexes of paramters using in IomodDC()
+//Iomod/DC control mode (not yet used)
+public let XA_IOMDC_MODE       =  0
+//DC element type, see DCPROPTYPE_? for available options
+public let XA_IOMDC_DCELTTYPE  =  1
+//Epoch placement flag - see EPFLG_? for available options
+public let XA_IOMDC_EPFLG      =  2
+//Time of specified Epoch in Ds50UTC (only for XA_EGPCTRL_EPFLG = 2 or 4)
+public let XA_IOMDC_NEWEPOCH   =  3
+//Correction order
+public let XA_IOMDC_ORDERCOR   =  4
+//IOMOD obs selection mode: 0= auto select, 1= use first 3 obs in the provided list of obs (see OBSSELMODE_? for available options)
+public let XA_IOMDC_OBSSELMODE =  5
+
+//see IOMDC_METHOD_? for available options
+public let XA_IOMDC_METHOD     = 50
+// The below parameters only apply when XA_IOMDC_METHOD is set to 2 (use customized Gooding settings)
+//number of half revolutions [0]
+public let XA_IOMDC_NHREV      = 51
+//solution number [0]
+public let XA_IOMDC_IND        = 52
+//maximum number of iterations [20]
+public let XA_IOMDC_MAXIT      = 53
+//the range guess to first observation (km) [36000]
+public let XA_IOMDC_RNG1       = 54
+//the range guess to third observation (km) [36000]
+public let XA_IOMDC_RNG3       = 55
+//partial derivative increment [1e-5]
+public let XA_IOMDC_PDINC      = 56
+//convergence criterion [1e-9]
+public let XA_IOMDC_CONVCR     = 57
+
+//IOMOD/DC parameter list size
+public let XA_IOMODC_SIZE      = 64
+
+// Different options for doing IOMOD/DC
+//Default option which uses Herrick-Gibbs for all obs types
+public let IOMDC_METHOD_HB      = 0
+//Use Gooding (with default settings) for angle only type obs and Herrick-Gibbs for other obs types
+public let IOMDC_METHOD_GDDEFLT = 1
+//Use Gooding (with customized settings) for angle only type obs and Herrick-Gibbs for other obs types
+public let IOMDC_METHOD_GDSPEC  = 2
 
 // ========================= End of auto generated code ==========================

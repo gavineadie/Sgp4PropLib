@@ -1381,6 +1381,28 @@ public func RemoveJpl(  ) {
     function()
 }
 
+// Rotates position and velocity vectors from TEME of Epoch to TEME of Date
+public func TemeEpochToDate( _ nutationTerms: Int32,
+                             _ epochDs50TAI: Double,
+                             _ dateDs50TAI: Double,
+                             _ posEpoch: UnsafeMutablePointer<Double>,
+                             _ velEpoch: UnsafeMutablePointer<Double>,
+                             _ posDate: UnsafeMutablePointer<Double>,
+                             _ velDate: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( Int32,
+                                                   Double,
+                                                   Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TemeEpochToDate"), to: FunctionSignature.self)
+
+    function(nutationTerms, epochDs50TAI, dateDs50TAI, posEpoch, velEpoch, posDate, velDate)
+}
+
 // Index of Keplerian elements
 //semi-major axis (km)
 public let XA_KEP_A     =   0

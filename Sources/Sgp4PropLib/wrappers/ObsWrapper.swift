@@ -966,6 +966,22 @@ public func SenNumFrObsKey( _ obsKey: Int64 ) -> Int32 {
     return function(obsKey)
 }
 
+// Retrieves only obs that match the selection criteria
+public func ObsGetSelected( _ xa_selob: UnsafeMutablePointer<Double>,
+                            _ order: Int32,
+                            _ numMatchedObss: UnsafeMutablePointer<Int32>,
+                            _ obsKeys: UnsafeMutablePointer<Int64> ) {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+                                                   Int32,
+                                                   UnsafeMutablePointer<Int32>,
+                                                   UnsafeMutablePointer<Int64> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ObsGetSelected"), to: FunctionSignature.self)
+
+    function(xa_selob, order, numMatchedObss, obsKeys)
+}
+
 // Equinox indicator
 //time of observation
 public let EQUINOX_OBSTIME = 0
@@ -1116,6 +1132,10 @@ public let XA_OBS_SATNUM       =  1
 public let XA_OBS_SENNUM       =  2
 //observation time in days since 1950 UTC
 public let XA_OBS_DS50UTC      =  3
+//observation type
+public let XA_OBS_OBSTYPE      = 11
+
+
 //elevation (for ob type 1, 2, 3, 4, 8) or declination (for ob type 5, 9) (deg)
 public let XA_OBS_ELORDEC      =  4
 //azimuth (for ob type 1, 2, 3, 4, 8) or right ascesion (for ob type 5, 9) (deg)
@@ -1130,8 +1150,6 @@ public let XA_OBS_ELRATE       =  8
 public let XA_OBS_AZRATE       =  9
 //range acceleration (km/s^2)
 public let XA_OBS_RANGEACCEL   = 10
-//observation type
-public let XA_OBS_OBSTYPE      = 11
 //track position indicator (3=start track ob, 4=in track ob, 5=end track ob)
 public let XA_OBS_TRACKIND     = 12
 //association status assigned by SPADOC
@@ -1361,21 +1379,15 @@ public let XA_OBSTATE_POSG         = 21
 public let XA_OBSTATE_SIZE         = 64
 
 // Indexes of observation data available for each obs type (OT0: obs type 0, OT1: obs type 1, ...)
-// All obs types have these common data fields  XA_OBS_SECCLASS = 0, XA_OBS_SATNUM = 1, and  XA_OBS_SENNUM = 2
-//observation time in days since 1950 UTC
-public let XA_OT0_DS50UTC   =  3
+// All obs types have these common data fields  XA_OBS_SECCLASS = 0, XA_OBS_SATNUM = 1, XA_OBS_SENNUM = 2, XA_OBS_DS50UTC = 3, and XA_OBS_OBSTYPE = 11
 //range rate (km/s)
 public let XA_OT0_RANGERATE =  7
 
-//observation time in days since 1950 UTC
-public let XA_OT1_DS50UTC   =  3
 //elevation (deg)
 public let XA_OT1_ELEVATION =  4
 //azimuth (deg)
 public let XA_OT1_AZIMUTH   =  5
 
-//observation time in days since 1950 UTC
-public let XA_OT2_DS50UTC   =  3
 //elevation (deg)
 public let XA_OT2_ELEVATION =  4
 //azimuth (deg)
@@ -1383,8 +1395,6 @@ public let XA_OT2_AZIMUTH   =  5
 //range (km)
 public let XA_OT2_RANGE     =  6
 
-//observation time in days since 1950 UTC
-public let XA_OT3_DS50UTC   =  3
 //elevation (deg)
 public let XA_OT3_ELEVATION =  4
 //azimuth (deg)
@@ -1394,8 +1404,6 @@ public let XA_OT3_RANGE     =  6
 //range rate (km/s)
 public let XA_OT3_RANGERATE =  7
 
-//observation time in days since 1950 UTC
-public let XA_OT4_DS50UTC   =  3
 //elevation (deg)
 public let XA_OT4_ELEVATION =  4
 //azimuth (deg)
@@ -1411,8 +1419,6 @@ public let XA_OT4_AZRATE    =  9
 //range acceleration (km/s^2)
 public let XA_OT4_RANGEACCEL = 10
 
-//observation time in days since 1950 UTC
-public let XA_OT5_DS50UTC   =  3
 //declination (deg)
 public let XA_OT5_DECL      =  4
 //right ascesion (deg)
@@ -1422,13 +1428,9 @@ public let XA_OT5_YROFEQNX  = 22
 //ABERRATION INDICATOR, 0-NOT CORRECTED, 1-CORRCETED
 public let XA_OT5_ABERRATION = 23
 
-//observation time in days since 1950 UTC
-public let XA_OT6_DS50UTC   =  3
 //range (km)
 public let XA_OT6_RANGE     =  6
 
-//observation time in days since 1950 UTC
-public let XA_OT8_DS50UTC   =  3
 //elevation (deg)
 public let XA_OT8_ELEVATION =  4
 //azimuth (deg)
@@ -1442,8 +1444,6 @@ public let XA_OT8_POSF      = 17
 //orbiting sensor position Z/EFG (km)
 public let XA_OT8_POSG      = 18
 
-//observation time in days since 1950 UTC
-public let XA_OT9_DS50UTC   =  3
 //declination (deg)
 public let XA_OT9_DECL      =  4
 //right ascesion (deg)
@@ -1461,8 +1461,6 @@ public let XA_OT9_YROFEQNX  = 22
 //ABERRATION INDICATOR, 0-NOT CORRECTED, 1-CORRCETED
 public let XA_OT9_ABERRATION = 23
 
-//observation time in days since 1950 UTC
-public let XA_OTP_DS50UTC   =  3
 //position X/ECI or X/EFG (km)
 public let XA_OTP_POSX      = 16
 //position Y/ECI or Y/EFG (km)
@@ -1470,8 +1468,6 @@ public let XA_OTP_POSY      = 17
 //position Z/ECI or Z/EFG (km)
 public let XA_OTP_POSZ      = 18
 
-//observation time in days since 1950 UTC
-public let XA_OTV_DS50UTC   =  3
 //position X/ECI or X/EFG (km)
 public let XA_OTV_POSX      = 16
 //position Y/ECI or Y/EFG (km)
@@ -1486,5 +1482,122 @@ public let XA_OTV_VELY      = 20
 public let XA_OTV_VELZ      = 21
 
 public let XA_OT_SIZE         = 64
+
+// Obs selection criteria
+//Seclection mode (unused for now)
+public let XA_SELOB_MODE        =  0
+
+//From time
+public let XA_SELOB_FRTIME      =  1
+//To time
+public let XA_SELOB_TOTIME      =  2
+
+//From time
+public let XA_SELOB_FRIDX       =  3
+//To time
+public let XA_SELOB_TOIDX       =  4
+
+//Select any obs that match this satellite number #1
+public let XA_SELOB_SAT1        = 11
+//Select any obs that match this satellite number #2
+public let XA_SELOB_SAT2        = 12
+//Select any obs that match this satellite number #3
+public let XA_SELOB_SAT3        = 13
+//Select any obs that match this satellite number #4
+public let XA_SELOB_SAT4        = 14
+//Select any obs that match this satellite number #5
+public let XA_SELOB_SAT5        = 15
+//Select any obs that match this satellite number #6
+public let XA_SELOB_SAT6        = 16
+//Select any obs that match this satellite number #7
+public let XA_SELOB_SAT7        = 17
+//Select any obs that match this satellite number #8
+public let XA_SELOB_SAT8        = 18
+//Select any obs that match this satellite number #9
+public let XA_SELOB_SAT9        = 19
+//Select any obs that match this satellite number #10
+public let XA_SELOB_SAT10       = 20
+
+//Select any obs that are obtained by this sensor site #1
+public let XA_SELOB_SEN1        = 21
+//Select any obs that are obtained by this sensor site #2
+public let XA_SELOB_SEN2        = 22
+//Select any obs that are obtained by this sensor site #3
+public let XA_SELOB_SEN3        = 23
+//Select any obs that are obtained by this sensor site #4
+public let XA_SELOB_SEN4        = 24
+//Select any obs that are obtained by this sensor site #5
+public let XA_SELOB_SEN5        = 25
+//Select any obs that are obtained by this sensor site #6
+public let XA_SELOB_SEN6        = 26
+//Select any obs that are obtained by this sensor site #7
+public let XA_SELOB_SEN7        = 27
+//Select any obs that are obtained by this sensor site #8
+public let XA_SELOB_SEN8        = 28
+//Select any obs that are obtained by this sensor site #9
+public let XA_SELOB_SEN9        = 29
+//Select any obs that are obtained by this sensor site #10
+public let XA_SELOB_SEN10       = 30
+
+//Select any obs that match this obs type #1, use OT_RRATE_SELOB for type 0/range rate only
+public let XA_SELOB_OT1         = 31
+//Select any obs that match this obs type #2
+public let XA_SELOB_OT2         = 32
+//Select any obs that match this obs type #3
+public let XA_SELOB_OT3         = 33
+//Select any obs that match this obs type #4
+public let XA_SELOB_OT4         = 34
+//Select any obs that match this obs type #5
+public let XA_SELOB_OT5         = 35
+//Select any obs that match this obs type #6
+public let XA_SELOB_OT6         = 36
+//Select any obs that match this obs type #7
+public let XA_SELOB_OT7         = 37
+//Select any obs that match this obs type #8
+public let XA_SELOB_OT8         = 38
+//Select any obs that match this obs type #9
+public let XA_SELOB_OT9         = 39
+//Select any obs that match this obs type #10
+public let XA_SELOB_OT10        = 40
+
+//From azimuth
+public let XA_SELOB_FRAZ        = 41
+//To azimuth
+public let XA_SELOB_TOAZ        = 42
+//From elevation
+public let XA_SELOB_FREL        = 43
+//To elevation
+public let XA_SELOB_TOEL        = 44
+//From right ascension
+public let XA_SELOB_FRRA        = 45
+//To right ascension
+public let XA_SELOB_TORA        = 46
+//From declincation
+public let XA_SELOB_FRDEC       = 47
+//To declination
+public let XA_SELOB_TODEC       = 48
+//From range
+public let XA_SELOB_FRRNG       = 49
+//To range
+public let XA_SELOB_TORNG       = 50
+//From range rate
+public let XA_SELOB_FRRNGRT     = 51
+//To range rate
+public let XA_SELOB_TORNGRT     = 52
+//From azimuth rate
+public let XA_SELOB_FRAZRT      = 53
+//To azimuth rate
+public let XA_SELOB_TOAZRT      = 54
+//From elevation rate
+public let XA_SELOB_FRELRT      = 55
+//To elevation rate
+public let XA_SELOB_TOELRT      = 56
+//From ASTAT (0 to 4)
+public let XA_SELOB_FRASTAT     = 57
+//To ASTAT (0 to 4) (0 < val < 1.0 if want to retrieve ASTAT 0)
+public let XA_SELOB_TOASTAT     = 58
+
+public let XA_SELOB_SIZE        = 128
+
 
 // ========================= End of auto generated code ==========================

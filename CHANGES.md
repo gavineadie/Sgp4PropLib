@@ -1,5 +1,7 @@
 # Change Note Summary
 
+### 2024 Feb 10 : v0.2.5 • _Third public release (corresponds to Space-Track v9.3)_
+
 ### 2023 Dec 23 : v0.2.4 • _Cater for a minor API change in Swift 5.8 (no functional change)_
 
 - Swift is a language which improves in an evolutionary manner.  In Swift 5.8 a little used API was deprecated 

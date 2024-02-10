@@ -776,7 +776,7 @@ public let XA_SEN_GEN_SMSEN     =  7
 public let XA_SEN_GRN_LOCTYPE   = 10
 //sensor location ECR/EFG X component (km) or LLH/Lat (deg)
 public let XA_SEN_GRN_POS1      = 11
-//sensor location ECR/EFG Y component (km) or LLH/Lon (deg)
+//sensor location ECR/EFG Y component (km) or LLH/Lon (+: East/-: West) (deg)
 public let XA_SEN_GRN_POS2      = 12
 //sensor location ECR/EFG Z component (km) or LLH/Height (km)
 public let XA_SEN_GRN_POS3      = 13
@@ -848,10 +848,10 @@ public let XA_SEN_OPT_VISCHK    = 42
 // Constant azimuth fan (VT_FAN)
 //fan's constant azimuth (deg) - fan sweeps a vertical plane  [0, 180)
 public let XA_SEN_FAN_AZ        = 20
-//fan's tilt angle (deg)  (-: North/West tilt, +: South/East tilt)
+//fan's tilt angle (deg)  (-: North/West tilt, +: South/East tilt) [-90, 90]
 public let XA_SEN_FAN_TILTANGLE = 21
-//fan's minimum elevation (deg) [0, 90]
-public let XA_SEN_FAN_MINEL     = 22
+//fan's off-boresight angle (deg) [0, 90]
+public let XA_SEN_FAN_OBSANGLE  = 23
 
 
 //*******************************************************************************
@@ -1127,5 +1127,8 @@ public let OT_M              = 18
 public let OT_O              = 19
 //obs contains TDOA/FDOA data
 public let OT_RF             = 13
+//obs contains range rate only data - for use in obs selection criteria
+public let OT_RRATE_SELOB    = 999
+
 
 // ========================= End of auto generated code ==========================

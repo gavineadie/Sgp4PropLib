@@ -242,11 +242,11 @@ public func TwoObsToPosVel( _ arr2ObsKeys: UnsafeMutablePointer<Int64>,
 public func AnglesOnlyToPosVel( _ arr3ObsKeys: UnsafeMutablePointer<Int64>,
                                 _ range1: Double,
                                 _ range3: Double,
-                                _ NHREV: Int32,
-                                _ IND: Int32,
-                                _ MAXIT: Int32,
-                                _ PDINC: Double,
-                                _ CRIVAL: Double,
+                                _ nhrev: Int32,
+                                _ ind: Int32,
+                                _ maxIt: Int32,
+                                _ pdInc: Double,
+                                _ criVal: Double,
                                 _ timeDs50UTC: UnsafeMutablePointer<Double>,
                                 _ pos: UnsafeMutablePointer<Double>,
                                 _ vel: UnsafeMutablePointer<Double> ) -> Int32 {
@@ -265,7 +265,7 @@ public func AnglesOnlyToPosVel( _ arr3ObsKeys: UnsafeMutablePointer<Int64>,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AnglesOnlyToPosVel"), to: FunctionSignature.self)
 
-    return function(arr3ObsKeys, range1, range3, NHREV, IND, MAXIT, PDINC, CRIVAL, timeDs50UTC, pos, vel)
+    return function(arr3ObsKeys, range1, range3, nhrev, ind, maxIt, pdInc, criVal, timeDs50UTC, pos, vel)
 }
 
 // Computes the track length of a track whose first observation started at the input startIdx.
@@ -584,6 +584,13 @@ public func AngleBetweenObs( _ obsKey1: Int64,
 
     function(obsKey1, obsKey2, angSep, errCode)
 }
+
+// Different obs selection options
+//auto select 3 obs among the loaded/selected obs
+public let OBSSELMODE_AUTO   = 0
+//use the first 3 obs in list of loaded/selected obs
+public let OBSSELMODE_1ST3OBS = 1
+
 
 // Indexes for accessing Iomod control parameters
 //control flag for IOHG advisory prints: 0=do not print IOHG information, 1=print IOHG

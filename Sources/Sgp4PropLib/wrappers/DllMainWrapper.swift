@@ -287,7 +287,8 @@ public func GetAllKeyMode(  ) -> Int32 {
     return function()
 }
 
-// Resets ALL (elsets/obs/sensors) key mode to its default value which then allows individual elsets/obs/sensors to use their own key mode settings
+// Resets ALL (elsets/obs/sensors) key mode to its default value which then allows individual elsets/obs/sensors to use their own key mode settings.
+// Also reset DUPLICATION key mode to its default value.
 public func ResetAllKeyMode(  ) {
 
     typealias FunctionSignature = @convention(c) (  ) -> Void
@@ -295,6 +296,26 @@ public func ResetAllKeyMode(  ) {
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ResetAllKeyMode"), to: FunctionSignature.self)
 
     function()
+}
+
+// Sets DUPLICATION key mode - change the default behavior of returning a key which already exists in memory: zero versus actual value
+public func SetDupKeyMode( _ dupKeyMode: Int32 ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int32 ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SetDupKeyMode"), to: FunctionSignature.self)
+
+    return function(dupKeyMode)
+}
+
+// Gets current DUPLICATION key mode
+public func GetDupKeyMode(  ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetDupKeyMode"), to: FunctionSignature.self)
+
+    return function()
 }
 
 // log message string length
@@ -384,6 +405,15 @@ public let ELSET_KEYMODE_NODUP  = 0
 public let ELSET_KEYMODE_DMA    = 1
 
 //*******************************************************************************
+
+// Different duplication key mode options (apply to non DMA mode only)
+//Returning (satellite/sensor/obs) key is zero to signify the existing data/key was already in memory
+public let DUPKEY_ZERO   = 0
+//Return actual (satellite/sensor/obs) key regardless of the key/data duplication
+public let DUPKEY_ACTUAL = 1
+
+//*******************************************************************************
+
 
 //Input time is in minutes since epoch
 public let TIME_IS_MSE = 1

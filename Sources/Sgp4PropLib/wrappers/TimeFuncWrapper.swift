@@ -257,9 +257,7 @@ public func UTCToUT1( _ ds50UTC: Double ) -> Double {
     return function(ds50UTC)
 }
 
-// Converts a time in ds50UTC to a time in ds50ET using timing constants records in memory. 
-// If no timing constants records were loaded, ds50UTC and ds50UT1 are the same. 
-// Partial days may be returned.
+// Converts a time in ds50UTC to a time in ds50ET (Ephemeris Time/Terrestrial Time) using timing constants records in memory. 
 public func UTCToET( _ ds50UTC: Double ) -> Double {
 
     typealias FunctionSignature = @convention(c) ( Double ) -> Double
@@ -502,5 +500,19 @@ public func Get6PCardLine( _ card6PLine: UnsafeMutablePointer<CChar> ) {
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Get6PCardLine"), to: FunctionSignature.self)
 
     function(card6PLine)
+}
+
+// Returns the time span of the loaded timing constants - the earliest and latest of loaded timing constant records
+public func TConTimeSpan( _ numOfRecs: UnsafeMutablePointer<Int32>,
+                          _ frTimeDs50UTC: UnsafeMutablePointer<Double>,
+                          _ toTimeDs50UTC: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Int32>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TConTimeSpan"), to: FunctionSignature.self)
+
+    function(numOfRecs, frTimeDs50UTC, toTimeDs50UTC)
 }
 // ========================= End of auto generated code ==========================

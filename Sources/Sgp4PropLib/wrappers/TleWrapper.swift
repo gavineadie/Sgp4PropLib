@@ -1229,7 +1229,7 @@ public let XF_TLE_SATNAME    =  3
 public let XF_TLE_EPOCH      =  4
 //GP B* drag term (1/er)  (not the same as XF_TLE_BTERM)
 public let XF_TLE_BSTAR      =  5
-//Satellite ephemeris type: 0=SGP, 2=SGP4, 6=SP
+//Satellite ephemeris type: 0=SGP, 2=SGP4, 4=SGP4-XP, 6=SP
 public let XF_TLE_EPHTYPE    =  6
 //Element set number
 public let XF_TLE_ELSETNUM   =  7
