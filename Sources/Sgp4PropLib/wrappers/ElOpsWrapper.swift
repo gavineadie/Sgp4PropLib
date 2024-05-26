@@ -11,6 +11,7 @@ fileprivate let libHandle = loadDll("libelops.dylib")
 
 // Notes: This function has been deprecated since v9.0. 
 // Initializes ElOps dll for use in the program
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func ElOpsInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -230,6 +231,8 @@ public let XA_SATPARM_WX       = 28
 public let XA_SATPARM_WY       = 29
 //cos(incl)
 public let XA_SATPARM_WZ       = 30
+//Trough/Drift Flag, 0 - 75 deg trough, 1 - 255 deg trough, 2 - both troughs, 3 - unstable point, 4 - East drift, 5 - West drift
+public let XA_SATPARM_TROUGH   = 31
 
 public let XA_SATPARM_SIZE     = 32
 

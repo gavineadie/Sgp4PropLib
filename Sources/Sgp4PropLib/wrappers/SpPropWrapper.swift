@@ -12,6 +12,7 @@ fileprivate let libHandle = loadDll("libspprop.dylib")
 // Notes: This function has been deprecated since v9.0. 
 // Initializes SpProp DLL for use in the program
 // If this function returns an error, it is recommended that the users stop the program immediately. The error occurs if the users forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section, before using this DLL. 
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func SpInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -951,6 +952,18 @@ public let STMTYPE_EQNX      = 3
 public let SPCOORD_ECI      = 1
 //Output coordinate systems in MEME of J2K
 public let SPCOORD_J2K      = 2
+
+// Different drag perturbation models
+//Jacchia 64 model
+public let DRGMDL_JAC64   =  1
+//Jacchia 70 model
+public let DRGMDL_JAC70   =  2
+//Dynamic Calibration Atmosphere 1 (DCA1/HASDM1) model
+public let DRGMDL_DCA1    =  3
+//JBH09 model
+public let DRGMDL_JBH09   = 40
+//JBH09 and Dynamic Calibration Atmosphere 2 (DCA2/HASDM2)
+public let DRGMDL_JBHDCA2 = 41
 
 // Indexes of SP 4P card fields
 //Geopotential model to use

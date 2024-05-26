@@ -14,6 +14,7 @@ fileprivate let libHandle = loadDll("libtle.dylib")
 // If this function returns an error, it is recommended that you stop the program immediately.
 // 
 // An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section of the accompanying documentation, before using this DLL.
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func TleInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -1171,6 +1172,7 @@ public func TleCsvToLines( _ csvLine: UnsafeMutablePointer<CChar>,
 }
 
 // Sets TLE key mode - This function was deprecated, please use DllMain/SetElsetKeyMode() instead
+@available(*, deprecated, message: "Please use DllMain/SetElsetKeyMode() instead")
 public func SetTleKeyMode( _ tle_keyMode: Int32 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int32 ) -> Int32
@@ -1181,6 +1183,7 @@ public func SetTleKeyMode( _ tle_keyMode: Int32 ) -> Int32 {
 }
 
 // Gets current TLE key mode - This function was deprecated, please use DllMain/GetElsetKeyMode() instead
+@available(*, deprecated, message: "Please use DllMain/SetElsetKeyMode() instead")
 public func GetTleKeyMode(  ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) (  ) -> Int32

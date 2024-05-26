@@ -11,6 +11,7 @@ fileprivate let libHandle = loadDll("libbam.dylib")
 
 // Notes: This function has been deprecated since v9.0. 
 // Initializes Bam dll for use in the program
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func BamInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32

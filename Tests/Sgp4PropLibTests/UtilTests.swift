@@ -10,17 +10,17 @@ import XCTest
 
 final class UtilTests: XCTestCase {
     
-    func testWarning() { printWarning("\"Swift Port of Sgp4Prop\"") }
-    
-    func testStringArrayConversion() {
-        
+    func testWarning() throws { printWarning("\"Swift Port of Sgp4Prop\"") }
+
+    func testStringArrayConversion() throws {
+
         let arrayCount = 24
         XCTAssert(0 == String(fromCcharArray: emptyCcharArray(size: arrayCount),
                               size: arrayCount).count)
         
     }
     
-    func testToLongArray() {
+    func testToLongArray() throws {
         
         let arrayCount = 24
         let charArray = "123456789".toCcharArray(size: arrayCount)

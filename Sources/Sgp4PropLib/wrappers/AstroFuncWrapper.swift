@@ -14,6 +14,7 @@ fileprivate let libHandle = loadDll("libastrofunc.dylib")
 // If this function returns an error, it is recommended that you stop the program immediately.
 // 
 // An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section of the accompanying documentation, before using this DLL.
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func AstroFuncInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32

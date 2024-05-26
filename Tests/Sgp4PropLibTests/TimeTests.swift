@@ -53,7 +53,7 @@ final class TimeTests: XCTestCase {
 
     }
 
-    func testUTCToTimeComps() {
+    func testUTCToTimeComps() throws {
 
         let ds50 = TimeComps1ToUTC(1956, 1, 0, 0, 0.0)
         print("  TimeComps1ToUTC(1956) = \(ds50)")
@@ -79,7 +79,7 @@ final class TimeTests: XCTestCase {
 
     /// Note that `utcToTimeComps1` conversion, and `timeComps1ToUTC` back may
     /// have about a 10 mSec difference
-    func testTimeConversions() {
+    func testTimeConversions() throws {
 
         let dateTimeGroupUTC = Date().ds1950Now
         var year: Int32 = 0
@@ -105,7 +105,7 @@ final class TimeTests: XCTestCase {
 
     }
 
-    func testTime() {
+    func testTime() throws {
 
         let dateTimeGroupUTC = Date().ds1950Now
         print("time now: \(dateTimeGroupUTC)")
@@ -113,7 +113,7 @@ final class TimeTests: XCTestCase {
 
     }
 
-    func testDates() {
+    func testDates() throws {
 
         let now = Date()
         print("                  (now) = \(now)")

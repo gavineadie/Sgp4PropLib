@@ -11,6 +11,7 @@ fileprivate let libHandle = loadDll("libelcomp.dylib")
 
 // Notes: This function has been deprecated since v9.0. 
 // Initializes ElComp dll for use in the program 
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func ElCompInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -259,6 +260,30 @@ public func ElCompGetResults( _ priSatKey: Int64,
     return function(priSatKey, secSatKey, checkDeltaTime, xa_elcom_pri, xa_elcom_sec, xa_elcom_deltas, elcom_astat)
 }
 
+// This is a thread-safe version of the ElCompGetResults
+public func ElCompGetResults_MT( _ xa_ecdiff: UnsafeMutablePointer<Double>,
+                                 _ priSatKey: Int64,
+                                 _ secSatKey: Int64,
+                                 _ checkDeltaTime: Int32,
+                                 _ xa_elcom_pri: UnsafeMutablePointer<Double>,
+                                 _ xa_elcom_sec: UnsafeMutablePointer<Double>,
+                                 _ xa_elcom_deltas: UnsafeMutablePointer<Double>,
+                                 _ elcom_astat: UnsafeMutablePointer<Int32> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+                                                   Int64,
+                                                   Int64,
+                                                   Int32,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int32> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ElCompGetResults_MT"), to: FunctionSignature.self)
+
+    return function(xa_ecdiff, priSatKey, secSatKey, checkDeltaTime, xa_elcom_pri, xa_elcom_sec, xa_elcom_deltas, elcom_astat)
+}
+
 // Returns comparison results between two elsets without loading the elsets into memory
 // See ElCompGetResults for a description of the input and output values.
 public func ElCompFrElData( _ checkDeltaTime: Int32,
@@ -276,6 +301,26 @@ public func ElCompFrElData( _ checkDeltaTime: Int32,
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ElCompFrElData"), to: FunctionSignature.self)
 
     function(checkDeltaTime, xa_elcom_pri, xa_elcom_sec, xa_elcom_deltas, elcom_astat)
+}
+
+// This is a threa-safe version of ElCompFrElData
+public func ElCompFrElData_MT( _ xa_ecdiff: UnsafeMutablePointer<Double>,
+                               _ checkDeltaTime: Int32,
+                               _ xa_elcom_pri: UnsafeMutablePointer<Double>,
+                               _ xa_elcom_sec: UnsafeMutablePointer<Double>,
+                               _ xa_elcom_deltas: UnsafeMutablePointer<Double>,
+                               _ elcom_astat: UnsafeMutablePointer<Int32> ) {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+                                                   Int32,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int32> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ElCompFrElData_MT"), to: FunctionSignature.self)
+
+    function(xa_ecdiff, checkDeltaTime, xa_elcom_pri, xa_elcom_sec, xa_elcom_deltas, elcom_astat)
 }
 
 // Resets criteria to default values for ElComp 
@@ -393,6 +438,28 @@ public func CocoGetResults( _ priSatKey: Int64,
     return function(priSatKey, secSatKey, xa_satData_pri, xa_satData_sec, xa_coco, coco_astat)
 }
 
+// This is a thread-safe version of CocoGetResults
+public func CocoGetResults_MT( _ xa_ecdiff: UnsafeMutablePointer<Double>,
+                               _ priSatKey: Int64,
+                               _ secSatKey: Int64,
+                               _ xa_satData_pri: UnsafeMutablePointer<Double>,
+                               _ xa_satData_sec: UnsafeMutablePointer<Double>,
+                               _ xa_coco: UnsafeMutablePointer<Double>,
+                               _ coco_astat: UnsafeMutablePointer<Int32> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+                                                   Int64,
+                                                   Int64,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int32> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CocoGetResults_MT"), to: FunctionSignature.self)
+
+    return function(xa_ecdiff, priSatKey, secSatKey, xa_satData_pri, xa_satData_sec, xa_coco, coco_astat)
+}
+
 //   CocoGetResultsWOA executes COCO, Computation of coplanar Orbits, to evaluate two element sets
 //   loaded via their satKeys. It's similar to CocoGetResults but without returning the ASTAT value
 public func CocoGetResultsWOA( _ priSatKey: Int64,
@@ -426,6 +493,24 @@ public func CocoFrElData( _ xa_satData_pri: UnsafeMutablePointer<Double>,
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CocoFrElData"), to: FunctionSignature.self)
 
     function(xa_satData_pri, xa_satData_sec, xa_coco, coco_astat)
+}
+
+// This is a thread-safe version of CocoFrElData
+public func CocoFrElData_MT( _ xa_ecdiff: UnsafeMutablePointer<Double>,
+                             _ xa_satData_pri: UnsafeMutablePointer<Double>,
+                             _ xa_satData_sec: UnsafeMutablePointer<Double>,
+                             _ xa_coco: UnsafeMutablePointer<Double>,
+                             _ coco_astat: UnsafeMutablePointer<Int32> ) {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int32> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "CocoFrElData_MT"), to: FunctionSignature.self)
+
+    function(xa_ecdiff, xa_satData_pri, xa_satData_sec, xa_coco, coco_astat)
 }
 
 // Returns comparison results between two elsets without loading the elsets into TLE dll. It's similar to CocoFrElData but without returning the ASTAT value

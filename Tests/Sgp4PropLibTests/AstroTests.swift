@@ -10,7 +10,7 @@ import XCTest
 
 final class AstroTests: XCTestCase {
 
-    func testKepler() {
+    func testKepler() throws {
 
         loadAllDlls()
 
@@ -46,7 +46,5 @@ final class AstroTests: XCTestCase {
         XCTAssertEqual(vel[2], velK[2], accuracy: 0.00000000000001)
 
     }
-
-    
 
 }

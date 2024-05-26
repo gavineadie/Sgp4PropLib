@@ -10,7 +10,7 @@ import XCTest
 
 final class TleTests: XCTestCase {
 
-    func testTLE() {
+    func testTLE() throws {
 
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
@@ -69,7 +69,7 @@ final class TleTests: XCTestCase {
 
     }
 
-    func testTleParseSP() {
+    func testTleParseSP() throws {
 
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
@@ -132,7 +132,7 @@ final class TleTests: XCTestCase {
 
     }
 
-    func testGetEpoch() {
+    func testGetEpoch() throws {
 
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
@@ -164,7 +164,7 @@ final class TleTests: XCTestCase {
 
     }
 
-    func testTLEs() {
+    func testTLEs() throws {
 
         let tleFilePath = tleString.stringToTmpFile("brightest.2le")
         XCTAssertEqual(0, tleLoadFile(tleFilePath))
@@ -175,7 +175,7 @@ final class TleTests: XCTestCase {
 
     }
 
-    func testTleLineToArray() {
+    func testTleLineToArray() throws {
 
         _ = Sgp4RemoveAllSats()
         _ = TleRemoveAllSats()
@@ -192,7 +192,7 @@ final class TleTests: XCTestCase {
 
     }
 
-    func testXS() {
+    func testXS() throws {
 
         let text = "URELEAS14"
         let dict = xsTleDecode(text)
@@ -201,7 +201,7 @@ final class TleTests: XCTestCase {
 
     }
 
-    func test_tleGetField() {
+    func test_tleGetField() throws {
 
         loadAllDlls()
 
@@ -278,7 +278,7 @@ final class TleTests: XCTestCase {
         }
     }
 
-    func testCheckSum() {
+    func testCheckSum() throws {
 
         loadAllDlls()
 
@@ -294,7 +294,7 @@ final class TleTests: XCTestCase {
 
     }
 
-    func test_tleSetField() {
+    func test_tleSetField() throws {
 
         let satKey: Int64 = 514756810000900211
 
@@ -324,7 +324,7 @@ final class TleTests: XCTestCase {
 
     }
 
-    func testCSV() {
+    func testCSV() throws {
 
         if (libHandles.isEmpty) { loadAllDlls() }
 
@@ -347,7 +347,6 @@ final class TleTests: XCTestCase {
         XCTAssertEqual(line1import.trimRight(), line1export)
         XCTAssertEqual(line2import.trimRight(), line2export)
     }
-
 
 }
 

@@ -11,6 +11,7 @@ fileprivate let libHandle = loadDll("libbatchdc.dylib")
 
 // Notes: This function has been deprecated since v9.0. 
 // Initializes BatchDC DLL for use in the program
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func BatchDCInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -660,6 +661,37 @@ public let EPFLG_BEGINDAYLATESTOB  = 8
 //Nodal crossing nearest epoch, good for eGP
 public let EPFLG_NODALXINGEPOCH    = 9
 
+// Different correction types
+public let CORT_TIME   = 0
+public let CORT_PLANE  = 1
+public let CORT_7ELT   = 2
+public let CORT_INTRK  = 3
+public let CORT_8ELT   = 4
+public let CORT_SUBELT = 5
+
+// Different element correction order
+//7-element only [default]
+public let CORORD_7ELT       = 0
+//time (SP: L, n, B), then 7-element
+public let CORORD_TIM7ELT    = 1
+//time, plane, then 7-element (SGP4) or 7-elt only; pht/pi vs Af/Ag (SP)
+public let CORORD_TIMPLN7ELT = 2
+//plane, time, then 7-element (SGP4) or 7-elt only; e/pi vs Af/Ag (SP)
+public let CORORD_PLNTIM7ELT = 3
+//plane, then 7-element (SGP4) or L, n, B, then 7-elt, with pht/pi vs Af/Ag (SP)
+public let CORORD_PLN7ELT    = 4
+//n-only, then 7-element
+public let CORORD_N7ELT      = 5
+//L-only, then 7-element
+public let CORORD_L7ELT      = 6
+//L & n only, then 7-element
+public let CORORD_LN7ELT     = 7
+//Af/Ag, L, n only, then 7-element
+public let CORORD_AFAGLN7ELT = 8
+//6-element, then 7-element
+public let CORORD_6ELT7ELT   = 9
+
+
 // indexes for EGP control parameters for input VCM/SPVEC-typed elsets or external ephemeris file
 //Not being used yet
 public let XA_EGPCTRL_OPTION     =  0
@@ -809,7 +841,7 @@ public let XAI_DCELTS_PROPTYPE     =   3
 public let XAI_DCELTS_SPECTR       =   4
 //epoch revolution number
 public let XAI_DCELTS_REVNUM       =   5
-//correction type: 0=TIME, 1=PLANE", 2=7-ELT, 3=IN-TRK, 4=8-ELT, 5=SUBELT
+//correction type: 0=TIME, 1=PLANE", 2=7-ELT, 3=IN-TRK, 4=8-ELT, 5=SUBELT; see CORT_? for available values
 public let XAI_DCELTS_CORRTYPE     =   6
 
 //total iteration count
@@ -1008,7 +1040,7 @@ public let DCCTRL_MODE_LOCAL    = 1
 // indexes of DC control parameters
 //DC control mode: 0= use global settings (ignore the rest), 1= use the provided/local settings (thread-safe) - N/A for BatchDC(Get/Set)CtrlArr()
 public let XA_DCCTRL_MODE             =  0
-//propagation method: SGP4 = 0, SP = 99, XP = 4, or see PROPTYPE_? for available options
+//propagation method: SGP4 = 0, SP = 99, XP = 4, or see DCPROPTYPE_? for available options
 public let XA_DCCTRL_PROPMETHOD 		=  1
 //debias obs flag: 0= do not debias obs, 1= debias obs
 public let XA_DCCTRL_DEBIASOBS    		=  2
@@ -1073,38 +1105,91 @@ public let XA_DCCTRL_SIZE             = 64
 
 // Indexes of paramters using in IomodDC()
 //Iomod/DC control mode (not yet used)
-public let XA_IOMDC_MODE       =  0
+public let XA_IOMDC_MODE           =  0
 //DC element type, see DCPROPTYPE_? for available options
-public let XA_IOMDC_DCELTTYPE  =  1
+public let XA_IOMDC_DCELTTYPE      =  1
 //Epoch placement flag - see EPFLG_? for available options
-public let XA_IOMDC_EPFLG      =  2
+public let XA_IOMDC_EPFLG          =  2
 //Time of specified Epoch in Ds50UTC (only for XA_EGPCTRL_EPFLG = 2 or 4)
-public let XA_IOMDC_NEWEPOCH   =  3
+public let XA_IOMDC_NEWEPOCH       =  3
 //Correction order
-public let XA_IOMDC_ORDERCOR   =  4
+public let XA_IOMDC_ORDERCOR       =  4
 //IOMOD obs selection mode: 0= auto select, 1= use first 3 obs in the provided list of obs (see OBSSELMODE_? for available options)
-public let XA_IOMDC_OBSSELMODE =  5
+public let XA_IOMDC_OBSSELMODE     =  5
+//residual computation selection
+public let XA_IOMDC_RESIDSELECT    =  6
+//correct by the specified correction order for 1 iteration only
+public let XA_IOMDC_FOR1ITERONLY   =  7
+//max # of iterations before declaring divergence
+public let XA_IOMDC_MAXOFITERS     =  8
+//apply weighed DC flag
+public let XA_IOMDC_WEIGHTEDDC		=  9
+//light time correction control
+public let XA_IOMDC_LTC            = 10
+//number of iteration to allow no auto rejection of residuals
+public let XA_IOMDC_BRUCE          = 11
+//flag; if set, deweight according to # of obs per track
+public let XA_IOMDC_DWOBSPERTRCK   = 12
+//partials method
+public let XA_IOMDC_PARTIALMETH    = 13
+//debias obs flag: 0= do not debias obs, 1= debias obs
+public let XA_IOMDC_DEBIASOBS    	= 14
+//use predicted RMS versus previous RMS for convergenece testing
+public let XA_IOMDC_USEPREDRMS		= 15
+
+//Element correction flag - Ag
+public let XA_IOMDC_CORRECT_AG    	= 20
+//Element correction flag - Af
+public let XA_IOMDC_CORRECT_AF    	= 21
+//Element correction flag - Psi
+public let XA_IOMDC_CORRECT_PSI   	= 22
+//Element correction flag - Chi
+public let XA_IOMDC_CORRECT_CHI   	= 23
+//Element correction flag - L
+public let XA_IOMDC_CORRECT_L     	= 24
+//Element correction flag - N
+public let XA_IOMDC_CORRECT_N     	= 25
+//Element correction flag - B* (SGP4) B (SP)
+public let XA_IOMDC_CORRECT_B     	= 26
+//Element correction flag - Agom (SP)
+public let XA_IOMDC_CORRECT_AGOM  	= 27
+//Convergence criteria on time (%) [5.0%]
+public let XA_IOMDC_CNVCRITONT     = 30
+//First pass delta-t rejection criteria Convergence criteria on time correction (min) [20 minutes]
+public let XA_IOMDC_1STPASDELTAT   = 31
+//Convergence criteria on 7-elt correction (%) [1.0%]
+public let XA_IOMDC_CNVCRITON7ELT  = 32
+//RMS multiplier [4.0]
+public let XA_IOMDC_RMSMULT        = 33
+//reset value for B term in subset correction [0.01]
+public let XA_IOMDC_BRESET         = 34
+//SP only - density consider parameter
+public let XA_IOMDC_CONSIDER       = 40
+//GP only - residual computation method
+public let XA_IOMDC_GPRCM 			= 40
+//GP only - SGP4: correct B* vs X, SGP4-XP: correct B
+public let XA_IOMDC_CORRECTBVSX		= 41
 
 //see IOMDC_METHOD_? for available options
-public let XA_IOMDC_METHOD     = 50
+public let XA_IOMDC_METHOD         = 50
 // The below parameters only apply when XA_IOMDC_METHOD is set to 2 (use customized Gooding settings)
 //number of half revolutions [0]
-public let XA_IOMDC_NHREV      = 51
+public let XA_IOMDC_NHREV          = 51
 //solution number [0]
-public let XA_IOMDC_IND        = 52
+public let XA_IOMDC_IND            = 52
 //maximum number of iterations [20]
-public let XA_IOMDC_MAXIT      = 53
+public let XA_IOMDC_MAXIT          = 53
 //the range guess to first observation (km) [36000]
-public let XA_IOMDC_RNG1       = 54
+public let XA_IOMDC_RNG1           = 54
 //the range guess to third observation (km) [36000]
-public let XA_IOMDC_RNG3       = 55
+public let XA_IOMDC_RNG3           = 55
 //partial derivative increment [1e-5]
-public let XA_IOMDC_PDINC      = 56
+public let XA_IOMDC_PDINC          = 56
 //convergence criterion [1e-9]
-public let XA_IOMDC_CONVCR     = 57
+public let XA_IOMDC_CONVCR         = 57
 
 //IOMOD/DC parameter list size
-public let XA_IOMODC_SIZE      = 64
+public let XA_IOMDC_SIZE           = 64
 
 // Different options for doing IOMOD/DC
 //Default option which uses Herrick-Gibbs for all obs types

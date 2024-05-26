@@ -14,7 +14,7 @@ final class TestTests: XCTestCase {
     //  TEST_INTERFACE_1 (WRAPPER VERSION)
     //
 
-    func testFX1() {
+    func testFX1() throws {
 
         let char_In = "A"
         let int32_In: Int32 = 3
@@ -98,7 +98,7 @@ final class TestTests: XCTestCase {
     //  TEST_INTERFACE_2 (WRAPPER VERSION)
     //
 
-    func testFX2() {
+    func testFX2() throws {
 
         var char_InOut = "A"
         var int32_InOut: Int32 = 3
@@ -164,7 +164,7 @@ final class TestTests: XCTestCase {
     //  TEST_INTERFACE_3 (WRAPPER VERSION)
     //
 
-    func testFX3() {
+    func testFX3() throws {
         var unk1D_In:  [Int32] = [40, 50, 60]
         var unk1D_Out: [Int32] = [0, 0, 0]
         var unk2D_In:  [(Int32, Int32, Int32)] = [(123, 456, 789), (987, 654, 321)]
@@ -179,4 +179,5 @@ final class TestTests: XCTestCase {
         print(unk2D_In, terminator: " ==> ")
         print(unt2D_Out)
     }
+
 }

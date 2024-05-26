@@ -11,6 +11,7 @@ fileprivate let libHandle = loadDll("librotas.dylib")
 
 // Notes: This function has been deprecated since v9.0. 
 // Initializes Rotas DLL for use in the program
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func RotasInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -253,7 +254,7 @@ public func RotasHasASTAT( _ obsKey: Int64, _ satKey: Int64 ) -> Int32 {
     return function(obsKey, satKey)
 }
 
-// Determines if the observation/satellite pair can possibly have an association - suitable for multithread application
+// Determines if the observation/satellite pair can possibly have an association - suitable for multithread application (using global Multipliers)
 public func RotasHasASTAT_MT( _ xa_rt_parms: UnsafeMutablePointer<Double>,
                               _ obsKey: Int64,
                               _ satKey: Int64 ) -> Int32 {
@@ -265,6 +266,22 @@ public func RotasHasASTAT_MT( _ xa_rt_parms: UnsafeMutablePointer<Double>,
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotasHasASTAT_MT"), to: FunctionSignature.self)
 
     return function(xa_rt_parms, obsKey, satKey)
+}
+
+// Determines if the observation/satellite pair can possibly have an association - suitable for multithread application (using provided Multipliers)
+public func RotasHasASTATMultp_MT( _ xa_assocMultp: UnsafeMutablePointer<Int32>,
+                                   _ xa_rt_parms: UnsafeMutablePointer<Double>,
+                                   _ obsKey: Int64,
+                                   _ satKey: Int64 ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Int32>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   Int64,
+                                                   Int64 ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotasHasASTATMultp_MT"), to: FunctionSignature.self)
+
+    return function(xa_assocMultp, xa_rt_parms, obsKey, satKey)
 }
 
 // Computes residuals for one observation against one satellite
@@ -286,7 +303,7 @@ public func RotasComputeObsResiduals( _ obsKey: Int64,
     return function(obsKey, satKey, xa_ObsRes, satElts, obElts)
 }
 
-// Computes residuals for one observation against one satellite - suitable for multithread application
+// Computes residuals for one observation against one satellite - suitable for multithread application (using global Multipliers)
 // Obs type 0 (range rate only) cannot be used to compute residuals.
 public func RotasComputeObsResiduals_MT( _ xa_rt_parms: UnsafeMutablePointer<Double>,
                                          _ obsKey: Int64,
@@ -307,7 +324,30 @@ public func RotasComputeObsResiduals_MT( _ xa_rt_parms: UnsafeMutablePointer<Dou
     return function(xa_rt_parms, obsKey, satKey, xa_ObsRes, satElts, obElts)
 }
 
-// Computes residuals for a track of observations against one satellite. Each track is treated as a single entity
+// Computes residuals for one observation against one satellite - suitable for multithread application (using provided Multipliers)
+// Obs type 0 (range rate only) cannot be used to compute residuals.
+public func RotasComputeObsResidualsMultp_MT( _ xa_assocMultp: UnsafeMutablePointer<Int32>,
+                                              _ xa_rt_parms: UnsafeMutablePointer<Double>,
+                                              _ obsKey: Int64,
+                                              _ satKey: Int64,
+                                              _ xa_ObsRes: UnsafeMutablePointer<Double>,
+                                              _ satElts: UnsafeMutablePointer<Double>,
+                                              _ obElts: UnsafeMutablePointer<Double> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Int32>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   Int64,
+                                                   Int64,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotasComputeObsResidualsMultp_MT"), to: FunctionSignature.self)
+
+    return function(xa_assocMultp, xa_rt_parms, obsKey, satKey, xa_ObsRes, satElts, obElts)
+}
+
+// Computes residuals for a track of observations against one satellite. Each track is treated as a single entity (using global parameters)
 public func RotasComputeTrackResiduals( _ obsKeys: UnsafeMutablePointer<Int64>,
                                         _ trackStartIdx: Int32,
                                         _ trackLength: Int32,
@@ -331,6 +371,36 @@ public func RotasComputeTrackResiduals( _ obsKeys: UnsafeMutablePointer<Int64>,
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotasComputeTrackResiduals"), to: FunctionSignature.self)
 
     return function(obsKeys, trackStartIdx, trackLength, satKey, xa_ObsRes, trackObsKeys, b3ObsCard, satElts, obElts)
+}
+
+// Computes residuals for a track of observations against one satellite. Each track is treated as a single entity (using provided parameters)
+public func RotasComputeTrackResiduals_MT( _ xa_assocMultp: UnsafeMutablePointer<Int32>,
+                                           _ xa_rt_parms: UnsafeMutablePointer<Double>,
+                                           _ obsKeys: UnsafeMutablePointer<Int64>,
+                                           _ trackStartIdx: Int32,
+                                           _ trackLength: Int32,
+                                           _ satKey: Int64,
+                                           _ xa_ObsRes: UnsafeMutablePointer<Double>,
+                                           _ trackObsKeys: UnsafeMutablePointer<Int64>,
+                                           _ b3ObsCard: UnsafeMutablePointer<CChar>,
+                                           _ satElts: UnsafeMutablePointer<Double>,
+                                           _ obElts: UnsafeMutablePointer<Double> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Int32>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int64>,
+                                                   Int32,
+                                                   Int32,
+                                                   Int64,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int64>,
+                                                   UnsafeMutablePointer<CChar>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotasComputeTrackResiduals_MT"), to: FunctionSignature.self)
+
+    return function(xa_assocMultp, xa_rt_parms, obsKeys, trackStartIdx, trackLength, satKey, xa_ObsRes, trackObsKeys, b3ObsCard, satElts, obElts)
 }
 
 // Computes residuals for one observation against one satellite directly (no need to load ob and propagate satellite)
@@ -366,6 +436,14 @@ public func RotasSetRetagObsFile( _ retagObsFile: UnsafeMutablePointer<CChar> ) 
 
     function(retagObsFile)
 }
+
+// Different light-time correction (LTC) options
+//Don't apply LTC
+public let LTC_DONTAPPLY  = 0
+//Apply LTC analytically
+public let LTC_ANALYTIC   = 1
+//Apply LTC exactly
+public let LTC_EXACT      = 2
 
 // Residual computation methods
 //Delta/427M method
@@ -544,7 +622,7 @@ public let XA_RT_PARMS_DELTATLIM   =  3
 public let XA_RT_PARMS_DELTAHLIM   =  4
 //ASTAT 2 multiplier
 public let XA_RT_PARMS_ASTAT2MULT  =  5
-//Light-time correction (LTC) flag: 1= don't apply LTC, 2= apply LTC analytically, 3= apply LTC exactly
+//Light-time correction (LTC) flag: 0= don't apply LTC, 1= apply LTC analytically, 2= apply LTC exactly
 public let XA_RT_PARMS_LTC         =  6
 //debias ob flag: 0= do not debias, 1= debias ob
 public let XA_RT_PARMS_DEBIAS      =  7

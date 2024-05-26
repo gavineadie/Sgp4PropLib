@@ -11,6 +11,7 @@ fileprivate let libHandle = loadDll("libdllmain.dylib")
 
 // Notes: This function has been deprecated since v9.0. 
 // Initializes DllMain program (host of Astro Standards libraries) for use in any Astro Standards applications
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func DllMainInit(  ) -> Int64 {
 
     typealias FunctionSignature = @convention(c) (  ) -> Int64
@@ -112,6 +113,7 @@ public func GetLastInfoMsg( _ lastInfoMsg: UnsafeMutablePointer<CChar> ) {
 
 // Notes: This function has been deprecated since v9.0. 
 // Returns a list of names of the Standardized Astrodynamic Algorithms DLLs that were initialized successfully.
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func GetInitDllNames( _ initDllNames: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void

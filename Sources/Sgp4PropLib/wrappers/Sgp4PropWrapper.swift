@@ -15,6 +15,7 @@ fileprivate let libHandle = loadDll("libsgp4prop.dylib")
 // If this function returns an error, it is recommended that you stop the program immediately.
 // <br>
 // An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section of the accompanying documentation, before using this DLL.
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func Sgp4Init( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -379,6 +380,7 @@ public func Sgp4ReepochCsv( _ satKey: Int64,
 
 // This function has been deprecated since v8.2
 // Note: The only requirement now is that "SGP4_Open_License.txt" file needs to be in those folders specified in PATH/LD_LIBRARY_PATH environment or AstroStds DLLs/SOs'
+@available(*, deprecated, message: "This function has been deprecated since v8.2")
 public func Sgp4SetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -390,6 +392,7 @@ public func Sgp4SetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
 
 // This function has been deprecated since v8.2
 // Note: The only requirement now is that "SGP4_Open_License.txt" file needs to be in those folders specified in PATH/LD_LIBRARY_PATH environment or AstroStds DLLs/SOs'
+@available(*, deprecated, message: "This function has been deprecated since v8.2")
 public func Sgp4GetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -427,7 +430,7 @@ public func Sgp4GenEphems( _ satKey: Int64,
     return function(satKey, startTime, endTime, stepSize, sgp4_ephem, arrSize, _ephemArr, genEphemPts)
 }
 
-// Generates ephemerides for the input TLE - in an array format - for the specified time span and step size (IOC - In Once Call)
+// Generates ephemerides for the input TLE - in an array format - for the specified time span and step size (OS - in One Step)
 // Notes: <br>
 // - This function takes in TLE data directly and doesn't need to go through loading/geting satKey/initializing steps<br>
 // - if arrSize isn't big enough to store all the ephemeris points, the function will exit when the ephemArr reaches
@@ -473,6 +476,40 @@ public func Sgp4PropAllSats( _ satKeys: UnsafeMutablePointer<Int64>,
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4PropAllSats"), to: FunctionSignature.self)
 
     return function(satKeys, numOfSats, ds50UTC, _ephemArr)
+}
+
+// Provides the native XP equinoctial elements and rates at given time
+public func XpGetNativeElts( _ satKey: Int64,
+                             _ ds50UTC: Double,
+                             _ xa_eqnx: UnsafeMutablePointer<Double>,
+                             _ xa_eqnx_dot: UnsafeMutablePointer<Double> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "XpGetNativeElts"), to: FunctionSignature.self)
+
+    return function(satKey, ds50UTC, xa_eqnx, xa_eqnx_dot)
+}
+
+// Reepochs to a csv and provides the native XP equinoctial elements and rates
+public func XpReepochGetNativeElts( _ satKey: Int64,
+                                    _ reEpochDs50UTC: Double,
+                                    _ csvLine: UnsafeMutablePointer<CChar>,
+                                    _ xa_eqnx: UnsafeMutablePointer<Double>,
+                                    _ xa_eqnx_dot: UnsafeMutablePointer<Double> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   Double,
+                                                   UnsafeMutablePointer<CChar>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "XpReepochGetNativeElts"), to: FunctionSignature.self)
+
+    return function(satKey, reEpochDs50UTC, csvLine, xa_eqnx, xa_eqnx_dot)
 }
 // Different return values of errCode from Sgp4 propagation
 //SGP4 propagates successfully

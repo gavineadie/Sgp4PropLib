@@ -10,7 +10,7 @@ import XCTest
 
 final class DllTests: XCTestCase {
 
-    func testLoader() {
+    func testLoader() throws {
 
         let handle1 = Loader.load(getDylibPath() + "libtle.dylib", mode: RTLD_LAZY)
         XCTAssert(handle1 != nil)
@@ -20,8 +20,8 @@ final class DllTests: XCTestCase {
 
     }
     
-    func testVersion() {
-        
+    func testVersion() throws {
+
         let dllVersion = dllMainGetInfo()
         
         if dllVersion.contains("Version: v9.0") {
@@ -36,19 +36,19 @@ final class DllTests: XCTestCase {
 
     }
 
-    func testLastErrMsg() {
+    func testLastErrMsg() throws {
 
         XCTAssertEqual(getLastErrMsg(), "")
 
     }
 
-    func testGetLastInfoMsg() {
+    func testGetLastInfoMsg() throws {
 
         XCTAssertEqual(GetLastInfoMsg(), "")
 
     }
 
-    func testEnvironment() {
+    func testEnvironment() throws {
         print("##                       PATH: " + (getEnVariable("PATH") ?? "missing"))
         print("##            LD_LIBRARY_PATH: " + (getEnVariable("LD_LIBRARY_PATH") ?? "missing"))
         print("##          DYLD_LIBRARY_PATH: " + (getEnVariable("DYLD_LIBRARY_PATH") ?? "missing"))

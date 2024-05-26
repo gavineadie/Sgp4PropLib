@@ -14,6 +14,7 @@ fileprivate let libHandle = loadDll("libsatstate.dylib")
 // If this function returns an error, it is recommended that the users stop the program immediately. 
 // The error occurs if the users forget to load and initialize all the prerequisite DLLs, 
 // as listed in the DLL Prerequisite section, before using this DLL.
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func SatStateInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -399,8 +400,58 @@ public func GetNodalCrossingPriorToTime( _ satKey: Int64, _ ds50TAI: Double ) ->
     return function(satKey, ds50TAI)
 }
 
+// Get the Gobs parameters for a TLE
+public func GetGobsParams( _ satKey: Int64,
+                           _ ds50UTC: Double,
+                           _ xa_gobs: UnsafeMutablePointer<Double>,
+                           _ errCode: UnsafeMutablePointer<Int32> ) {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int32> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetGobsParams"), to: FunctionSignature.self)
+
+    function(satKey, ds50UTC, xa_gobs, errCode)
+}
+
+// Does an XP GOBS comparison
+public func GobsCom( _ primSatKey: Int64,
+                     _ secSatKey: Int64,
+                     _ ds50UTC: Double,
+                     _ xa_gobs_lim: UnsafeMutablePointer<Double>,
+                     _ xa_gobs_delta: UnsafeMutablePointer<Double> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   Int64,
+                                                   Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GobsCom"), to: FunctionSignature.self)
+
+    return function(primSatKey, secSatKey, ds50UTC, xa_gobs_lim, xa_gobs_delta)
+}
+
+// Does an XP GOBS comparison using gobs arrays
+public func GobsComArr( _ xa_gobs_prim: UnsafeMutablePointer<Double>,
+                        _ xa_gobs_sec: UnsafeMutablePointer<Double>,
+                        _ xa_gobs_lim: UnsafeMutablePointer<Double>,
+                        _ xa_gobs_delta: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GobsComArr"), to: FunctionSignature.self)
+
+    function(xa_gobs_prim, xa_gobs_sec, xa_gobs_lim, xa_gobs_delta)
+}
+
 // Indexes of available satellite data fields
-//Satellite number
+//Satellite epoch time in days since 1950 UTC
 public let XF_SATFIELD_EPOCHUTC =  1
 //Mean anomaly (deg)
 public let XF_SATFIELD_MNANOM   =  2
@@ -537,6 +588,91 @@ public let XF_TASK_BOTH     = 3
 public let EPHFILETYPE_ITC         =  1
 //ITC compact (without covariance matrix) file format
 public let EPHFILETYPE_ITC_WOCOV   =  2
+
+
+// Gobs records
+//Satellite number
+public let XA_GOBS_SATNUM    =  0
+//East Longitude
+public let XA_GOBS_LONE      =  1
+//Longitude Drift Rate
+public let XA_GOBS_DRIFT     =  2
+//satellite's relative energy (deg^2/sec^2) - only for GOBS
+public let XA_GOBS_RELENERGY =  3
+//sin(incl)*sin(r.a. node)
+public let XA_GOBS_WX        =  4
+//-sin(incl)*cos(r.a. node)
+public let XA_GOBS_WY        =  5
+//cos(incl)
+public let XA_GOBS_WZ        =  6
+//af
+public let XA_GOBS_AF        =  7
+//ag
+public let XA_GOBS_AG        =  8
+//AGOM
+public let XA_GOBS_AGOM      =  9
+//Trough/Drift Flag, 0 - 75 deg trough, 1 - 255 deg trough, 2 - both troughs, 3 - unstable point, 4 - East drift, 5 - West drift
+public let XA_GOBS_TROUGH    = 10
+
+public let XA_GOBS_SIZE      = 32
+
+
+// Indexes of GOBS limits
+//0 - ignore trough logic, 1 - implement trough logic
+public let XA_GOBS_LIM_TROUGH      =  0
+//Primary satellite is plane changer
+public let XA_GOBS_LIM_PCP         =  1
+//Secondary satellite is plane changer
+public let XA_GOBS_LIM_PCS         =  2
+//Primary satellite is plane changer
+public let XA_GOBS_LIM_ACTIVEP     =  3
+//Secondary satellite is plane changer
+public let XA_GOBS_LIM_ACTIVES     =  4
+//Min Longitude of sat
+public let XA_GOBS_LIM_LONGMIN     =  5
+//Max Longitude of sat
+public let XA_GOBS_LIM_LONGMAX     =  6
+//Min Agom of sat
+public let XA_GOBS_LIM_AGOMMIN     =  7
+//Max Agom of sat
+public let XA_GOBS_LIM_AGOMMAX     =  8
+
+public let XA_GOBS_LIM_SIZE        = 16
+
+
+// Indexes of available deltas
+//Primary satellite number
+public let XA_GOBS_DELTA_PRIMESAT     =  0
+//Secondary satellite number
+public let XA_GOBS_DELTA_SECONDARYSAT =  1
+//GOBS correlation score
+public let XA_GOBS_DELTA_ASTAT        =  2
+//delta orbital plane
+public let XA_GOBS_DELTA_DOP          =  3
+//delta shape
+public let XA_GOBS_DELTA_DSHAPE       =  4
+//delta Relative Energy (deg^2/day^2)
+public let XA_GOBS_DELTA_DRELENERGY   =  5
+//Longitude of Primary
+public let XA_GOBS_DELTA_LONGP        =  6
+//Minimum Longitude of Secondary
+public let XA_GOBS_DELTA_LONGMIN      =  7
+//Maximum Longitude of Secondary
+public let XA_GOBS_DELTA_LONGMAX      =  8
+//0 - opposite throughs or drift rates, 1 - trough or drift rates match
+public let XA_GOBS_DELTA_TROUGH       =  9
+//0|1    Plane Match Flag
+public let XA_GOBS_DELTA_PLANE        = 10
+//0|1    Shape Match Flag
+public let XA_GOBS_DELTA_SHAPE        = 11
+//0|1    Energy Match Flag
+public let XA_GOBS_DELTA_ENERGY       = 12
+//0|1|2  Longitude Match Flag (2 is fuzzy match)
+public let XA_GOBS_DELTA_LONG         = 13
+//0|1    Agom Match Flag
+public let XA_GOBS_DELTA_AGOM         = 14
+
+public let XA_GOBS_DELTA_SIZE         = 16
 
 
 //*******************************************************************************

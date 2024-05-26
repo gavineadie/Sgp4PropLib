@@ -10,7 +10,7 @@ import XCTest
 
 final class Sgp4Tests: XCTestCase {
 
-    func testInitSat() {
+    func testInitSat() throws {
 
         loadAllDlls()
         
@@ -30,7 +30,7 @@ final class Sgp4Tests: XCTestCase {
 
     }
 
-    func testDuplicates() {
+    func testDuplicates() throws {
 
         loadAllDlls()
 
@@ -42,7 +42,7 @@ final class Sgp4Tests: XCTestCase {
 
     }
 
-    func testSgp4GenEphems() {
+    func testSgp4GenEphems() throws {
 
         loadAllDlls()
 

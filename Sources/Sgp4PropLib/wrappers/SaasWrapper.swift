@@ -11,6 +11,7 @@ fileprivate let libHandle = loadDll("libsaas.dylib")
 
 // Notes: This function has been deprecated since v9.0. 
 // Initializes Saas dll for use in the program
+@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func SaasInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
