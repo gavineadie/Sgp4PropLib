@@ -14,7 +14,6 @@ fileprivate let libHandle = loadDll("libextephem.dylib")
 // If this function returns an error, it is recommended that the users stop the program immediately. 
 // The error occurs if the users forget to load and initialize all the prerequisite DLLs, as listed 
 // in the DLL Prerequisite section, before using this DLL.
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func ExtEphInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -123,8 +122,8 @@ public func ExtEphGetLoaded( _ order: Int32, _ satKeys: UnsafeMutablePointer<Int
 // of the same satellite number and same epoch time from different sources. 
 public func ExtEphAddSat( _ satNum: Int32,
                           _ epochDs50UTC: Double,
-                          _ AE: Double,
-                          _ Ke: Double,
+                          _ ae: Double,
+                          _ ke: Double,
                           _ coordSys: Int32 ) -> Int64 {
 
     typealias FunctionSignature = @convention(c) ( Int32,
@@ -135,7 +134,7 @@ public func ExtEphAddSat( _ satNum: Int32,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ExtEphAddSat"), to: FunctionSignature.self)
 
-    return function(satNum, epochDs50UTC, AE, Ke, coordSys)
+    return function(satNum, epochDs50UTC, ae, ke, coordSys)
 }
 
 // Adds an ephemeris point to the end of an EXTEPHEM's set of ephemeris points
@@ -208,14 +207,25 @@ public func ExtEphAddSatFrFile( _ extEphFile: UnsafeMutablePointer<CChar> ) -> I
     return function(extEphFile)
 }
 
+// Gets number of epehemeris points associated with satKey
+public func ExtEphGetNumPts( _ satKey: Int64, _ numOfPts: UnsafeMutablePointer<Int32> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   UnsafeMutablePointer<Int32> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ExtEphGetNumPts"), to: FunctionSignature.self)
+
+    return function(satKey, numOfPts)
+}
+
 // Retrieves all data for an EXTEPHEM with a single function call
 public func ExtEphGetAllFields( _ satKey: Int64,
                                 _ satNum: UnsafeMutablePointer<Int32>,
                                 _ satName: UnsafeMutablePointer<CChar>,
                                 _ recName: UnsafeMutablePointer<CChar>,
                                 _ epochDs50UTC: UnsafeMutablePointer<Double>,
-                                _ AE: UnsafeMutablePointer<Double>,
-                                _ Ke: UnsafeMutablePointer<Double>,
+                                _ ae: UnsafeMutablePointer<Double>,
+                                _ ke: UnsafeMutablePointer<Double>,
                                 _ pos: UnsafeMutablePointer<Double>,
                                 _ vel: UnsafeMutablePointer<Double>,
                                 _ coordSys: UnsafeMutablePointer<Int32>,
@@ -237,7 +247,7 @@ public func ExtEphGetAllFields( _ satKey: Int64,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ExtEphGetAllFields"), to: FunctionSignature.self)
 
-    return function(satKey, satNum, satName, recName, epochDs50UTC, AE, Ke, pos, vel, coordSys, numOfPts, fileLoc)
+    return function(satKey, satNum, satName, recName, epochDs50UTC, ae, ke, pos, vel, coordSys, numOfPts, fileLoc)
 }
 
 // Retrieves the value of a specific field of an EXTEPHEM

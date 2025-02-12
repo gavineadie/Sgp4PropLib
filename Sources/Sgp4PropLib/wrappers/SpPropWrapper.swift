@@ -12,7 +12,6 @@ fileprivate let libHandle = loadDll("libspprop.dylib")
 // Notes: This function has been deprecated since v9.0. 
 // Initializes SpProp DLL for use in the program
 // If this function returns an error, it is recommended that the users stop the program immediately. The error occurs if the users forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section, before using this DLL. 
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func SpInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -79,6 +78,20 @@ public func SpInitSat( _ satKey: Int64 ) -> Int32 {
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SpInitSat"), to: FunctionSignature.self)
 
     return function(satKey)
+}
+
+// Initializes an SP satellite from an SP TLE, SPVEC, or VCM (thread-safe)
+// Internally, when this function is called, the SpProp DLL will look into the right binary tree, based on the vector type extracted from the satKey, and search for the satKey. If found, the SpProp DLL will use the associated SP data to create an SP object for this satellite in its own binary tree. Subsequent calls to propagate this satellite will use the data in the SP object to compute the satellite's new state.
+// 
+// The users need to call this routine only once for each satellite they want to propagate or every time the satellite data, from which it was initialized, is changed. The call needs to be placed before any calls to the SP propagate routines (SpPropMse, SpPropDs50UTC...).
+public func SpInitSat_MT( _ satKey: Int64, _ xa_spParms: UnsafeMutablePointer<Double> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   UnsafeMutablePointer<Double> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SpInitSat_MT"), to: FunctionSignature.self)
+
+    return function(satKey, xa_spParms)
 }
 
 // Removes a satellite, represented by the satKey, from the set of currently loaded satellites
@@ -886,6 +899,95 @@ public func SpPropAllExt( _ satKey: Int64,
     return function(satKey, timeType, timeIn, spCoord, xf_CovMtx, stmType, xa_spExt)
 }
 
+// Loads solar flux file (J70MOD or JBH09) for use in AtmspDensity() 
+public func SpLoadFluxFile( _ fluxFile: UnsafeMutablePointer<CChar> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SpLoadFluxFile"), to: FunctionSignature.self)
+
+    return function(fluxFile)
+}
+
+// Loads DCA temperature coefficient file (DCA1/HASDM1 or DCA2/HASDM2) for use in AtmspDensity()
+public func SpLoadDCAFile( _ dcaFile: UnsafeMutablePointer<CChar> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SpLoadDCAFile"), to: FunctionSignature.self)
+
+    return function(dcaFile)
+}
+
+// Computes atmospheric density using the input time/location/drag model
+public func AtmspDensity( _ ds50UTC: Double,
+                          _ llh: UnsafeMutablePointer<Double>,
+                          _ drgMdl: Int32,
+                          _ rho: UnsafeMutablePointer<Double>,
+                          _ errCode: UnsafeMutablePointer<Int32> ) {
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   Int32,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int32> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AtmspDensity"), to: FunctionSignature.self)
+
+    function(ds50UTC, llh, drgMdl, rho, errCode)
+}
+
+// Gets DCA Record at specified time
+public func GetDcaRec( _ ds50UTC: Double,
+                       _ ds50UTCRec: UnsafeMutablePointer<Double>,
+                       _ flux: UnsafeMutablePointer<Double>,
+                       _ storm: UnsafeMutablePointer<Double>,
+                       _ ctxi: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double)>,
+                       _ stxi: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double)>,
+                       _ ctci: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double)>,
+                       _ stci: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double)>,
+                       _ errCode: UnsafeMutablePointer<Int32> ) {
+
+    let _ctxi = UnsafeMutableRawPointer(ctxi).bindMemory(to: Double.self, capacity: 49)
+    let _stxi = UnsafeMutableRawPointer(stxi).bindMemory(to: Double.self, capacity: 49)
+    let _ctci = UnsafeMutableRawPointer(ctci).bindMemory(to: Double.self, capacity: 49)
+    let _stci = UnsafeMutableRawPointer(stci).bindMemory(to: Double.self, capacity: 49)
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int32> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetDcaRec"), to: FunctionSignature.self)
+
+    function(ds50UTC, ds50UTCRec, flux, storm, _ctxi, _stxi, _ctci, _stci, errCode)
+}
+
+// Unloads the flux/JBHSGI flux
+public func SpRemoveFlux(  ) {
+
+    typealias FunctionSignature = @convention(c) (  ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SpRemoveFlux"), to: FunctionSignature.self)
+
+    function()
+}
+
+// Unloads the DCA records
+public func SpRemoveDCAFile(  ) {
+
+    typealias FunctionSignature = @convention(c) (  ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SpRemoveDCAFile"), to: FunctionSignature.self)
+
+    function()
+}
+
 // VCM additional options
 //use VCM's own data
 public let VCMOPT_USEOWN    = 0
@@ -1033,7 +1135,7 @@ public let XF_4P_JPLSTOP  = 26
 public let XF_SPAPP_GEODIR   = 1
 //Buffer size
 public let XF_SPAPP_BUFSIZE  = 2
-//Run mode
+//Run mode, see IDX_RUNMODE_ for available options
 public let XF_SPAPP_RUNMODE  = 3
 //Save partials data
 public let XF_SPAPP_SAVEPART = 4
@@ -1237,5 +1339,21 @@ public let XA_TIMETYPES_ET   = 4
 
 public let XA_TIMETYPES_SIZE = 5
 
+// Indexes of SP application control (preference) parameters for individual satellite (thread-safe)
+//Buffer size, enter zero if default value is desired
+public let XA_SPPARMS_BUFSIZE  = 2
+//Run mode, see IDX_RUNMODE_? for available options
+public let XA_SPPARMS_RUNMODE  = 3
+//Save partials data, 0=don't save partials, 1=save partials (needed for covariance)
+public let XA_SPPARMS_SAVEPART = 4
+//Specter compatibility mode
+public let XA_SPPARMS_SPECTR   = 5
+//Consider parameter
+public let XA_SPPARMS_CONSIDER = 6
+//Decay altitude
+public let XA_SPPARMS_DECAYALT = 7
+//VCM additional options, see VCMOPT_? for available options
+public let XA_SPPARMS_VCMOPT   = 9
+public let XA_SPPARMS_SIZE     = 32
 
 // ========================= End of auto generated code ==========================

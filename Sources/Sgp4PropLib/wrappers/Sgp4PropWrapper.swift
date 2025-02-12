@@ -15,7 +15,6 @@ fileprivate let libHandle = loadDll("libsgp4prop.dylib")
 // If this function returns an error, it is recommended that you stop the program immediately.
 // <br>
 // An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section of the accompanying documentation, before using this DLL.
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func Sgp4Init( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -350,7 +349,7 @@ public func Sgp4PosVelToTleArr( _ pos: UnsafeMutablePointer<Double>,
 
 // Reepochs a loaded TLE, represented by the satKey, to a new epoch.
 public func Sgp4ReepochTLE( _ satKey: Int64,
-                            _ reepochDs50UTC: Double,
+                            _ reEpochDs50UTC: Double,
                             _ line1Out: UnsafeMutablePointer<CChar>,
                             _ line2Out: UnsafeMutablePointer<CChar> ) -> Int32 {
 
@@ -361,12 +360,12 @@ public func Sgp4ReepochTLE( _ satKey: Int64,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4ReepochTLE"), to: FunctionSignature.self)
 
-    return function(satKey, reepochDs50UTC, line1Out, line2Out)
+    return function(satKey, reEpochDs50UTC, line1Out, line2Out)
 }
 
 // Reepochs a loaded TLE, represented by the satKey, to a new epoch in Csv format.
 public func Sgp4ReepochCsv( _ satKey: Int64,
-                            _ reepochDs50UTC: Double,
+                            _ reEpochDs50UTC: Double,
                             _ csvLine: UnsafeMutablePointer<CChar> ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64,
@@ -375,12 +374,11 @@ public func Sgp4ReepochCsv( _ satKey: Int64,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "Sgp4ReepochCsv"), to: FunctionSignature.self)
 
-    return function(satKey, reepochDs50UTC, csvLine)
+    return function(satKey, reEpochDs50UTC, csvLine)
 }
 
 // This function has been deprecated since v8.2
 // Note: The only requirement now is that "SGP4_Open_License.txt" file needs to be in those folders specified in PATH/LD_LIBRARY_PATH environment or AstroStds DLLs/SOs'
-@available(*, deprecated, message: "This function has been deprecated since v8.2")
 public func Sgp4SetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -392,7 +390,6 @@ public func Sgp4SetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
 
 // This function has been deprecated since v8.2
 // Note: The only requirement now is that "SGP4_Open_License.txt" file needs to be in those folders specified in PATH/LD_LIBRARY_PATH environment or AstroStds DLLs/SOs'
-@available(*, deprecated, message: "This function has been deprecated since v8.2")
 public func Sgp4GetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void

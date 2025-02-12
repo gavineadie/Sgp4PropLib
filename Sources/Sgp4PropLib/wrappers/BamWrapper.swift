@@ -11,7 +11,6 @@ fileprivate let libHandle = loadDll("libbam.dylib")
 
 // Notes: This function has been deprecated since v9.0. 
 // Initializes Bam dll for use in the program
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func BamInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -141,6 +140,68 @@ public func BamGetResults( _ xf_bam: Int32, _ bamArr: UnsafeMutablePointer<Doubl
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "BamGetResults"), to: FunctionSignature.self)
 
     function(xf_bam, bamArr)
+}
+
+// Retrieves other BAM data. Same as BamGetResults, but returns everything in one call
+// <br>
+// The table below shows the indexes for the values for the xf_bam parameter:
+// <table>
+//     <caption>table</caption>
+//     <tr>
+//         <td><b>Index</b></td>
+//         <td><b>Index Interpretation</b></td>
+//     </tr>
+//     <tr><td>0</td><td>times when satellites cross the pinch point plan (ds50UTC)</td></tr>
+//     <tr><td>1</td><td>missed distances from satellites to the pinch point (km)</td></tr>
+//     <tr><td>2</td><td>nadir angles of satellites when they cross the pinch point plan</td></tr>
+//     <tr><td>3</td><td>position Xs of satellites when they cross the pinch point plan (km)</td></tr>
+//     <tr><td>4</td><td>position Ys of satellites when they cross the pinch point plan (km)</td></tr>
+//     <tr><td>5</td><td>position Zs of satellites when they cross the pinch point plan (km)</td></tr>
+//     <tr><td>6</td><td>velocity Xs of satellites when they cross the pinch point plan (km/s)</td></tr>
+//     <tr><td>7</td><td>velocity Ys of satellites when they cross the pinch point plan (km/s)</td></tr>
+//     <tr><td>8</td><td>velocity Zs of satellites when they cross the pinch point plan (km/s)</td></tr>
+//     <tr><td>9</td><td>latitude of satellites when they cross the pinch point plan (deg)</td></tr>
+//     <tr><td>10</td><td>longitude of satellites when they cross the pinch point plan (deg)</td></tr>
+//     <tr><td>11</td><td>height of satellites when they cross the pinch point plan (km)</td></tr>
+// </table>
+public func BamGetResultsFull( _ bamArr: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double)> ) {
+
+    let _bamArr = UnsafeMutableRawPointer(bamArr).bindMemory(to: Double.self, capacity: 0)
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "BamGetResultsFull"), to: FunctionSignature.self)
+
+    function(_bamArr)
+}
+
+public func BamComputeAll( _ satKeys: UnsafeMutablePointer<Int64>,
+                           _ numSats: Int32,
+                           _ startDs50UTC: Double,
+                           _ stopDs50UTC: Double,
+                           _ stepSizeMin: Double,
+                           _ avgSDs: UnsafeMutablePointer<Double>,
+                           _ avgMDs: UnsafeMutablePointer<Double>,
+                           _ extBamArr: UnsafeMutablePointer<Double>,
+                           _ bamArr: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double, Double)>,
+                           _ errCode: UnsafeMutablePointer<Int32> ) {
+
+    let _bamArr = UnsafeMutableRawPointer(bamArr).bindMemory(to: Double.self, capacity: 0)
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Int64>,
+                                                   Int32,
+                                                   Double,
+                                                   Double,
+                                                   Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int32> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "BamComputeAll"), to: FunctionSignature.self)
+
+    function(satKeys, numSats, startDs50UTC, stopDs50UTC, stepSizeMin, avgSDs, avgMDs, extBamArr, _bamArr, errCode)
 }
 
 //time at mininum average separate distances (ds50UTC)

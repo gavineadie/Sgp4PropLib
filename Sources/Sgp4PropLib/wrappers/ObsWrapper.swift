@@ -11,7 +11,6 @@ fileprivate let libHandle = loadDll("libobs.dylib")
 
 // Notes: This function has been deprecated since v9.0. 
 // Initializes Obs DLL for use in the program
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func ObsInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -267,14 +266,14 @@ public func ObsAddFrFields( _ secClass: CChar,
                             _ obsTimeDs50utc: Double,
                             _ elOrDec: Double,
                             _ azOrRA: Double,
-                            _ range: Double,
+                            _ slantRange: Double,
                             _ rangeRate: Double,
                             _ elRate: Double,
                             _ azRate: Double,
                             _ rangeAccel: Double,
                             _ obsType: CChar,
                             _ trackInd: Int32,
-                            _ ASTAT: Int32,
+                            _ astat: Int32,
                             _ siteTag: Int32,
                             _ spadocTag: Int32,
                             _ pos: UnsafeMutablePointer<Double>,
@@ -303,7 +302,7 @@ public func ObsAddFrFields( _ secClass: CChar,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ObsAddFrFields"), to: FunctionSignature.self)
 
-    return function(secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, range, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, ASTAT, siteTag, spadocTag, pos, vel, extArr)
+    return function(secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, slantRange, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, astat, siteTag, spadocTag, pos, vel, extArr)
 }
 
 // Works like ObsAddFrFields but designed for Matlab
@@ -313,14 +312,14 @@ public func ObsAddFrFieldsML( _ secClass: CChar,
                               _ obsTimeDs50utc: Double,
                               _ elOrDec: Double,
                               _ azOrRA: Double,
-                              _ range: Double,
+                              _ slantRange: Double,
                               _ rangeRate: Double,
                               _ elRate: Double,
                               _ azRate: Double,
                               _ rangeAccel: Double,
                               _ obsType: CChar,
                               _ trackInd: Int32,
-                              _ ASTAT: Int32,
+                              _ astat: Int32,
                               _ siteTag: Int32,
                               _ spadocTag: Int32,
                               _ pos: UnsafeMutablePointer<Double>,
@@ -351,7 +350,7 @@ public func ObsAddFrFieldsML( _ secClass: CChar,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ObsAddFrFieldsML"), to: FunctionSignature.self)
 
-    function(secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, range, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, ASTAT, siteTag, spadocTag, pos, vel, extArr, obsKey)
+    function(secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, slantRange, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, astat, siteTag, spadocTag, pos, vel, extArr, obsKey)
 }
 
 // Adds one observation using its input data stored in an array. Depending on the observation type, some input data might be unavailable and left blank
@@ -383,14 +382,14 @@ public func ObsGetAllFields( _ obsKey: Int64,
                              _ obsTimeDs50utc: UnsafeMutablePointer<Double>,
                              _ elOrDec: UnsafeMutablePointer<Double>,
                              _ azOrRA: UnsafeMutablePointer<Double>,
-                             _ range: UnsafeMutablePointer<Double>,
+                             _ slantRange: UnsafeMutablePointer<Double>,
                              _ rangeRate: UnsafeMutablePointer<Double>,
                              _ elRate: UnsafeMutablePointer<Double>,
                              _ azRate: UnsafeMutablePointer<Double>,
                              _ rangeAccel: UnsafeMutablePointer<Double>,
                              _ obsType: UnsafeMutablePointer<CChar>,
                              _ trackInd: UnsafeMutablePointer<Int32>,
-                             _ ASTAT: UnsafeMutablePointer<Int32>,
+                             _ astat: UnsafeMutablePointer<Int32>,
                              _ siteTag: UnsafeMutablePointer<Int32>,
                              _ spadocTag: UnsafeMutablePointer<Int32>,
                              _ pos: UnsafeMutablePointer<Double>,
@@ -420,7 +419,7 @@ public func ObsGetAllFields( _ obsKey: Int64,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ObsGetAllFields"), to: FunctionSignature.self)
 
-    return function(obsKey, secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, range, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, ASTAT, siteTag, spadocTag, pos, vel, extArr)
+    return function(obsKey, secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, slantRange, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, astat, siteTag, spadocTag, pos, vel, extArr)
 }
 
 // Retrieves observation data and stored it in the passing array. Depending on the observation type, some data fields might be unavailable
@@ -440,14 +439,14 @@ public func ObsUpdateFrFields( _ obsKey: Int64,
                                _ secClass: CChar,
                                _ elOrDec: Double,
                                _ azOrRA: Double,
-                               _ range: Double,
+                               _ slantRange: Double,
                                _ rangeRate: Double,
                                _ elRate: Double,
                                _ azRate: Double,
                                _ rangeAccel: Double,
                                _ obsType: CChar,
                                _ trackInd: Int32,
-                               _ ASTAT: Int32,
+                               _ astat: Int32,
                                _ siteTag: Int32,
                                _ spadocTag: Int32,
                                _ pos: UnsafeMutablePointer<Double>,
@@ -474,7 +473,7 @@ public func ObsUpdateFrFields( _ obsKey: Int64,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ObsUpdateFrFields"), to: FunctionSignature.self)
 
-    return function(obsKey, secClass, elOrDec, azOrRA, range, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, ASTAT, siteTag, spadocTag, pos, vel, extArr)
+    return function(obsKey, secClass, elOrDec, azOrRA, slantRange, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, astat, siteTag, spadocTag, pos, vel, extArr)
 }
 
 // Retrieves the value of a specific field of an observation
@@ -550,14 +549,14 @@ public func ObsFieldsToB3Card( _ secClass: CChar,
                                _ obsTimeDs50utc: Double,
                                _ elOrDec: Double,
                                _ azOrRA: Double,
-                               _ range: Double,
+                               _ slantRange: Double,
                                _ rangeRate: Double,
                                _ elRate: Double,
                                _ azRate: Double,
                                _ rangeAccel: Double,
                                _ obsType: CChar,
                                _ trackInd: Int32,
-                               _ ASTAT: Int32,
+                               _ astat: Int32,
                                _ siteTag: Int32,
                                _ spadocTag: Int32,
                                _ pos: UnsafeMutablePointer<Double>,
@@ -584,7 +583,7 @@ public func ObsFieldsToB3Card( _ secClass: CChar,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ObsFieldsToB3Card"), to: FunctionSignature.self)
 
-    function(secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, range, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, ASTAT, siteTag, spadocTag, pos, b3Card)
+    function(secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, slantRange, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, astat, siteTag, spadocTag, pos, b3Card)
 }
 
 // Constructs a csv string from the input observation data fields
@@ -594,14 +593,14 @@ public func ObsFieldsToCsv( _ secClass: CChar,
                             _ obsTimeDs50utc: Double,
                             _ elOrDec: Double,
                             _ azOrRA: Double,
-                            _ range: Double,
+                            _ slantRange: Double,
                             _ rangeRate: Double,
                             _ elRate: Double,
                             _ azRate: Double,
                             _ rangeAccel: Double,
                             _ obsType: CChar,
                             _ trackInd: Int32,
-                            _ ASTAT: Int32,
+                            _ astat: Int32,
                             _ siteTag: Int32,
                             _ spadocTag: Int32,
                             _ pos: UnsafeMutablePointer<Double>,
@@ -628,7 +627,7 @@ public func ObsFieldsToCsv( _ secClass: CChar,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ObsFieldsToCsv"), to: FunctionSignature.self)
 
-    function(secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, range, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, ASTAT, siteTag, spadocTag, pos, csvLine)
+    function(secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, slantRange, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, astat, siteTag, spadocTag, pos, csvLine)
 }
 
 // Constructs a TTY-card string from the input observation data fields
@@ -638,7 +637,7 @@ public func ObsFieldsToTTYCard( _ secClass: CChar,
                                 _ obsTimeDs50utc: Double,
                                 _ elOrDec: Double,
                                 _ azOrRA: Double,
-                                _ range: Double,
+                                _ slantRange: Double,
                                 _ rangeRate: Double,
                                 _ elRate: Double,
                                 _ azRate: Double,
@@ -666,7 +665,7 @@ public func ObsFieldsToTTYCard( _ secClass: CChar,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ObsFieldsToTTYCard"), to: FunctionSignature.self)
 
-    function(secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, range, rangeRate, elRate, azRate, rangeAccel, obsType, pos, ttyCard1, ttyCard2)
+    function(secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, slantRange, rangeRate, elRate, azRate, rangeAccel, obsType, pos, ttyCard1, ttyCard2)
 }
 
 // Computes an obsKey from individually provided fields
@@ -707,14 +706,14 @@ public func ObsB3Parse( _ b3ObsCard: UnsafeMutablePointer<CChar>,
                         _ obsTimeDs50utc: UnsafeMutablePointer<Double>,
                         _ elOrDec: UnsafeMutablePointer<Double>,
                         _ azOrRA: UnsafeMutablePointer<Double>,
-                        _ range: UnsafeMutablePointer<Double>,
+                        _ slantRange: UnsafeMutablePointer<Double>,
                         _ rangeRate: UnsafeMutablePointer<Double>,
                         _ elRate: UnsafeMutablePointer<Double>,
                         _ azRate: UnsafeMutablePointer<Double>,
                         _ rangeAccel: UnsafeMutablePointer<Double>,
                         _ obsType: UnsafeMutablePointer<CChar>,
                         _ trackInd: UnsafeMutablePointer<Int32>,
-                        _ ASTAT: UnsafeMutablePointer<Int32>,
+                        _ astat: UnsafeMutablePointer<Int32>,
                         _ siteTag: UnsafeMutablePointer<Int32>,
                         _ spadocTag: UnsafeMutablePointer<Int32>,
                         _ pos: UnsafeMutablePointer<Double> ) -> Int32 {
@@ -740,7 +739,7 @@ public func ObsB3Parse( _ b3ObsCard: UnsafeMutablePointer<CChar>,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ObsB3Parse"), to: FunctionSignature.self)
 
-    return function(b3ObsCard, secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, range, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, ASTAT, siteTag, spadocTag, pos)
+    return function(b3ObsCard, secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, slantRange, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, astat, siteTag, spadocTag, pos)
 }
 
 // Parses any observation data format (B3-card (or B3E) string / one or two line TTY / CSV - No conversion takes place

@@ -1,5 +1,7 @@
 # Change Note Summary
 
+### 2025 Feb 12 : v0.2.6 • _5th public release (corresponds to Space-Track v9.5)_
+
 ### 2024 May 25 : v0.2.6 • _4th public release (corresponds to Space-Track v9.4)_
 
 ### 2024 Feb 10 : v0.2.5 • _Third public release (corresponds to Space-Track v9.3)_

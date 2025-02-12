@@ -16,7 +16,6 @@ fileprivate let libHandle = loadDll("libenvconst.dylib")
 // An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section of the accompanying documentation, before using this DLL.
 // 
 // When the function is called, the GEO model is set to WGS-72 and the FK model is set to FK5.  If the user plans to use the SGP4 propagator, do NOT change this default setting. Otherwise, SGP4 won't work
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func EnvInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32

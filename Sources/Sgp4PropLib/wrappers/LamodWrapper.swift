@@ -12,7 +12,6 @@ fileprivate let libHandle = loadDll("liblamod.dylib")
 // Notes: This function has been deprecated since v9.0. 
 // Initializes Lamod dll for use in the program
 // If this function returns an error, it is recommended that the users stop the program immediately. The error occurs if the users forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisite section, before using this DLL.
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func LamodInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32

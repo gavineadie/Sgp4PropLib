@@ -11,7 +11,6 @@ fileprivate let libHandle = loadDll("libdllmain.dylib")
 
 // Notes: This function has been deprecated since v9.0. 
 // Initializes DllMain program (host of Astro Standards libraries) for use in any Astro Standards applications
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func DllMainInit(  ) -> Int64 {
 
     typealias FunctionSignature = @convention(c) (  ) -> Int64
@@ -113,7 +112,6 @@ public func GetLastInfoMsg( _ lastInfoMsg: UnsafeMutablePointer<CChar> ) {
 
 // Notes: This function has been deprecated since v9.0. 
 // Returns a list of names of the Standardized Astrodynamic Algorithms DLLs that were initialized successfully.
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func GetInitDllNames( _ initDllNames: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -217,13 +215,13 @@ public func TestInterface2( _ cInOut: UnsafeMutablePointer<CChar>,
 }
 
 // Tests input and output arrays with unknown length that are supported by the Astrodynamic Standards library.
-public func TestInterface3( _ Unk1DIn: UnsafeMutablePointer<Int32>,
-                            _ Unk1DOut: UnsafeMutablePointer<Int32>,
-                            _ Unk2DIn: UnsafeMutablePointer<(Int32, Int32, Int32)>,
-                            _ Unk2DOut: UnsafeMutablePointer<(Int32, Int32, Int32)> ) {
+public func TestInterface3( _ unk1DIn: UnsafeMutablePointer<Int32>,
+                            _ unk1DOut: UnsafeMutablePointer<Int32>,
+                            _ unk2DIn: UnsafeMutablePointer<(Int32, Int32, Int32)>,
+                            _ unk2DOut: UnsafeMutablePointer<(Int32, Int32, Int32)> ) {
 
-    let _Unk2DIn = UnsafeMutableRawPointer(Unk2DIn).bindMemory(to: Int32.self, capacity: 0)
-    let _Unk2DOut = UnsafeMutableRawPointer(Unk2DOut).bindMemory(to: Int32.self, capacity: 0)
+    let _unk2DIn = UnsafeMutableRawPointer(unk2DIn).bindMemory(to: Int32.self, capacity: 0)
+    let _unk2DOut = UnsafeMutableRawPointer(unk2DOut).bindMemory(to: Int32.self, capacity: 0)
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Int32>,
                                                    UnsafeMutablePointer<Int32>,
@@ -232,7 +230,7 @@ public func TestInterface3( _ Unk1DIn: UnsafeMutablePointer<Int32>,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TestInterface3"), to: FunctionSignature.self)
 
-    function(Unk1DIn, Unk1DOut, _Unk2DIn, _Unk2DOut)
+    function(unk1DIn, unk1DOut, _unk2DIn, _unk2DOut)
 }
 
 // Returns data parsed from user's AS_MOIC-typed input card - up to 128 fields are allowed.

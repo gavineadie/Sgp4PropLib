@@ -6,7 +6,7 @@
 
 import Foundation
 
-public let sgp4PropLibVersion = "9.4"
+public let sgp4PropLibVersion = "9.5"
 
 public let IDX_ERR_NONE  = 0        // Ok
 public let IDX_ERR_WARN  = 1        // Warning
@@ -176,9 +176,9 @@ public func selectFile(_ filePath: String, inside: URL) -> URL {
 public func writeString(_ string: String, toURL: URL, appending: Bool = true, terminator: String = "\n") {
 
     if let fileHandle = try? FileHandle(forWritingTo: toURL) {
-        if appending { fileHandle.seekToEndOfFile() }                   // moving pointer to the end
-        fileHandle.write((string + terminator).data(using: .utf8)!)     // adding content
-        fileHandle.closeFile()                                          // closing the file
+        if appending { fileHandle.seekToEndOfFile() }           // moving pointer to the end
+        fileHandle.write((string + terminator).data(using: .utf8)!)            // adding content
+        fileHandle.closeFile()                                  // closing the file
     } else {
         print("text not written to \(toURL.path)")
     }

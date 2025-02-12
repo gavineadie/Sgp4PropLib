@@ -14,7 +14,6 @@ fileprivate let libHandle = loadDll("libastrofunc.dylib")
 // If this function returns an error, it is recommended that you stop the program immediately.
 // 
 // An error will occur if you forget to load and initialize all the prerequisite DLLs, as listed in the DLL Prerequisites section of the accompanying documentation, before using this DLL.
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func AstroFuncInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -642,11 +641,11 @@ public func AstroConvFrTo( _ xf_Conv: Int32,
 }
 
 // Converts right ascension and declination to vector triad LAD in topocentric equatorial coordinate system.
-public func RADecToLAD( _ RA: Double,
+public func RADecToLAD( _ ra: Double,
                         _ dec: Double,
-                        _ L: UnsafeMutablePointer<Double>,
-                        _ A_Tilde: UnsafeMutablePointer<Double>,
-                        _ D_Tilde: UnsafeMutablePointer<Double> ) {
+                        _ l: UnsafeMutablePointer<Double>,
+                        _ a_tilde: UnsafeMutablePointer<Double>,
+                        _ d_tilde: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
@@ -656,15 +655,15 @@ public func RADecToLAD( _ RA: Double,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RADecToLAD"), to: FunctionSignature.self)
 
-    function(RA, dec, L, A_Tilde, D_Tilde)
+    function(ra, dec, l, a_tilde, d_tilde)
 }
 
 // Converts azimuth and elevation to vector triad LAD in topocentric horizontal coordinate system.
 public func AzElToLAD( _ az: Double,
                        _ el: Double,
-                       _ Lh: UnsafeMutablePointer<Double>,
-                       _ Ah: UnsafeMutablePointer<Double>,
-                       _ Dh: UnsafeMutablePointer<Double> ) {
+                       _ lh: UnsafeMutablePointer<Double>,
+                       _ ah: UnsafeMutablePointer<Double>,
+                       _ dh: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( Double,
                                                    Double,
@@ -674,7 +673,7 @@ public func AzElToLAD( _ az: Double,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AzElToLAD"), to: FunctionSignature.self)
 
-    function(az, el, Lh, Ah, Dh)
+    function(az, el, lh, ah, dh)
 }
 
 // Converts satellite ECI position/velocity vectors and sensor location to topocentric components.
@@ -712,7 +711,7 @@ public func ECIToTopoComps( _ theta: Double,
 public func RaDecToAzEl( _ thetaG: Double,
                          _ lat: Double,
                          _ lon: Double,
-                         _ RA: Double,
+                         _ ra: Double,
                          _ dec: Double,
                          _ az: UnsafeMutablePointer<Double>,
                          _ el: UnsafeMutablePointer<Double> ) {
@@ -727,14 +726,14 @@ public func RaDecToAzEl( _ thetaG: Double,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RaDecToAzEl"), to: FunctionSignature.self)
 
-    function(thetaG, lat, lon, RA, dec, az, el)
+    function(thetaG, lat, lon, ra, dec, az, el)
 }
 
 // Converts right ascension and declination in the topocentric reference frame to Azimuth/Elevation in the local horizon reference frame.
 public func RaDecToAzElTime( _ ds50UTC: Double,
                              _ lat: Double,
                              _ lon: Double,
-                             _ RA: Double,
+                             _ ra: Double,
                              _ dec: Double,
                              _ az: UnsafeMutablePointer<Double>,
                              _ el: UnsafeMutablePointer<Double> ) {
@@ -749,7 +748,7 @@ public func RaDecToAzElTime( _ ds50UTC: Double,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RaDecToAzElTime"), to: FunctionSignature.self)
 
-    function(ds50UTC, lat, lon, RA, dec, az, el)
+    function(ds50UTC, lat, lon, ra, dec, az, el)
 }
 
 // Converts Azimuth/Elevation in the local horizon reference frame to Right ascension/Declination in the topocentric reference frame
@@ -758,7 +757,7 @@ public func AzElToRaDec( _ thetaG: Double,
                          _ lon: Double,
                          _ az: Double,
                          _ el: Double,
-                         _ RA: UnsafeMutablePointer<Double>,
+                         _ ra: UnsafeMutablePointer<Double>,
                          _ dec: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( Double,
@@ -771,7 +770,7 @@ public func AzElToRaDec( _ thetaG: Double,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AzElToRaDec"), to: FunctionSignature.self)
 
-    function(thetaG, lat, lon, az, el, RA, dec)
+    function(thetaG, lat, lon, az, el, ra, dec)
 }
 
 // Converts Azimuth/Elevation in the local horizon reference frame to Right ascension/Declination in the topocentric reference frame
@@ -780,7 +779,7 @@ public func AzElToRaDecTime( _ ds50UTC: Double,
                              _ lon: Double,
                              _ az: Double,
                              _ el: Double,
-                             _ RA: UnsafeMutablePointer<Double>,
+                             _ ra: UnsafeMutablePointer<Double>,
                              _ dec: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( Double,
@@ -793,7 +792,7 @@ public func AzElToRaDecTime( _ ds50UTC: Double,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "AzElToRaDecTime"), to: FunctionSignature.self)
 
-    function(ds50UTC, lat, lon, az, el, RA, dec)
+    function(ds50UTC, lat, lon, az, el, ra, dec)
 }
 
 // Converts full state RAE (range, az, el, and their rates) to full state ECI (position and velocity)
@@ -916,10 +915,10 @@ public func IsPointSunlit( _ ds50ET: Double, _ ptEci: UnsafeMutablePointer<Doubl
 public func RotRADecl( _ nutationTerms: Int32,
                        _ dir: Int32,
                        _ ds50UTCIn: Double,
-                       _ RAIn: Double,
+                       _ raIn: Double,
                        _ declIn: Double,
                        _ ds50UTCOut: Double,
-                       _ RAOut: UnsafeMutablePointer<Double>,
+                       _ raOut: UnsafeMutablePointer<Double>,
                        _ declOut: UnsafeMutablePointer<Double> ) {
 
     typealias FunctionSignature = @convention(c) ( Int32,
@@ -933,16 +932,16 @@ public func RotRADecl( _ nutationTerms: Int32,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotRADecl"), to: FunctionSignature.self)
 
-    function(nutationTerms, dir, ds50UTCIn, RAIn, declIn, ds50UTCOut, RAOut, declOut)
+    function(nutationTerms, dir, ds50UTCIn, raIn, declIn, ds50UTCOut, raOut, declOut)
 }
 
 // Rotates Right Ascension and Declination from TEME of Date to MEME of the specified year of equinox
 public func RotRADec_DateToEqnx( _ nutationTerms: Int32,
                                  _ yrOfEqnx: Int32,
                                  _ ds50UTCIn: Double,
-                                 _ RAIn: Double,
+                                 _ raIn: Double,
                                  _ declIn: Double,
-                                 _ RAOut: UnsafeMutablePointer<Double>,
+                                 _ raOut: UnsafeMutablePointer<Double>,
                                  _ declOut: UnsafeMutablePointer<Double> ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int32,
@@ -955,16 +954,16 @@ public func RotRADec_DateToEqnx( _ nutationTerms: Int32,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotRADec_DateToEqnx"), to: FunctionSignature.self)
 
-    return function(nutationTerms, yrOfEqnx, ds50UTCIn, RAIn, declIn, RAOut, declOut)
+    return function(nutationTerms, yrOfEqnx, ds50UTCIn, raIn, declIn, raOut, declOut)
 }
 
 // Rotates Right Ascension and Declination from MEME of the specified year of equinox to TEME of Date
 public func RotRADec_EqnxToDate( _ nutationTerms: Int32,
                                  _ yrOfEqnx: Int32,
                                  _ ds50UTCIn: Double,
-                                 _ RAIn: Double,
+                                 _ raIn: Double,
                                  _ declIn: Double,
-                                 _ RAOut: UnsafeMutablePointer<Double>,
+                                 _ raOut: UnsafeMutablePointer<Double>,
                                  _ declOut: UnsafeMutablePointer<Double> ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int32,
@@ -977,7 +976,7 @@ public func RotRADec_EqnxToDate( _ nutationTerms: Int32,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "RotRADec_EqnxToDate"), to: FunctionSignature.self)
 
-    return function(nutationTerms, yrOfEqnx, ds50UTCIn, RAIn, declIn, RAOut, declOut)
+    return function(nutationTerms, yrOfEqnx, ds50UTCIn, raIn, declIn, raOut, declOut)
 }
 
 // Rotates the Equinoctial covariance to UVW

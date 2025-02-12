@@ -14,7 +14,6 @@ fileprivate let libHandle = loadDll("libsatstate.dylib")
 // If this function returns an error, it is recommended that the users stop the program immediately. 
 // The error occurs if the users forget to load and initialize all the prerequisite DLLs, 
 // as listed in the DLL Prerequisite section, before using this DLL.
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func SatStateInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -185,7 +184,7 @@ public func SatStateGetSatDataAll( _ satKey: Int64,
                                    _ apogeeHt: UnsafeMutablePointer<Double>,
                                    _ perigee: UnsafeMutablePointer<Double>,
                                    _ apogee: UnsafeMutablePointer<Double>,
-                                   _ A: UnsafeMutablePointer<Double> ) -> Int32 {
+                                   _ a: UnsafeMutablePointer<Double> ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64,
                                                    UnsafeMutablePointer<Int32>,
@@ -210,7 +209,7 @@ public func SatStateGetSatDataAll( _ satKey: Int64,
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SatStateGetSatDataAll"), to: FunctionSignature.self)
 
-    return function(satKey, satNum, satName, eltType, revNum, epochDs50UTC, bField, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, period, perigeeHt, apogeeHt, perigee, apogee, A)
+    return function(satKey, satNum, satName, eltType, revNum, epochDs50UTC, bField, elsetNum, incli, node, eccen, omega, mnAnomaly, mnMotion, period, perigeeHt, apogeeHt, perigee, apogee, a)
 }
 
 // Retrieves an individual field of a satellite. 
@@ -479,7 +478,7 @@ public let XF_SATFIELD_PERIGEE  = 12
 public let XF_SATFIELD_APOGEE   = 13
 //Semimajor axis (km)
 public let XF_SATFIELD_A        = 14
-//Mean motion derivative (rev/day /2)
+//Mean motion derivative (rev/day**2 /2)
 public let XF_SATFIELD_NDOT     = 15
 //Satellite category (Synchronous, Deep space, Decaying, Routine)
 public let XF_SATFIELD_SATCAT   = 16
@@ -605,14 +604,16 @@ public let XA_GOBS_WX        =  4
 public let XA_GOBS_WY        =  5
 //cos(incl)
 public let XA_GOBS_WZ        =  6
-//af
-public let XA_GOBS_AF        =  7
-//ag
-public let XA_GOBS_AG        =  8
+//abar x
+public let XA_GOBS_ABARX     =  7
+//abar y
+public let XA_GOBS_ABARY     =  8
+//abar z
+public let XA_GOBS_ABARZ     =  9
 //AGOM
-public let XA_GOBS_AGOM      =  9
+public let XA_GOBS_AGOM      = 10
 //Trough/Drift Flag, 0 - 75 deg trough, 1 - 255 deg trough, 2 - both troughs, 3 - unstable point, 4 - East drift, 5 - West drift
-public let XA_GOBS_TROUGH    = 10
+public let XA_GOBS_TROUGH    = 11
 
 public let XA_GOBS_SIZE      = 32
 
@@ -650,7 +651,7 @@ public let XA_GOBS_DELTA_ASTAT        =  2
 //delta orbital plane
 public let XA_GOBS_DELTA_DOP          =  3
 //delta shape
-public let XA_GOBS_DELTA_DSHAPE       =  4
+public let XA_GOBS_DELTA_DABAR        =  4
 //delta Relative Energy (deg^2/day^2)
 public let XA_GOBS_DELTA_DRELENERGY   =  5
 //Longitude of Primary

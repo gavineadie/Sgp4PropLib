@@ -11,7 +11,6 @@ fileprivate let libHandle = loadDll("libelops.dylib")
 
 // Notes: This function has been deprecated since v9.0. 
 // Initializes ElOps dll for use in the program
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func ElOpsInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32

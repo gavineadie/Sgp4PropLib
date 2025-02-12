@@ -14,7 +14,6 @@ fileprivate let libHandle = loadDll("libsensor.dylib")
 // If this function returns an error, it is recommended that the users stop the program immediately. 
 // The error occurs if the users forget to load and initialize all the prerequisite dlls, as listed 
 // in the DLL Prerequisite section, before using this DLL.
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func SensorInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -1120,14 +1119,16 @@ public let OT_RADEC_SENPOS   =  9
 public let OT_VEL            = 10
 //obs contains ECI position data
 public let OT_POS            = 11
+//internal use only - new obs type for RA/Dec or Star to be used in FOV/targets
+public let OT_STAR           = 12
+//obs contains TDOA/FDOA data
+public let OT_RF             = 13
 //obs contains Satellite Laser Ranging (SLR) - range only, with tropospheric refraction term data
 public let OT_SLR            = 16
 //obs contains azimuth, elevation, sensor location, and range data
 public let OT_M              = 18
 //obs contains right ascension, declination, sensor location, and range data
 public let OT_O              = 19
-//obs contains TDOA/FDOA data
-public let OT_RF             = 13
 //obs contains range rate only data - for use in obs selection criteria
 public let OT_RRATE_SELOB    = 999
 

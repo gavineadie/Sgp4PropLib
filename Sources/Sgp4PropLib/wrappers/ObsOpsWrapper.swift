@@ -11,7 +11,6 @@ fileprivate let libHandle = loadDll("libobsops.dylib")
 
 // Notes: This function has been deprecated since v9.0.    
 // Initializes ObsOps DLL for use in the program
-@available(*, deprecated, message: "This function has been deprecated since v9.0")
 public func ObsOpsInit( _ apAddr: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -586,6 +585,37 @@ public func AngleBetweenObs( _ obsKey1: Int64,
     function(obsKey1, obsKey2, angSep, errCode)
 }
 
+// Combines the TwoObs/ThreeObs/ManyObs methods into one while returning intermediate data of the Iomod iterations
+public func IomodCombine( _ obsKeyArr: UnsafeMutablePointer<Int64>,
+                          _ arrSize: Int32,
+                          _ xa_iomod: UnsafeMutablePointer<Double>,
+                          _ timeDs50UTC: UnsafeMutablePointer<Double>,
+                          _ pos: UnsafeMutablePointer<Double>,
+                          _ vel: UnsafeMutablePointer<Double>,
+                          _ arr3ObsKeys: UnsafeMutablePointer<Int64>,
+                          _ numIters: UnsafeMutablePointer<Int32>,
+                          _ xa_iomIter: UnsafeMutablePointer<(Double, Double, Double, Double, Double, Double, Double, Double)>,
+                          _ arr3Pos: UnsafeMutablePointer<(Double, Double, Double)> ) -> Int32 {
+
+    let _xa_iomIter = UnsafeMutableRawPointer(xa_iomIter).bindMemory(to: Double.self, capacity: 200)
+    let _arr3Pos = UnsafeMutableRawPointer(arr3Pos).bindMemory(to: Double.self, capacity: 9)
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<Int64>,
+                                                   Int32,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Int64>,
+                                                   UnsafeMutablePointer<Int32>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "IomodCombine"), to: FunctionSignature.self)
+
+    return function(obsKeyArr, arrSize, xa_iomod, timeDs50UTC, pos, vel, arr3ObsKeys, numIters, _xa_iomIter, _arr3Pos)
+}
+
 // Different obs selection options
 //auto select 3 obs among the loaded/selected obs
 public let OBSSELMODE_AUTO   = 0
@@ -707,5 +737,19 @@ public let XA_FIT_THETA3        = 17
 //
 public let XA_FIT_SIZE          =  32
 
+// Iomod iteration data
+//Computed estimated range for ob# 1
+public let XA_IOMITER_RNG1 = 0
+//Computed estimated range for ob# 2
+public let XA_IOMITER_RNG2 = 1
+//Computed estimated range for ob# 3
+public let XA_IOMITER_RNG3 = 2
+//Convergence value
+public let XA_IOMITER_CONV = 3
+
+public let XA_IOMITER_SIZE = 8
+
+// Iomod maximum number of iterations
+public let IOMOD_MAXITERS = 25
 
 // ========================= End of auto generated code ==========================
