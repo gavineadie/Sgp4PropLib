@@ -377,8 +377,8 @@ public func Sgp4ReepochCsv( _ satKey: Int64,
     return function(satKey, reEpochDs50UTC, csvLine)
 }
 
-// This function has been deprecated since v8.2
-// Note: The only requirement now is that "SGP4_Open_License.txt" file needs to be in those folders specified in PATH/LD_LIBRARY_PATH environment or AstroStds DLLs/SOs'
+// Sets path to the Sgp4 Open License file if the license file
+// Note: This function has been revised since v9.6. It's only needed if the "SGP4_Open_License.txt" isn't located in current folder or those folders specified in PATH/LD_LIBRARY_PATH environment
 public func Sgp4SetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -388,8 +388,8 @@ public func Sgp4SetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
     function(licFilePath)
 }
 
-// This function has been deprecated since v8.2
-// Note: The only requirement now is that "SGP4_Open_License.txt" file needs to be in those folders specified in PATH/LD_LIBRARY_PATH environment or AstroStds DLLs/SOs'
+// Gets the current path to the Sgp4 Open License file
+// Note: This function has been revised since v9.6. It's only needed if the "SGP4_Open_License.txt" isn't located in current folder or those folders specified in PATH/LD_LIBRARY_PATH environment
 public func Sgp4GetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -508,6 +508,16 @@ public func XpReepochGetNativeElts( _ satKey: Int64,
 
     return function(satKey, reEpochDs50UTC, csvLine, xa_eqnx, xa_eqnx_dot)
 }
+// GP types (TLE ephemeris types) - They are different than ELTTYPE
+//TLE SGP4 gpType (Brouwer mean motion)
+public let GPTYPE_SGP4 =  0
+//TLE PPT3 gpType (Brouwer mean motion)
+public let GPTYPE_PPT3 =  3
+//TLE SGP4-XP gpType (Brouwer mean motion)
+public let GPTYPE_XP   =  4
+//Not a GP type
+public let GPTYPE_NONE = 99
+
 // Different return values of errCode from Sgp4 propagation
 //SGP4 propagates successfully
 public let GP_ERR_NONE        = 0
@@ -525,6 +535,14 @@ public let GP_ERR_ENEGATIVE   = 5
 public let GP_ERR_MATOOLARGE  = 6
 //e**2 is too large
 public let GP_ERR_E2TOOLARGE  = 7
+//Inclination out of bounds
+public let GP_ERR_INCOUTOFBND = 8
+//Mean motion is negative
+public let GP_ERR_MNMOTNEG    = 9
+//Satellite decayed
+public let GP_ERR_DECAY       = 10
+//Unknown GP element type
+public let GP_ERR_UNKNOWNTYPE = 99
 
 // Different time types for passing to Sgp4PropAll
 //propagation time is in minutes since epoch

@@ -6,11 +6,12 @@
 
 import Foundation
 
-public let sgp4PropLibVersion = "9.5"
+public let sgp4PropLibVersion = "9.6"
 
 public let IDX_ERR_NONE  = 0        // Ok
 public let IDX_ERR_WARN  = 1        // Warning
 public let IDX_ERR_ERROR = 2        // Error
+
 
 //
 //MARK: String Extension

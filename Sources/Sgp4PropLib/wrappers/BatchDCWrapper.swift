@@ -622,11 +622,13 @@ public func IomodDC( _ numObs: Int32,
 }
 // Different DC propagation method
 //DC propagator method is GP
-public let DCPROPTYPE_GP =  0
+public let DCPROPTYPE_GP   =  0
+//DC propagator method is PPT3
+public let DCPROPTYPE_PPT3 =  3
 //DC propagator method is SGP4-XP
-public let DCPROPTYPE_XP =  4
+public let DCPROPTYPE_XP   =  4
 //DC propagator method is SP
-public let DCPROPTYPE_SP = 99
+public let DCPROPTYPE_SP   = 99
 
 // DC iterating returned code
 //DC was successful
@@ -704,6 +706,8 @@ public let XA_EGPCTRL_STOPMSE    =  3
 public let XA_EGPCTRL_STEPMIN    =  4
 //Drag correction: 0=no correction, 1=correct BStar(SGP4)/BTerm(SGP4-XP), 2=correct X(SGP4 only)
 public let XA_EGPCTRL_DRAGCOR    =  5
+//Ndot correction: 0=no correction, 1=correct (PPT3 only)
+public let XA_EGPCTRL_NDOTCOR    =  5
 //agom correction: 0=no correction, 1=correct agom (only when DC element = SGP4-XP)
 public let XA_EGPCTRL_AGOMCOR    =  6
 //Epoch placement flag - see EPFLG_? for available options
@@ -713,13 +717,15 @@ public let XA_EGPCTRL_NEWEPOCH   =  8
 
 //Addtional option if input is external ephemeris file - BStar(SGP4)/BTerm(SGP4-XP) if XA_EGPCTRL_DRAGCOR is set (= 1)
 public let XA_EGPCTRL_BVAL       =  9
-//Addtional option if input is external ephemeris file - agom value if XA_EGPCTRL_AGOMCOR is set (= 1)
+//Addtional option if input is external ephemeris file - agom  value if XA_EGPCTRL_AGOMCOR  is set (= 1)
 public let XA_EGPCTRL_AGOMVAL    = 10
 
 //correction order
 public let XA_EGPCTRL_ORDERCOR   = 11
 //Max # of iterations before declaring divergence [10]
 public let XA_EGPCTRL_MAXOFITERS = 12
+
+
 
 //satellite number
 public let XA_EGPCTRL_SATNUM     = 63
@@ -862,7 +868,7 @@ public let XAI_DCELTS_SIZE         = 256
 public let XAR_DCELTS_EPOCHDS50UTC =   0
 //n-dot/2  (for SGP, eph-type = 0)
 public let XAR_DCELTS_NDOT         =   1
-//n-double-dot/6  (for SGP, eph-type = 0)
+//n-double-dot/6  (for SGP/PPT3, eph-type = 0/3)
 public let XAR_DCELTS_N2DOT        =   2
 //either SGP4 bStar (1/er) or SGP4-XP/SP bTerm (m2/kg)
 public let XAR_DCELTS_BFIELD       =   3
@@ -1066,21 +1072,21 @@ public let XA_DCCTRL_DWOBSPERTRCK     = 12
 //partials method
 public let XA_DCCTRL_PARTIALMETH      = 13
 //Element correction flag - Ag
-public let XA_DCCTRL_CORRECT_AG    	= 20
+public let XA_DCCTRL_CORRECT_AG       = 20
 //Element correction flag - Af
-public let XA_DCCTRL_CORRECT_AF    	= 21
+public let XA_DCCTRL_CORRECT_AF       = 21
 //Element correction flag - Psi
-public let XA_DCCTRL_CORRECT_PSI   	= 22
+public let XA_DCCTRL_CORRECT_PSI      = 22
 //Element correction flag - Chi
-public let XA_DCCTRL_CORRECT_CHI   	= 23
+public let XA_DCCTRL_CORRECT_CHI      = 23
 //Element correction flag - L
-public let XA_DCCTRL_CORRECT_L     	= 24
+public let XA_DCCTRL_CORRECT_L        = 24
 //Element correction flag - N
-public let XA_DCCTRL_CORRECT_N     	= 25
+public let XA_DCCTRL_CORRECT_N        = 25
 //Element correction flag - B* (SGP4) B (SP)
-public let XA_DCCTRL_CORRECT_B     	= 26
+public let XA_DCCTRL_CORRECT_B        = 26
 //Element correction flag - Agom (SP)
-public let XA_DCCTRL_CORRECT_AGOM  	= 27
+public let XA_DCCTRL_CORRECT_AGOM     = 27
 //Convergence criteria on time (%) [5.0%]
 public let XA_DCCTRL_CNVCRITONT       = 30
 //First pass delta-t rejection criteria Convergence criteria on time correction (min) [20 minutes]
@@ -1137,21 +1143,21 @@ public let XA_IOMDC_DEBIASOBS    	= 14
 public let XA_IOMDC_USEPREDRMS		= 15
 
 //Element correction flag - Ag
-public let XA_IOMDC_CORRECT_AG    	= 20
+public let XA_IOMDC_CORRECT_AG     = 20
 //Element correction flag - Af
-public let XA_IOMDC_CORRECT_AF    	= 21
+public let XA_IOMDC_CORRECT_AF     = 21
 //Element correction flag - Psi
-public let XA_IOMDC_CORRECT_PSI   	= 22
+public let XA_IOMDC_CORRECT_PSI    = 22
 //Element correction flag - Chi
-public let XA_IOMDC_CORRECT_CHI   	= 23
+public let XA_IOMDC_CORRECT_CHI    = 23
 //Element correction flag - L
-public let XA_IOMDC_CORRECT_L     	= 24
+public let XA_IOMDC_CORRECT_L      = 24
 //Element correction flag - N
-public let XA_IOMDC_CORRECT_N     	= 25
+public let XA_IOMDC_CORRECT_N      = 25
 //Element correction flag - B* (SGP4) B (SP)
-public let XA_IOMDC_CORRECT_B     	= 26
+public let XA_IOMDC_CORRECT_B      = 26
 //Element correction flag - Agom (SP)
-public let XA_IOMDC_CORRECT_AGOM  	= 27
+public let XA_IOMDC_CORRECT_AGOM   = 27
 //Convergence criteria on time (%) [5.0%]
 public let XA_IOMDC_CNVCRITONT     = 30
 //First pass delta-t rejection criteria Convergence criteria on time correction (min) [20 minutes]
@@ -1165,9 +1171,9 @@ public let XA_IOMDC_BRESET         = 34
 //SP only - density consider parameter
 public let XA_IOMDC_CONSIDER       = 40
 //GP only - residual computation method
-public let XA_IOMDC_GPRCM 			= 40
+public let XA_IOMDC_GPRCM          = 40
 //GP only - SGP4: correct B* vs X, SGP4-XP: correct B
-public let XA_IOMDC_CORRECTBVSX		= 41
+public let XA_IOMDC_CORRECTBVSX	   = 41
 
 //see IOMDC_METHOD_? for available options
 public let XA_IOMDC_METHOD         = 50

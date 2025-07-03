@@ -803,38 +803,38 @@ public let XA_SEN_BCT_MINEL     = 23
 // Conventinoal tracker (VT_CON)
 //low elevation limit #1 (deg)
 public let XA_SEN_CON_ELFR1     = 20
-//hight elevation limit #1 (deg)
+//high elevation limit #1 (deg)
 public let XA_SEN_CON_ELTO1     = 21
 //low azimuth limit #1 (deg)
 public let XA_SEN_CON_AZFR1     = 22
-//hight azimuth limit #1 (deg)
+//high azimuth limit #1 (deg)
 public let XA_SEN_CON_AZTO1     = 23
 //low elevation limit #2 (deg)
 public let XA_SEN_CON_ELFR2     = 24
-//hight elevation limit #2 (deg)
+//high elevation limit #2 (deg)
 public let XA_SEN_CON_ELTO2     = 25
 //low azimuth limit #2 (deg)
 public let XA_SEN_CON_AZFR2     = 26
-//hight azimuth limit #2 (deg)
+//high azimuth limit #2 (deg)
 public let XA_SEN_CON_AZTO2     = 27
 
 //*******************************************************************************
 // Optical tracker (VT_OPT)
 //low elevation limit #1 (deg)
 public let XA_SEN_OPT_ELFR1     = 20
-//hight elevation limit #1 (deg)
+//high elevation limit #1 (deg)
 public let XA_SEN_OPT_ELTO1     = 21
 //low azimuth limit #1 (deg)
 public let XA_SEN_OPT_AZFR1     = 22
-//hight azimuth limit #1 (deg)
+//high azimuth limit #1 (deg)
 public let XA_SEN_OPT_AZTO1     = 23
 //low elevation limit #2 (deg)
 public let XA_SEN_OPT_ELFR2     = 24
-//hight elevation limit #2 (deg)
+//high elevation limit #2 (deg)
 public let XA_SEN_OPT_ELTO2     = 25
 //low azimuth limit #2 (deg)
 public let XA_SEN_OPT_AZFR2     = 26
-//hight azimuth limit #2 (deg)
+//high azimuth limit #2 (deg)
 public let XA_SEN_OPT_AZTO2     = 27
 
 //optical sensor solar exclusion angle (to check for solar aspect angle limit)
@@ -861,19 +861,19 @@ public let XA_SEN_ORB_SATNUM    = 10
 
 //orbiting sensor's off-boresight angle - low elevation limit #1 (deg)
 public let XA_SEN_ORB_ELMIN1    = 20
-//orbiting sensor's off-boresight angle - hight elevation limit #1 (deg)
+//orbiting sensor's off-boresight angle - high elevation limit #1 (deg)
 public let XA_SEN_ORB_ELMAX1    = 21
 //orbiting sensor's off-boresight clock angle - low azimuth limit #1 (deg)
 public let XA_SEN_ORB_AZMIN1    = 22
-//orbiting sensor's off-boresight clock angle - hight azimuth limit #1 (deg)
+//orbiting sensor's off-boresight clock angle - high azimuth limit #1 (deg)
 public let XA_SEN_ORB_AZMAX1    = 23
 //orbiting sensor's off-boresight angle - low elevation limit #2 (deg)
 public let XA_SEN_ORB_ELMIN2    = 24
-//orbiting sensor's off-boresight angle - hight elevation limit #2 (deg)
+//orbiting sensor's off-boresight angle - high elevation limit #2 (deg)
 public let XA_SEN_ORB_ELMAX2    = 25
 //orbiting sensor's off-boresight clock angle - low azimuth limit #2 (deg)
 public let XA_SEN_ORB_AZMIN2    = 26
-//orbiting sensor's off-boresight clock angle - hight azimuth limit #2 (deg)
+//orbiting sensor's off-boresight clock angle - high azimuth limit #2 (deg)
 public let XA_SEN_ORB_AZMAX2    = 27
 
 //orbiting sensor earth limb exclusion distance (km)

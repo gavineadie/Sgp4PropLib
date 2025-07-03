@@ -347,6 +347,8 @@ public let ELTTYPE_VCM       = 5
 public let ELTTYPE_EXTEPH    = 6
 //Element type - SGP Tle type 4 - XP
 public let ELTTYPE_TLE_XP    = 7
+//Element type - PPT3 Tle type 3 - XP
+public let ELTTYPE_TLE_PPT3  = 8
 
 //*******************************************************************************
 

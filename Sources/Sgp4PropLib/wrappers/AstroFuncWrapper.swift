@@ -1416,7 +1416,7 @@ public let XA_KEP_MA    =   3
 public let XA_KEP_NODE  =   4
 //argument of perigee (deg)
 public let XA_KEP_OMEGA =   5
-public let XA_KEP_SIZE  =  6
+public let XA_KEP_SIZE  =   6
 
 // Index of classical elements
 //N mean motion (revs/day)

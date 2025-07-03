@@ -351,7 +351,7 @@ public let WARN_BRIEFSPAN   = 105
 //Secondary satellite is in sustained relative geometry
 public let WARN_SUSRELGEO   = 106
 
-// Indexes of LAMOD 7P-card fields
+// Indexes of COMBO 7P-card fields
 //Input time format : 0: Minutes since epoch, 1: UTC
 public let XF_7P_TIMEFLAG    = 1
 //Begin time

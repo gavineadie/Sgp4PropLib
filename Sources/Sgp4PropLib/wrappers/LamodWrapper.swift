@@ -1011,9 +1011,9 @@ public let XA_LV_OBSANGLE =  64
 //angle to fan (deg) - constant azimuth fan only
 public let XA_LV_ANG2FAN  =  65
 
-//pass azimuth check (0=failed, 1=passed)
+//pass azimuth check/fan's off-boresight angle (0=failed, 1=passed)
 public let XA_LV_AZLIM    =  70
-//pass elevation check (0=failed, 1=passed)
+//pass elevation check/fan's plane crossing (0=failed, 1=passed)
 public let XA_LV_ELLIM    =  71
 //pass earth in background check (0=failed, 1=passed)
 public let XA_LV_EARTHBK  =  72

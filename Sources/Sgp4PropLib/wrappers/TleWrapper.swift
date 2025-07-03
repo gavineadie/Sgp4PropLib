@@ -1213,6 +1213,8 @@ public func GetCheckSums( _ line1: UnsafeMutablePointer<CChar>,
 public let TLETYPE_SGP  = 0
 //TLE SGP4 elset (Brouwer mean motion)
 public let TLETYPE_SGP4 = 2
+//TLE PPT3 elset (Kozai mean motion)
+public let TLETYPE_PPT3 = 3
 //TLE SGP4-XP elset (Brouwer mean motion)
 public let TLETYPE_XP   = 4
 //TLE SP elset (osculating elements)
