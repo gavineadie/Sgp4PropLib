@@ -6,7 +6,7 @@
 
 import Foundation
 
-public let sgp4PropLibVersion = "9.6"
+public let sgp4PropLibVersion = "v9.8_beta"
 
 public let IDX_ERR_NONE  = 0        // Ok
 public let IDX_ERR_WARN  = 1        // Warning

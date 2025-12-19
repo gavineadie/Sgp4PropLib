@@ -30,11 +30,11 @@ public func sgp4GetInfo() -> String {
 
 }
 
+/// This method has deprecated since v8.2, and then revised since v9.6
 /// Note: The only requirement now is that "SGP4_Open_License.txt" file needs to
 /// be in those folders specified in PATH/LD_LIBRARY_PATH environment or AstroStds DLLs/SOs'
 /// - Returns: The file path to the Sgp4 Open License file
-@available(*, deprecated, message: "This function has been deprecated since v8.2")
-public func Sgp4GetLicFilePath() -> String {
+public func sgp4GetLicFilePath() -> String {
 
     var licFilePath = emptyCcharArray(size: GETSETSTRLEN)
     Sgp4GetLicFilePath(&licFilePath)
@@ -42,10 +42,10 @@ public func Sgp4GetLicFilePath() -> String {
 
 }
 
+/// This method has deprecated since v8.2, and then revised since v9.6
 /// Note: The only requirement now is that "SGP4_Open_License.txt" file needs to be
 /// in those folders specified in PATH/LD_LIBRARY_PATH environment or AstroStds DLLs/SOs'
 /// - Parameter licFilePath: The file path to the Sgp4 Open License file
-@available(*, deprecated, message: "This function has been deprecated since v8.2")
 public func sgp4SetLicFilePath(_ licFilePath: String) {
 
     Sgp4SetLicFilePath(licFilePath.cString)
