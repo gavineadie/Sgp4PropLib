@@ -919,15 +919,6 @@ public func tleGetField(_ satKey: SatKey, _ xf_Tle: Int) -> String? {
 
 }
 
-/// Get the epoch of the referenced satellite in days since 1950-00-00 UTC
-/// - Parameter satKey: The satellite's unique key.
-/// - Returns: satellite epoch in days since 1950-00-00 UTC (0.0 if failure)
-public func tleGetEpochUTC(_ satKey: SatKey) -> Double {
-
-    dtgToUTC(tleGetField(satKey, XF_TLE_EPOCH) ?? "50000")
-
-}
-
 /// Updates the value of a field of a TLE. This function can be used for both GP and SP satellites.
 ///
 /// The table below indicates which index values correspond to which fields.

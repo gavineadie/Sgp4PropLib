@@ -675,9 +675,9 @@ public let CORT_SUBELT = 5
 public let CORORD_7ELT       = 0
 //time (SP: L, n, B), then 7-element
 public let CORORD_TIM7ELT    = 1
-//time, plane, then 7-element (SGP4) or 7-elt only; pht/pi vs Af/Ag (SP)
+//time, plane, then 7-element (SGP4) or 7-elt only, pht/pi vs Af/Ag (SP)
 public let CORORD_TIMPLN7ELT = 2
-//plane, time, then 7-element (SGP4) or 7-elt only; e/pi vs Af/Ag (SP)
+//plane, time, then 7-element (SGP4) or 7-elt only, e/pi vs Af/Ag (SP)
 public let CORORD_PLNTIM7ELT = 3
 //plane, then 7-element (SGP4) or L, n, B, then 7-elt, with pht/pi vs Af/Ag (SP)
 public let CORORD_PLN7ELT    = 4
@@ -788,9 +788,9 @@ public let XAI_CTRL_CORRECTORDER = 12
 public let XAI_CTRL_FOR1ITERONLY = 13
 //Flag specifies which residuals are used for RMS calculation and convergence
 public let XAI_CTRL_RESIDSELECT  = 14
-//Flag; if set, produce sensor performance analysis summary
+//Flag, if set, produce sensor performance analysis summary
 public let XAI_CTRL_SENPERFORM   = 15
-//Flag; if set, deweight according to # of obs per track
+//Flag, if set, deweight according to # of obs per track
 public let XAI_CTRL_DWOBSPERTRCK = 16
 //Iteration summary control
 public let XAI_CTRL_ITERSUMOPT   = 17
@@ -802,7 +802,7 @@ public let XAI_CTRL_LTC          = 19
 public let XAI_CTRL_BRUCE        = 20
 //Propagation method - GP=0, XP=4, SP=99
 public let XAI_CTRL_PROPMETHOD   = 21
-//Flag; if set, correct B* vs X
+//Flag, if set, correct B* vs X
 public let XAI_CTRL_CORRECTBVSX  = 22
 //Max # of iterations before declaring divergence
 public let XAI_CTRL_MAXOFITERS   = 23
@@ -810,7 +810,7 @@ public let XAI_CTRL_MAXOFITERS   = 23
 public let XAI_CTRL_USEPREDRMS   = 24
 //Residual computation method (GP only): DELTA/427M=1, SPADOC4=2
 public let XAI_CTRL_RESCOMPMETH  = 25
-//Flag; if set, use angle rates (obstypes = 4, 11)
+//Flag, if set, use angle rates (obstypes = 4, 11)
 public let XAI_CTRL_USEANGRATES  = 26
 
 public let XAI_CTRL_SIZE         = 256
@@ -846,7 +846,7 @@ public let XAI_DCELTS_PROPTYPE     =   3
 public let XAI_DCELTS_SPECTR       =   4
 //epoch revolution number
 public let XAI_DCELTS_REVNUM       =   5
-//correction type: 0=TIME, 1=PLANE", 2=7-ELT, 3=IN-TRK, 4=8-ELT, 5=SUBELT; see CORT_? for available values
+//correction type: 0=TIME, 1=PLANE", 2=7-ELT, 3=IN-TRK, 4=8-ELT, 5=SUBELT, see CORT_? for available values
 public let XAI_DCELTS_CORRTYPE     =   6
 
 //total iteration count
@@ -1067,7 +1067,7 @@ public let XA_DCCTRL_WEIGHTEDDC		   =  9
 public let XA_DCCTRL_LTC              = 10
 //number of iteration to allow no auto rejection of residuals
 public let XA_DCCTRL_BRUCE            = 11
-//flag; if set, deweight according to # of obs per track
+//flag, if set, deweight according to # of obs per track
 public let XA_DCCTRL_DWOBSPERTRCK     = 12
 //partials method
 public let XA_DCCTRL_PARTIALMETH      = 13
@@ -1133,7 +1133,7 @@ public let XA_IOMDC_WEIGHTEDDC		=  9
 public let XA_IOMDC_LTC            = 10
 //number of iteration to allow no auto rejection of residuals
 public let XA_IOMDC_BRUCE          = 11
-//flag; if set, deweight according to # of obs per track
+//flag, if set, deweight according to # of obs per track
 public let XA_IOMDC_DWOBSPERTRCK   = 12
 //partials method
 public let XA_IOMDC_PARTIALMETH    = 13

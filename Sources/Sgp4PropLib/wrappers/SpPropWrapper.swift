@@ -261,6 +261,11 @@ public func SpSetApCtrlAll( _ geoDir: UnsafeMutablePointer<CChar>,
 // <tr><td>25 </td><td> JPL start time</td></tr>
 // <tr><td>26 </td><td> JPL stop time</td></tr>
 // </table>
+// See the SpProp.pdf document under the librarydocuments folder, section 7.3
+// "Numerical Integration Control (4P-Card)".  This document has a description
+// of each column for a 4P card.  For an example, see files in the 
+// Verify/SpProp/Execution/input folder, such as sp_sat1.inp and look at the 
+// line that ends with "4P".  
 public func SpGet4P( _ xf_4P: Int32, _ valueStr: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( Int32,
@@ -275,6 +280,11 @@ public func SpGet4P( _ xf_4P: Int32, _ valueStr: UnsafeMutablePointer<CChar> ) {
 // See SpGet4P for a list of the values for the xf_4P parameter.
 // For flux, dca, and jpl file settings, the actual file loading happens when the first SpSatInit() is called. 
 // If the user needs to load these files instantly, please call the SpLoadFile() instead
+// See the SpProp.pdf document under the librarydocuments folder, section 7.3
+// "Numerical Integration Control (4P-Card)".  This document has a description
+// of each column for a 4P card.  For an example, see files in the 
+// Verify/SpProp/Execution/input folder, such as sp_sat1.inp and look at the 
+// line that ends with "4P".  
 public func SpSet4P( _ xf_4P: Int32, _ valueStr: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( Int32,
@@ -573,6 +583,11 @@ public func SpCompCovSigma( _ covMtx: UnsafeMutablePointer<(Double, Double, Doub
 }
 
 // Sets all numerical integration control parameters with a single function call
+// See the SpProp.pdf document under the librarydocuments folder, section 7.3
+// "Numerical Integration Control (4P-Card)".  This document has a description
+// of each column for a 4P card.  For an example, see files in the 
+// Verify/SpProp/Execution/input folder, such as sp_sat1.inp and look at the 
+// line that ends with "4P".  
 public func SpSet4pAll( _ geoIdx: Int32,
                         _ bulgePert: Int32,
                         _ dragPert: Int32,
@@ -629,6 +644,11 @@ public func SpSet4pAll( _ geoIdx: Int32,
 }
 
 // Retrieves all numerical integration control parameters with a single function call
+// See the SpProp.pdf document under the librarydocuments folder, section 7.3
+// "Numerical Integration Control (4P-Card)".  This document has a description
+// of each column for a 4P card.  For an example, see files in the 
+// Verify/SpProp/Execution/input folder, such as sp_sat1.inp and look at the 
+// line that ends with "4P".  
 public func SpGet4pAll( _ geoIdx: UnsafeMutablePointer<Int32>,
                         _ bulgePert: UnsafeMutablePointer<Int32>,
                         _ dragPert: UnsafeMutablePointer<Int32>,
@@ -684,7 +704,12 @@ public func SpGet4pAll( _ geoIdx: UnsafeMutablePointer<Int32>,
     function(geoIdx, bulgePert, dragPert, radPresPert, lunSolPert, f10, f10Avg, ap, trunc, incr, ogPert, tidePert, inCoord, nTerms, reEval, integStepMode, stepSizeMethod, initStepSize, dcaFile, fluxFile, geoFile, jplFile, jplStart, jplStop)
 }
 
-// Read the integration control settings from a 4P-Card
+// Read the integration control settings from a 4P-Card.
+// See the SpProp.pdf document under the librarydocuments folder, section 7.3
+// "Numerical Integration Control (4P-Card)".  This document has a description
+// of each column for a 4P card.  For an example, see files in the 
+// Verify/SpProp/Execution/input folder, such as sp_sat1.inp and look at the 
+// line that ends with "4P".  
 public func SpSet4PCard( _ card4P: UnsafeMutablePointer<CChar> ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
@@ -695,6 +720,11 @@ public func SpSet4PCard( _ card4P: UnsafeMutablePointer<CChar> ) -> Int32 {
 }
 
 // Builds and returns the integration control card (4P-Card) from the current settings
+// See the SpProp.pdf document under the librarydocuments folder, section 7.3
+// "Numerical Integration Control (4P-Card)".  This document has a description
+// of each column for a 4P card.  For an example, see files in the 
+// Verify/SpProp/Execution/input folder, such as sp_sat1.inp and look at the 
+// line that ends with "4P".  
 public func SpGet4PCard( _ card4P: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -1086,7 +1116,7 @@ public let XF_4P_F10AVG   = 7
 public let XF_4P_AP       = 8
 //Geopotential truncation order/degree/zonals
 public let XF_4P_TRUNC    = 9
-//Corrector step convergence criterion; exponent of 1/10; default = 10
+//Corrector step convergence criterion, exponent of 1/10, default = 10
 public let XF_4P_CONVERG  = 10
 //Outgassing pertubations flag
 public let XF_4P_OGFLG    = 11
@@ -1126,7 +1156,7 @@ public let XF_4P_JPLSTOP  = 26
 //XF_4P_SATURN   = 32, &    // Sets perturbation from Saturn to on
 //XF_4P_URANUS   = 33, &    // Sets perturbation from Uranus to on
 //XF_4P_NEPTUNE  = 34, &    // Sets perturbation from Neptune to on
-//XF_4P_PLUTO    = 35;      // Sets perturbation from Pluto to on
+//XF_4P_PLUTO    = 35       // Sets perturbation from Pluto to on
 
 //*******************************************************************************
 
@@ -1182,7 +1212,7 @@ public let XF_SPSAT_SPECTR  = 8
 //   XAI_PLANET_URANUS  = 7, & // 0 = off, 1 = on
 //   XAI_PLANET_NEPTUNE = 8, & // 0 = off, 1 = on
 //   XAI_PLANET_PLUTO   = 9, & // 0 = off, 1 = on
-//   XAI_PLANET_SIZE    = 9;   // Size of array
+//   XAI_PLANET_SIZE    = 9    // Size of array
 //
 ////*******************************************************************************
 

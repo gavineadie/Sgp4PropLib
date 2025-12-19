@@ -104,6 +104,7 @@ public func FovGetDataFrInputFiles( _ xa_fovCtrl: UnsafeMutablePointer<Double>,
 }
 
 // This function screens the specified start/end time window and returns passes when the target satellite can be seen (passed all limit checks) by the source 
+// Note: Since v9.7, this function allows source to be a space-based sensor as well
 public func FovFindTargetPasses( _ startTimeDs50UTC: Double,
                                  _ stopTimeDs50UTC: Double,
                                  _ srcSenKey: Int64,
@@ -135,9 +136,9 @@ public func FovFindTargetPasses( _ startTimeDs50UTC: Double,
 // <td><b>Index</b></td>
 // <td><b>Index Interpretation</b></td>
 // </tr>
-// <tr><td> 0</td><td> entry time (ds50UTC)</td></tr>
-// <tr><td> 1</td><td> minimum time (ds50UTC)</td></tr>
-// <tr><td> 2</td><td> exit time (ds50UTC)</td></tr>
+// <tr><td> 0</td><td> entry time (ds50TAI)</td></tr>
+// <tr><td> 1</td><td> minimum time (ds50TAI)</td></tr>
+// <tr><td> 2</td><td> exit time (ds50TAI)</td></tr>
 // </table>
 // <br>
 // See FovGetDataFrInputFiles for a description of the XA_FOVSRC parameter values.
@@ -164,7 +165,6 @@ public func FovTargetElset( _ xa_fovRun: UnsafeMutablePointer<Double>,
 
 // This function returns a look angle from the source to the potential victim satellite at the specified time (target is an elset)
 // <br>
-// If actual number of passes exceeds the set limit in XA_FOVRUN_MAXPASSES, an error is returned. However, the data in xa_emeDat is still valid.
 public func FovTargetElsetLook( _ currDs50TAI: Double,
                                 _ xa_fovSrc: UnsafeMutablePointer<Double>,
                                 _ vicSatKey: Int64,
@@ -180,7 +180,24 @@ public func FovTargetElsetLook( _ currDs50TAI: Double,
     return function(currDs50TAI, xa_fovSrc, vicSatKey, xa_look)
 }
 
-// This function screens a potential victim satellite for penetrating the illumination cone between a source and a target (target is a vector: AZ/EL or RA/DEC).
+// This function returns look and view data from the source to the potential victim satellite at the specified time (target is an elset)
+// <br>
+public func FovTargetElsetLookView( _ currDs50TAI: Double,
+                                    _ xa_fovSrc: UnsafeMutablePointer<Double>,
+                                    _ vicSatKey: Int64,
+                                    _ xa_lv: UnsafeMutablePointer<Double> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   Int64,
+                                                   UnsafeMutablePointer<Double> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "FovTargetElsetLookView"), to: FunctionSignature.self)
+
+    return function(currDs50TAI, xa_fovSrc, vicSatKey, xa_lv)
+}
+
+// This function screens a potential victim satellite for penetrating the illumination cone between a source and a target (target is a vector: AZ/EL or RA/DEC or ELSET #).
 // See FovTargetElset for a description of the xa_emeDat array.<br>
 // If actual number of passes exceeds the set limit in XA_FOVRUN_MAXPASSES, an error is returned. However, the data in xa_emeDat is still valid 
 public func FovTargetVec( _ xa_fovRun: UnsafeMutablePointer<Double>,
@@ -204,7 +221,7 @@ public func FovTargetVec( _ xa_fovRun: UnsafeMutablePointer<Double>,
     return function(xa_fovRun, xa_fovSrc, xa_fovTgt, vicSatKey, _xa_emeDat, numOfPasses)
 }
 
-// This function returns a look angle from the source to the potential victim satellite at the specified time (target is a vector: AZ/EL or RA/DEC).
+// This function returns a look angle from the source to the potential victim satellite at the specified time (target is a vector: AZ/EL or RA/DEC or ELSET #).
 // See FovGetDataFrInputFiles for a description of the XA_FOVSRC and XA_FOVTGT parameter values.
 // See FovTargetElsetLook for a description of the XA_LOOK parameter values.
 public func FovTargetVecLook( _ currDs50TAI: Double,
@@ -222,6 +239,26 @@ public func FovTargetVecLook( _ currDs50TAI: Double,
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "FovTargetVecLook"), to: FunctionSignature.self)
 
     return function(currDs50TAI, xa_fovSrc, xa_fovTgt, vicSatKey, xa_look)
+}
+
+// This function returns look and view data from the source to the potential victim satellite at the specified time (target is a vector: AZ/EL or RA/DEC or ELSET #).
+// See FovGetDataFrInputFiles for a description of the XA_FOVSRC and XA_FOVTGT parameter values.
+// Note: The source's limit checks won't be executed therefore all limit flags are returned as PASSes
+public func FovTargetVecLookView( _ currDs50TAI: Double,
+                                  _ xa_fovSrc: UnsafeMutablePointer<Double>,
+                                  _ xa_fovTgt: UnsafeMutablePointer<Double>,
+                                  _ vicSatKey: Int64,
+                                  _ xa_lv: UnsafeMutablePointer<Double> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   Int64,
+                                                   UnsafeMutablePointer<Double> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "FovTargetVecLookView"), to: FunctionSignature.self)
+
+    return function(currDs50TAI, xa_fovSrc, xa_fovTgt, vicSatKey, xa_lv)
 }
 
 // Resets all FOV control parameters back to their default values
@@ -268,17 +305,19 @@ public let FOV_TGTTYPE_RADEC = 3
 
 // FOV source specification
 //1=SEN   | 2=LLH       | 3=EFG      | 4=XYZ
-public let XA_FOVSRC_TYPE  = 0
+public let XA_FOVSRC_TYPE    = 0
 //Sensor# | Source ID   | Source ID  | Source ID
-public let XA_FOVSRC_ID    = 1
+public let XA_FOVSRC_ID      = 1
 //| N lat (deg) | EFG: E (m) | X (m)
-public let XA_FOVSRC_ELEM1 = 2
+public let XA_FOVSRC_ELEM1   = 2
 //| E lon (deg) | EFG: F (m) | Y (m)
-public let XA_FOVSRC_ELEM2 = 3
+public let XA_FOVSRC_ELEM2   = 3
 //| height (m)  | EFG: G (m) | Z (m)
-public let XA_FOVSRC_ELEM3 = 4
+public let XA_FOVSRC_ELEM3   = 4
 //|             |            | time of position in Ds50UTC
-public let XA_FOVSRC_ELEM4 = 5
+public let XA_FOVSRC_ELEM4   = 5
+//| Cone half angle (deg) if source is LLH/EFG/XYZ to be used in FovTargetVecLook()/FovTargetVecLookView()
+public let XA_FOVSRC_HALFCONE = 6
 
 public let XA_FOVSRC_SIZE  = 8
 
@@ -298,11 +337,11 @@ public let XA_FOVTGT_ELEM3 = 4
 public let XA_FOVTGT_SIZE  = 8
 
 // entry/minimum/exit time data
-//entry time (ds50UTC)
+//entry time (ds50TAI)
 public let XA_EMEDAT_ENTRY = 0
-//minimum time (ds50UTC)
+//minimum time (ds50TAI)
 public let XA_EMEDAT_MIN   = 1
-//exit time (ds50UTC)
+//exit time (ds50TAI)
 public let XA_EMEDAT_EXIT  = 2
 
 public let XA_EMEDAT_SIZE  = 3

@@ -221,7 +221,7 @@ public func ElCompGetCriteria( _ xa_ecdiff: UnsafeMutablePointer<Double> ) {
 // <tr><td>4 </td><td> delta Coplanar angle (dot product of the w angular momentum vetors) [degrees]</td></tr>
 // <tr><td>5 </td><td> delta Right Ascension dot (rate of change of the delta RAAN) [degrees/day]</td></tr>
 // <tr><td>6 </td><td> delta Nodal crossing time [minutes]</td></tr>
-// <tr><td>7 </td><td> number of fractional days to achieve 0.0 delta in RAAN, if &lt; 60 days</td></tr>
+// <tr><td>7 </td><td> number of fractional days to achieve 0d0 delta in RAAN, if &lt; 60 days</td></tr>
 // <tr><td>8 </td><td> Flag - sustained close approach possible, if non-zero</td></tr>
 // <tr><td>9 </td><td> Flag - possible constellation member, if non-zero</td></tr>
 // </table>   
@@ -416,8 +416,8 @@ public func CocoGetCriteria( _ xa_ecdiff: UnsafeMutablePointer<Double> ) {
 //   (b) Special advisories for comparisons that evaluate to:
 //         SUSTAINED CLOSE APPROACH POSSIBLE
 //         POSSIBLE CONSTELLATION MEMBER
-//         RIGHT ASCENSION OF ASCENDING NODE DIFFERENCE WILL BE 0.0 WITHIN 60 DAYS (along with the
-//         estimated number of days to 0.0 degrees nodal nodal crossing difference)
+//         RIGHT ASCENSION OF ASCENDING NODE DIFFERENCE WILL BE 0d0 WITHIN 60 DAYS (along with the
+//         estimated number of days to 0d0 degrees nodal nodal crossing difference)
 public func CocoGetResults( _ priSatKey: Int64,
                             _ secSatKey: Int64,
                             _ xa_satData_pri: UnsafeMutablePointer<Double>,
@@ -689,7 +689,7 @@ public let XA_COCO_WDOT     =  4
 public let XA_COCO_RADOT    =  5
 //nodal crossing (min)
 public let XA_COCO_TNODE    =  6
-//time in days to approach 0.0 RA delta
+//time in days to approach 0d0 RA delta
 public let XA_COCO_TZERO    =  7
 //sustained close approach possible
 public let XA_COCO_SCAP     =  8

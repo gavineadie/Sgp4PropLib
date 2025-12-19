@@ -266,7 +266,7 @@ public func EnvGetEarthShape(  ) -> Int32 {
 }
 
 // Indexes of Earth Constant fields
-//Earth flattening (reciprocal; unitless)
+//Earth flattening (reciprocal, unitless)
 public let XF_GEOCON_FF    = 1
 //J2 (unitless)
 public let XF_GEOCON_J2    = 2
@@ -300,7 +300,7 @@ public let XF_GEOCON_MU    = 13
 public let XF_FKCON_C1     = 1
 //Earth rotation acceleration(rad/day**2)
 public let XF_FKCON_C1DOT  = 2
-//Greenwich angle (1970; rad)
+//Greenwich angle (1970  rad)
 public let XF_FKCON_THGR70 = 3
 
 // Indexes represent geopotential models GEO

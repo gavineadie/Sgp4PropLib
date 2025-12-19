@@ -626,7 +626,6 @@ public func CompMoonPos( _ ds50ET: Double,
 }
 
 // This function is intended for future use.  No information is currently available.
-// This function is intended for future use.  No information is currently available.
 public func AstroConvFrTo( _ xf_Conv: Int32,
                            _ frArr: UnsafeMutablePointer<Double>,
                            _ toArr: UnsafeMutablePointer<Double> ) {
@@ -1401,6 +1400,86 @@ public func TemeEpochToDate( _ nutationTerms: Int32,
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "TemeEpochToDate"), to: FunctionSignature.self)
 
     function(nutationTerms, epochDs50TAI, dateDs50TAI, posEpoch, velEpoch, posDate, velDate)
+}
+
+// Converts ECR position and velocity vectors to ECI (TEME of Date) position and velocity vectors.
+public func ECRToECITime( _ ds50UTC: Double,
+                          _ posECR: UnsafeMutablePointer<Double>,
+                          _ velECR: UnsafeMutablePointer<Double>,
+                          _ posECI: UnsafeMutablePointer<Double>,
+                          _ velECI: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ECRToECITime"), to: FunctionSignature.self)
+
+    function(ds50UTC, posECR, velECR, posECI, velECI)
+}
+
+// Converts ECI (TEME of Date) position and velocity vectors to ECR position and velocity vectors.
+public func ECIToECRTime( _ ds50UTC: Double,
+                          _ posECI: UnsafeMutablePointer<Double>,
+                          _ velECI: UnsafeMutablePointer<Double>,
+                          _ posECR: UnsafeMutablePointer<Double>,
+                          _ velECR: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ECIToECRTime"), to: FunctionSignature.self)
+
+    function(ds50UTC, posECI, velECI, posECR, velECR)
+}
+
+// Converts ECR position and velocity vectors to J2K (MEME of J2000) position and velocity vectors.
+public func ECRToJ2KTime( _ spectr: Int32,
+                          _ nutationTerms: Int32,
+                          _ ds50UTC: Double,
+                          _ posECR: UnsafeMutablePointer<Double>,
+                          _ velECR: UnsafeMutablePointer<Double>,
+                          _ posJ2K: UnsafeMutablePointer<Double>,
+                          _ velJ2K: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( Int32,
+                                                   Int32,
+                                                   Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ECRToJ2KTime"), to: FunctionSignature.self)
+
+    function(spectr, nutationTerms, ds50UTC, posECR, velECR, posJ2K, velJ2K)
+}
+
+// Converts J2K (MEME of J2000) position and velocity vectors to ECR position and velocity vectors.
+public func J2KToECRTime( _ spectr: Int32,
+                          _ nutationTerms: Int32,
+                          _ ds50UTC: Double,
+                          _ posJ2K: UnsafeMutablePointer<Double>,
+                          _ velJ2K: UnsafeMutablePointer<Double>,
+                          _ posECR: UnsafeMutablePointer<Double>,
+                          _ velECR: UnsafeMutablePointer<Double> ) {
+
+    typealias FunctionSignature = @convention(c) ( Int32,
+                                                   Int32,
+                                                   Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "J2KToECRTime"), to: FunctionSignature.self)
+
+    function(spectr, nutationTerms, ds50UTC, posJ2K, velJ2K, posECR, velECR)
 }
 
 // Index of Keplerian elements

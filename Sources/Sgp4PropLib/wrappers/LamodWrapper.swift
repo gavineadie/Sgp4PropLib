@@ -112,6 +112,11 @@ public func LamodGetSatNums( _ satNums: UnsafeMutablePointer<Int32> ) {
 }
 
 // Builds and returns the Lamod parameter card (1P-Card) from the current Lamod settings
+// See the Lamod.pdf document under the librarydocuments folder, section 7
+// "LAMOD Parameter Card (1P) Card Format".  This document has a description
+// of each column for a 1P card.  For an example, see files in the 
+// Verify/Lamod/Execution/input folder, such as la_case1.inp and look at the 
+// line that ends with "1 P". 
 public func LamodGet1pCard( _ lamod1PCard: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void
@@ -122,6 +127,11 @@ public func LamodGet1pCard( _ lamod1PCard: UnsafeMutablePointer<CChar> ) {
 }
 
 // Retrieves all Lamod control parameters with a single function call
+// See the Lamod.pdf document under the librarydocuments folder, section 7
+// "LAMOD Parameter Card (1P) Card Format".  This document has a description
+// of each column for a 1P card.  For an example, see files in the 
+// Verify/Lamod/Execution/input folder, such as la_case1.inp and look at the 
+// line that ends with "1 P". 
 public func LamodGet1pAll( _ timeFlg: UnsafeMutablePointer<Int32>,
                            _ startTime: UnsafeMutablePointer<Double>,
                            _ stopTime: UnsafeMutablePointer<Double>,
@@ -161,6 +171,11 @@ public func LamodGet1pAll( _ timeFlg: UnsafeMutablePointer<Int32>,
 // <li>When the last pass's culmination time passes the requested stopTime (culmination time == 0 and setTime == 0)</li>
 // <li>When a pass has multiple maximum elevations (culmination time == -1.0)</li>
 // </ul>
+// See the Lamod.pdf document under the librarydocuments folder, section 7
+// "LAMOD Parameter Card (1P) Card Format".  This document has a description
+// of each column for a 1P card.  For an example, see files in the 
+// Verify/Lamod/Execution/input folder, such as la_case1.inp and look at the 
+// line that ends with "1 P". 
 public func LamodSet1pAll( _ timeFlg: Int32,
                            _ startTime: Double,
                            _ stopTime: Double,
@@ -215,6 +230,11 @@ public func LamodSet1pAll( _ timeFlg: Int32,
 // 3: both 1 and 2</td></tr>
 // <tr><td>11 </td><td> Max solar aspect for optical sites</td></tr>   
 // </table>	
+// See the Lamod.pdf document under the librarydocuments folder, section 7
+// "LAMOD Parameter Card (1P) Card Format".  This document has a description
+// of each column for a 1P card.  For an example, see files in the 
+// Verify/Lamod/Execution/input folder, such as la_case1.inp and look at the 
+// line that ends with "1 P". 
 public func LamodGet1pField( _ xf_1P: Int32, _ retVal: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( Int32,
@@ -227,6 +247,11 @@ public func LamodGet1pField( _ xf_1P: Int32, _ retVal: UnsafeMutablePointer<CCha
 
 // Sets the value of a specified Lamod control parameter (1P-card field)
 // See LamodGet1pField for description of the xf_1P parameter values.
+// See the Lamod.pdf document under the librarydocuments folder, section 7
+// "LAMOD Parameter Card (1P) Card Format".  This document has a description
+// of each column for a 1P card.  For an example, see files in the 
+// Verify/Lamod/Execution/input folder, such as la_case1.inp and look at the 
+// line that ends with "1 P". 
 public func LamodSet1pField( _ xf_1P: Int32, _ valueStr: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( Int32,
@@ -399,9 +424,9 @@ public func LamodSenSatDataToArray( _ senSatKey: Int64, _ xa_senSat: UnsafeMutab
     return function(senSatKey, xa_senSat)
 }
 
-// Returns the number of possible passes of the sensor/satellite pair in the requested time span which pass 
-// the horizontal limit test. This function only applies when the culmination mode was selected
-// This is an estimated number of passes. Each pass might not return any valid look angles due to the sensor limits settings.
+// Returns the number of possible passes of the sensor/satellite pair in the requested time span. This function only applies when the CULMINATION or TASK mode was selected
+// Note: - In CULMINATION mode, this returns passes which pass the horizontal limit test. This is an estimated number of passes. Each pass might not return any valid look angles due to the sensor limits settings.
+//       - Since v9.7, entry/exit times (using TASK mode) are available to orbiting sensors and other sensor types as well. Unlike the CULMINATION mode, these are actual valid passes that pass all the limit checks
 public func LamodGetNumPasses( _ senSatKey: Int64 ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( Int64 ) -> Int32
@@ -411,12 +436,13 @@ public func LamodGetNumPasses( _ senSatKey: Int64 ) -> Int32 {
     return function(senSatKey)
 }
 
-// Returns an array of rise, culmination, and set times of all possible passes of a sensor/satellite pair during the requested time span
+// Returns an array of rise, culmination, and set times (or entry/exit times) of all possible passes of a sensor/satellite pair during the requested time span
 // See LamodGetNumPasses for example.
 // If a possible culmination time of the last pass is after the requested stop time, only the rise time is returned. The culmination and set times are set to zeros. Since there is no culmination time in this case, the host program should switch to step mode to compute look angles.
 // There are cases when multiple maximum elevations are detected in one pass. In these cases, the culmination times will be set to -1.0. The users need to check for this condition and switch to step mode.
 // For external ephemeris files, if the provided ephemerides don't cover the requested time span, the possible rise and set times will not be available and will be set to -1.0.
-// Note: For Fence/Fan typed sensors this function returns enter/penetration-cross/exit times in place of rise/culmination/set times
+// Note: - For Fence/Fan/Orbiting typed sensors this function returns enter/penetration-cross/exit times in place of rise/culmination/set times
+//       - Since v9.7, entry/exit times (using TASK mode) are available to orbiting sensors and other appropriate sensor types as well
 public func LamodGetRiseCulmSetTimes( _ senSatKey: Int64, _ rcsTimeArr: UnsafeMutablePointer<(Double, Double, Double)> ) -> Int32 {
 
     let _rcsTimeArr = UnsafeMutableRawPointer(rcsTimeArr).bindMemory(to: Double.self, capacity: 0)
@@ -600,7 +626,7 @@ public func LamodCompRaDec( _ xlPos: UnsafeMutablePointer<Double>,
     function(xlPos, rasc, decl, raHr, raMin, raSec, decDeg, decMin, decSec)
 }
 
-// Retrieves the formatted observation strings, either in B3 or transmission format, generated from the most recent look angle data
+// Retrieves the formatted observation strings, either in B3,transmission, SP, or CSV format, generated from the most recent look angle data
 // Note: This function is not thread safe, please use LamodGenObsAtTime() instead 
 // The function returns one-line or two-line formatted obs string depending on the input <i>punchObs</i> and the sensor's observation type.  The users need to check the returned value of <i>numLines</i> to see what type of the output strings they are.
 public func LamodGenObs( _ senSatKey: Int64,
@@ -643,6 +669,24 @@ public func LamodGenObsAtTime( _ senSatKey: Int64,
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "LamodGenObsAtTime"), to: FunctionSignature.self)
 
     return function(senSatKey, currDs50TAI, punchObs, obsClass, obsLine1, obsLine2, numLines)
+}
+
+// Generates RF (Radio Frequency) obs from two selected sensors to the same target satellite
+public func LamodGenRfObs( _ senSatKey1: Int64,
+                           _ senSatKey2: Int64,
+                           _ ds50TAI: Double,
+                           _ rfObs_ctrl: UnsafeMutablePointer<Double>,
+                           _ rfObs_gen: UnsafeMutablePointer<Double> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   Int64,
+                                                   Double,
+                                                   UnsafeMutablePointer<Double>,
+                                                   UnsafeMutablePointer<Double> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "LamodGenRfObs"), to: FunctionSignature.self)
+
+    return function(senSatKey1, senSatKey2, ds50TAI, rfObs_ctrl, rfObs_gen)
 }
 
 // Removes a sensor/satellite pair from Lamod.dll's set of loaded sensor/satellite pairs
@@ -828,7 +872,7 @@ public let XF_1P_GENOBS  = 6
 public let XF_1P_VISFLG  = 7
 //Step mode flag: 0= use culmination mode, 1= use step mode, 2= use task mode
 public let XF_1P_STEPMODE = 8
-//Processing mode: 'O': obsched mode; 'P': P ASCHED mode
+//Processing mode: 'O': obsched mode, 'P': P ASCHED mode
 public let XF_1P_PROCMODE = 9
 //Diagnostic mode: 0: none, 1: print sen/sat pos at each look, 2: print pass by pass diagnostics, 3: both 1 and 2
 public let XF_1P_DIAGNOST = 10
@@ -879,7 +923,7 @@ public let GENOBS_CSV       =  4
 
 
 // indexes of look and view data in an array
-//look code: 0=valid look; 1=Fail horizon break test; 2=Fail sensor's limit tests
+//look code: 0=valid look, 1=Fail horizon break test, 2=Fail sensor's limit tests
 public let XA_LV_LOOKCODE =   0
 //time in ds50UTC when the look angle is computed
 public let XA_LV_DS50UTC  =   1
@@ -1006,7 +1050,7 @@ public let XA_LV_SOLAA    =  61
 public let XA_LV_VIS      =  62
 //relative velocity (km/s)
 public let XA_LV_RELVEL   =  63
-//off-boresight angle (deg) - constant azimuth fan only
+//off-boresight angle (deg) - bounded-cone and constant azimuth fan only
 public let XA_LV_OBSANGLE =  64
 //angle to fan (deg) - constant azimuth fan only
 public let XA_LV_ANG2FAN  =  65
@@ -1107,18 +1151,17 @@ public let XA_LA_PARMS_XMSAA       =  6
 
 public let XA_LA_PARMS_SIZE        = 16
 
-// Different sensor location types
-//Sensor location is in ECI - specific to LAMOD
-public let SENLOC_TYPE_ECI =  4
-
+//// Different sensor location types
+//   SENLOC_TYPE_ECI =  4     // Sensor location is in ECI - specific to LAMOD
+//
 // Sensor location - for use in LamodSenSatDirect_OS() all ground-based sensor types and also orbiting
 //location type (see SENLOC_TYPE_? for available types)
 public let XA_LOCSEN_LOCTYPE   =  0
-//sensor location ECR/EFG X component (km) or LLH/Lat (deg) / orbiting sensor ECI/X component (km) (SENLOC_TYPE_ECI)
+//sensor location ECR/EFG X component (km) or LLH/Lat (deg) / orbiting sensor ECI/X component (km)
 public let XA_LOCSEN_POS1      =  1
-//sensor location ECR/EFG Y component (km) or LLH/Lon (+: East/-: West) (deg) / orbiting sensor ECI/Y component (km) (SENLOC_TYPE_ECI)
+//sensor location ECR/EFG Y component (km) or LLH/Lon (+: East/-: West) (deg) / orbiting sensor ECI/Y component (km)
 public let XA_LOCSEN_POS2      =  2
-//sensor location ECR/EFG Z component (km) or LLH/Height (km) / or orbiting sensor ECI/Z component (km) (SENLOC_TYPE_ECI)
+//sensor location ECR/EFG Z component (km) or LLH/Height (km) / or orbiting sensor ECI/Z component (km)
 public let XA_LOCSEN_POS3      =  3
 
 // for ground sensor
@@ -1153,5 +1196,26 @@ public let XA_PVSAT_VELY    =  4
 public let XA_PVSAT_VELZ    =  5
 
 public let XA_PVSAT_SIZE    = 6
+
+
+// Generate RF Obs flags
+//generate obs time is at: 0-time when the signal left the satellite, 1-time when the signal arrives at the sensor
+public let RFOBS_CTRL_TIME         = 0
+//apply tropospheric delay to range: 0=not apply, 1=apply
+public let RFOBS_CTRL_RNGTROPO     = 1
+//apply tropospheric delay to range rate: 0=not apply, 1=apply
+public let RFOBS_CTRL_RNGRTTROPO   = 2
+
+public let RFOBS_CTRL_SIZE         = 8
+
+// Generated data for RF Obs
+//obs time in days since 1950 UTC
+public let RFOBS_GEN_OBSTIME       = 0
+//(meters) Difference in range as observed by sensors
+public let RFOBS_GEN_RNGDELTA      = 1
+//(meters/second) Difference in range-rate as observed by sensors
+public let RFOBS_GEN_RNGRTDELTA    = 2
+
+public let RFOBS_GEN_SIZE          = 8
 
 // ========================= End of auto generated code ==========================

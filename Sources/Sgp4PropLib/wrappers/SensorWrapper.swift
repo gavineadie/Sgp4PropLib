@@ -526,6 +526,17 @@ public func SensorGetLines( _ senKey: Int64,
     return function(senKey, sCard, l1Card, l2Card)
 }
 
+// Retrieves the sensor Bias/Sigma card
+public func SensorGetBSLine( _ senKey: Int64, _ bsCard: UnsafeMutablePointer<CChar> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   UnsafeMutablePointer<CChar> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SensorGetBSLine"), to: FunctionSignature.self)
+
+    return function(senKey, bsCard)
+}
+
 // Gets sensor's orbiting satellite's satKey
 public func SensorGetOrbSatKey( _ senKey: Int64, _ orbSatKey: UnsafeMutablePointer<Int64> ) -> Int32 {
 
@@ -749,6 +760,9 @@ public let SENLOC_TYPE_ECR =  1
 public let SENLOC_TYPE_EFG =  2
 //Sensor location is in LLH
 public let SENLOC_TYPE_LLH =  3
+//Sensor location is in ECI (TEME of Date) (associated with time of ECI position)
+public let SENLOC_TYPE_ECI =  4
+
 
 
 // Sensor Data -
@@ -765,43 +779,47 @@ public let XA_SEN_GEN_MAXRNG    =  4
 public let XA_SEN_GEN_RRLIM     =  5
 //min/max range check (=0 apply min/max range limits, =1 accept all passes regardless of range)
 public let XA_SEN_GEN_RNGLIMFLG =  6
-//is special mobil sensor flag / column 9 in 1L card (=0 non mobile sensor, =1 mobile sensor)
+//is special ground-based mobil sensor flag / column 9 in 1L card (=0 non mobile sensor, =1 mobile sensor) {0, 1}
 public let XA_SEN_GEN_SMSEN     =  7
 
 
 //*******************************************************************************
 
-// sensor location - for all ground-based sensor types (non-orbiting)
+// sensor location - for all ground-based (or fixed point) sensor types (non-orbiting)
 //location type (see SENLOC_TYPE_? for available types)
 public let XA_SEN_GRN_LOCTYPE   = 10
-//sensor location ECR/EFG X component (km) or LLH/Lat (deg)
+//sensor location ECR/EFG/ECI X component (km) or LLH/Lat (deg)
 public let XA_SEN_GRN_POS1      = 11
-//sensor location ECR/EFG Y component (km) or LLH/Lon (+: East/-: West) (deg)
+//sensor location ECR/EFG/ECI Y component (km) or LLH/Lon (+: East/-: West) (deg)
 public let XA_SEN_GRN_POS2      = 12
-//sensor location ECR/EFG Z component (km) or LLH/Height (km)
+//sensor location ECR/EFG/ECI Z component (km) or LLH/Height (km)
 public let XA_SEN_GRN_POS3      = 13
-//astronomical latitude (deg) (+: North, -: South)
+//astronomical latitude (deg) (+: North, -: South) [-90, 90]
 public let XA_SEN_GRN_ASTROLAT  = 14
-//astronomical longitude (deg) (+: West, -: East)
+//astronomical longitude (deg) (+: West, -: East) [-360, 360]
 public let XA_SEN_GRN_ASTROLON  = 15
+//time of ECI position (ds50UTC) - only when location type = SENLOC_TYPE_ECI
+public let XA_SEN_GRN_ECITIME   = 16
 
 
 //*******************************************************************************
 // sensor limits - for LAMOD only (not needed by Rotas/BatchDC)
 //*******************************************************************************
 // Bounded cone tracker (conical sensor) (VT_BCT)
-//conical sensor boresight azimuth angle (deg)
+//conical sensor boresight azimuth angle (deg) [-360, 360]
 public let XA_SEN_BCT_BRSGHTAZ  = 20
-//conical sensor boresight elevation angle (deg)
+//conical sensor boresight elevation angle (deg) [-90, 90]
 public let XA_SEN_BCT_BRSGHTEL  = 21
-//coninal sensor off-boresight angle/half cone angle (deg)
+//coninal sensor off-boresight angle/half cone angle (deg) [0, 90]
 public let XA_SEN_BCT_HALFANG   = 22
-//conical sensor minimum elevation angle (deg)
+//conical sensor minimum elevation angle (deg) [0, 90]
 public let XA_SEN_BCT_MINEL     = 23
 
 //*******************************************************************************
 // Conventinoal tracker (VT_CON)
-//low elevation limit #1 (deg)
+//is special mobil sensor flag / column 9 in 1L card (=0 non mobile sensor, =1 mobile sensor) {0, 1}
+public let XA_SEN_CON_SMSEN     =  7
+//low elevation limit #1 (deg) [
 public let XA_SEN_CON_ELFR1     = 20
 //high elevation limit #1 (deg)
 public let XA_SEN_CON_ELTO1     = 21
@@ -839,7 +857,7 @@ public let XA_SEN_OPT_AZTO2     = 27
 
 //optical sensor solar exclusion angle (to check for solar aspect angle limit)
 public let XA_SEN_OPT_SEA       = 40
-//ground site twilight offset angle
+//ground site twilight offset angle (deg) [0, 20)
 public let XA_SEN_OPT_TWILGHT   = 41
 //visual pass check (sensor in dark, satellite illuminated)
 public let XA_SEN_OPT_VISCHK    = 42
@@ -859,21 +877,21 @@ public let XA_SEN_FAN_OBSANGLE  = 23
 //orbiting sensor's satellite number
 public let XA_SEN_ORB_SATNUM    = 10
 
-//orbiting sensor's off-boresight angle - low elevation limit #1 (deg)
+//orbiting sensor's off-boresight angle - low elevation limit #1 (deg) [0, 180]
 public let XA_SEN_ORB_ELMIN1    = 20
-//orbiting sensor's off-boresight angle - high elevation limit #1 (deg)
+//orbiting sensor's off-boresight angle - high elevation limit #1 (deg) [0, 180]
 public let XA_SEN_ORB_ELMAX1    = 21
-//orbiting sensor's off-boresight clock angle - low azimuth limit #1 (deg)
+//orbiting sensor's off-boresight clock angle - low azimuth limit #1 (deg) [-360, 360]
 public let XA_SEN_ORB_AZMIN1    = 22
-//orbiting sensor's off-boresight clock angle - high azimuth limit #1 (deg)
+//orbiting sensor's off-boresight clock angle - high azimuth limit #1 (deg) [-360, 360]
 public let XA_SEN_ORB_AZMAX1    = 23
-//orbiting sensor's off-boresight angle - low elevation limit #2 (deg)
+//orbiting sensor's off-boresight angle - low elevation limit #2 (deg) [0, 180]
 public let XA_SEN_ORB_ELMIN2    = 24
-//orbiting sensor's off-boresight angle - high elevation limit #2 (deg)
+//orbiting sensor's off-boresight angle - high elevation limit #2 (deg) [0, 180]
 public let XA_SEN_ORB_ELMAX2    = 25
-//orbiting sensor's off-boresight clock angle - low azimuth limit #2 (deg)
+//orbiting sensor's off-boresight clock angle - low azimuth limit #2 (deg) [-360, 360]
 public let XA_SEN_ORB_AZMIN2    = 26
-//orbiting sensor's off-boresight clock angle - high azimuth limit #2 (deg)
+//orbiting sensor's off-boresight clock angle - high azimuth limit #2 (deg) [-360, 360]
 public let XA_SEN_ORB_AZMAX2    = 27
 
 //orbiting sensor earth limb exclusion distance (km)
@@ -882,11 +900,11 @@ public let XA_SEN_ORB_EARTHLIMB = 40
 public let XA_SEN_ORB_SEA       = 41
 //orbiting sensor lunar exclusion angle (deg)
 public let XA_SEN_ORB_LEA       = 42
-//orbiting sensor minimum illumination angle (deg)
+//orbiting sensor minimum illumination angle (deg) [0, 180)
 public let XA_SEN_ORB_MINILLUM  = 43
-//orbiting sensor allow earth in the back ground
+//orbiting sensor allow earth in the back ground {0, 1}
 public let XA_SEN_ORB_EARTHBRND = 44
-//orbiting sensor planetary restriction
+//orbiting sensor planetary restriction {0, 1}
 public let XA_SEN_ORB_PLNTRYRES = 45
 
 //*******************************************************************************
@@ -907,7 +925,7 @@ public let XA_SEN_FOV_TILTANGLE = 21
 //*******************************************************************************
 
 // Output control parameters (shouldn't be part of sensor data - just for backward compatibility)
-//unit on range/range rate (0= km, km/sec; 1=nm, nm/sec)
+//unit on range/range rate (0= km, km/sec, 1=nm, nm/sec) {0, 1}
 public let XA_SEN_GEN_UNIT      = 90
 //output interval (min)
 public let XA_SEN_GEN_INTERVAL  = 91
@@ -952,9 +970,9 @@ public let XS_SEN_VIEWTYPE_1_1      =   1
 public let XS_SEN_OBSTYPE_2_1       =   2
 //sensor description/narrative/notes (24-character length)
 public let XS_SEN_DSCRPTN_3_24      =   3
-//orbiting sensor's boresight vector #1 (1-character length)
+//orbiting sensor's boresight vector #1 (1-character length) {'N', 'D', 'U', 'F', 'V', 'A', 'B', 'W', 'L'. 'R'}
 public let XS_SEN_ORB_BSVEC1_27_1   =  27
-//orbiting sensor's boresight vector #2 (1-character length)
+//orbiting sensor's boresight vector #2 (1-character length) {'N', 'D', 'U', 'F', 'V', 'A', 'B', 'W', 'L'. 'R'}
 public let XS_SEN_ORB_BSVEC2_28_1   =  28
 //for VT_FOR only, az/el table file path (256-character length)
 public let XS_SEN_FOR_AZFILE_255_256 = 255

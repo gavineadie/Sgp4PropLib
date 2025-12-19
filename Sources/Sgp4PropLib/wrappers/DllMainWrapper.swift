@@ -318,6 +318,42 @@ public func GetDupKeyMode(  ) -> Int32 {
     return function()
 }
 
+// Retrieves error message associated with the input errCode. 
+// As a common practice, this function is called to retrieve the error message when an error occurs.
+public func GetErrMsg( _ errCode: Int32, _ errMsg: UnsafeMutablePointer<CChar> ) {
+
+    typealias FunctionSignature = @convention(c) ( Int32,
+                                                   UnsafeMutablePointer<CChar> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetErrMsg"), to: FunctionSignature.self)
+
+    function(errCode, errMsg)
+}
+
+// Sets error message mode 
+// mode = 0: Only last error message is stored and then retrieved via GetLastErrMsg(). Appropriate for single-thread applications
+// mode = 1: Each thread stores and retrieves its own error message via GetErrMsg(). Appropriate for multi-thread applications
+public func SetErrMsgMode( _ mode: Int32 ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int32 ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "SetErrMsgMode"), to: FunctionSignature.self)
+
+    return function(mode)
+}
+
+// Gets error message mode 
+// mode = 0: Only last error message is stored and then retrieved via GetLastErrMsg(). Appropriate for single-thread applications
+// mode = 1: Each thread stores and retrieves its own error message via GetErrMsg(). Appropriate for multi-thread applications
+public func GetErrMsgMode(  ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) (  ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "GetErrMsgMode"), to: FunctionSignature.self)
+
+    return function()
+}
+
 // log message string length
 public let LOGMSGLEN = 128
 
@@ -366,6 +402,8 @@ public let PROPTYPE_UK  = 4
 // Add sat error
 //Bad satellite key
 public let BADSATKEY = -1
+//Bad satellite number
+public let BADSATNUM = -1
 //Duplicate satellite key
 public let DUPSATKEY =  0
 

@@ -119,7 +119,6 @@ public func AofBasic( _ xa_aofRun: UnsafeMutablePointer<Double>,
 
 // Computes entry/exit times of overflight satellite/sensor having complex configurations (cone, donut, butterfly, leftButterly, rightButterfly)
 // versus defended areas defined by multiple lat lon height points (polygon)
-// For a description of the input parameter arrays xa_aofRun and xa_aofSen, see AofBasic.
 // The input array llhArr is a zero-based array with latitude, longitude and altitude of each point in subsequent entries, e.g.:
 // llhArr[0] = point 1 latitude, 
 // llhArr[1] = point 1 longitude, 
@@ -199,7 +198,7 @@ public let XA_AOFCTRL_START    =  1
 public let XA_AOFCTRL_STOP     =  2
 //search interval (min)
 public let XA_AOFCTRL_INTERVAL =  3
-//print output control flag; 0=print penetrations only, 1=print penetrations and data description
+//print output control flag, 0=print penetrations only, 1=print penetrations and data description
 public let XA_AOFCTRL_PRTOPT   =  4
 //search method: 0=use brute force method, 1=use analytical method
 public let XA_AOFCTRL_SRCHMET  =  5

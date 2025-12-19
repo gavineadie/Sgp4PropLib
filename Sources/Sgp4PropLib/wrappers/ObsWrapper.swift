@@ -259,6 +259,28 @@ public func ObsAddFrCsvML( _ csvLine: UnsafeMutablePointer<CChar>, _ obsKey: Uns
     function(csvLine, obsKey)
 }
 
+// Adds one observation using RF TDOA/FDOA obs string 
+// Notes: Sensors listed in the input RF obs have to be loaded prior to this call
+public func ObsAddFrRfCard( _ rfObsLine: UnsafeMutablePointer<CChar> ) -> Int64 {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int64
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ObsAddFrRfCard"), to: FunctionSignature.self)
+
+    return function(rfObsLine)
+}
+
+// Adds one observation using RF TDOA/FDOA obs string - for MatLab
+public func ObsAddFrRfCardML( _ rfObsLine: UnsafeMutablePointer<CChar>, _ obsKey: UnsafeMutablePointer<Int64> ) {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar>,
+                                                   UnsafeMutablePointer<Int64> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ObsAddFrRfCardML"), to: FunctionSignature.self)
+
+    function(rfObsLine, obsKey)
+}
+
 // Adds one observation using its input data. Depending on the observation type, some input data might be unavailable and left blank
 public func ObsAddFrFields( _ secClass: CChar,
                             _ satNum: Int32,
@@ -542,6 +564,17 @@ public func ObsGetCsv( _ obsKey: Int64, _ csvline: UnsafeMutablePointer<CChar> )
     return function(obsKey, csvline)
 }
 
+// Returns observation in RF obs format, a string 
+public func ObsGetRfCard( _ obsKey: Int64, _ rfCard: UnsafeMutablePointer<CChar> ) -> Int32 {
+
+    typealias FunctionSignature = @convention(c) ( Int64,
+                                                   UnsafeMutablePointer<CChar> ) -> Int32
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "ObsGetRfCard"), to: FunctionSignature.self)
+
+    return function(obsKey, rfCard)
+}
+
 // Constructs a B3-card string from the input observation data fields
 public func ObsFieldsToB3Card( _ secClass: CChar,
                                _ satNum: Int32,
@@ -742,7 +775,7 @@ public func ObsB3Parse( _ b3ObsCard: UnsafeMutablePointer<CChar>,
     return function(b3ObsCard, secClass, satNum, senNum, obsTimeDs50utc, elOrDec, azOrRA, slantRange, rangeRate, elRate, azRate, rangeAccel, obsType, trackInd, astat, siteTag, spadocTag, pos)
 }
 
-// Parses any observation data format (B3-card (or B3E) string / one or two line TTY / CSV - No conversion takes place
+// Parses any observation data format (B3-card (or B3E) string / one or two line TTY / CSV / RF obs - No conversion takes place
 public func ObsParse( _ line1: UnsafeMutablePointer<CChar>,
                       _ line2: UnsafeMutablePointer<CChar>,
                       _ xa_obs: UnsafeMutablePointer<Double> ) -> Int32 {
@@ -1120,7 +1153,7 @@ public let XF_OBS_SOL_PHASE    = 34
 public let XF_OBS_FRAME        = 35
 //Aberration correction indicator (0=YES, 1=NO)
 public let XF_OBS_ABERRATION   = 36
-//Either R" or T; ROTAS=General Perturbations, TRACK=Special Perturbations
+//Either R" or T  ROTAS=General Perturbations, TRACK=Special Perturbations
 public let XF_OBS_ASTAT_METHOD = 37
 
 // Indexes of observation data in an array
@@ -1174,6 +1207,38 @@ public let XA_OBS_VELZ         = 21
 public let XA_OBS_YROFEQNX     = 22
 //aberration indicator, 0-not corrected, 1-corrceted
 public let XA_OBS_ABERRATION   = 23
+
+// for RF obs only - some indexes are reused but with different field names that only applies to RF obs
+//Sensor number of site #1 (for RF obs only)
+public let XA_OBS_SENNUM1      =  2
+//Sensor number of site #2 (for RF obs only)
+public let XA_OBS_SENNUM2      =  4
+//Delta range (m)
+public let XA_OBS_DELRNG       =  5
+//The uncertainty of the delta range measurement (m). This value may be 0 if the uncertainty in the measurement is unknown.
+public let XA_OBS_DELRNGSIGM   =  6
+//Delta range rate (m/s)
+public let XA_OBS_DELRRATE     =  7
+//The uncertainty of the delta range-rate measurement (m/s). This value may be 0 if the uncertainty in the measurement is unknown.
+public let XA_OBS_DELRRATESIGM =  8
+//Site 1 equipment path delay (m). This value may be zero
+public let XA_OBS_DELAY1       =  9
+//Site 2 equipment path delay (m). This value may be zero
+public let XA_OBS_DELAY2       = 10
+//Frequency of transmitted signal (Hz)
+public let XA_OBS_FREQ         = 12
+//Process time (days since 1950 UTC)
+public let XA_OBS_PROCTIME     = 13
+//Signal to noise ratio
+public let XA_OBS_SNR          = 14
+//Flag for dianostic use
+public let XA_OBS_FLG          = 15
+//FDOA rate for diagnostics
+public let XA_OBS_FDOADOT      = 16
+//Reserved
+public let XA_OBS_RESVD        = 17
+// end of RF obs
+
 
 //AZ/RA bias (deg)
 public let XA_OBS_AZORRABIAS   = 33
@@ -1461,6 +1526,7 @@ public let XA_OT9_YROFEQNX  = 22
 //ABERRATION INDICATOR, 0-NOT CORRECTED, 1-CORRCETED
 public let XA_OT9_ABERRATION = 23
 
+// Position only obs
 //position X/ECI or X/EFG (km)
 public let XA_OTP_POSX      = 16
 //position Y/ECI or Y/EFG (km)
@@ -1468,6 +1534,7 @@ public let XA_OTP_POSY      = 17
 //position Z/ECI or Z/EFG (km)
 public let XA_OTP_POSZ      = 18
 
+// Position/Velocity obs
 //position X/ECI or X/EFG (km)
 public let XA_OTV_POSX      = 16
 //position Y/ECI or Y/EFG (km)
@@ -1480,6 +1547,37 @@ public let XA_OTV_VELX      = 19
 public let XA_OTV_VELY      = 20
 //velocity Z/ECI (km/s)  (or Gdot/EFG (km) for ob type 7 TTY)
 public let XA_OTV_VELZ      = 21
+
+// RF obs
+//Sensor number of site #1 (for RF obs only)
+public let XA_OTRF_SENNUM1      =  2
+//Sensor number of site #2 (for RF obs only)
+public let XA_OTRF_SENNUM2      =  4
+//Delta range (m)
+public let XA_OTRF_DELRNG       =  5
+//The uncertainty of the delta range measurement (m). This value may be 0 if the uncertainty in the measurement is unknown.
+public let XA_OTRF_DELRNGSIGM   =  6
+//Delta range rate (m/s)
+public let XA_OTRF_DELRRATE     =  7
+//The uncertainty of the delta range-rate measurement (m/s). This value may be 0 if the uncertainty in the measurement is unknown.
+public let XA_OTRF_DELRRATESIGM =  8
+//Site equipment path delay. This value may be zero
+public let XA_OTRF_DELAY1       =  9
+//Site equipment path delay. This value may be zero
+public let XA_OTRF_DELAY2       = 10
+//Frequency of transmitted signal
+public let XA_OTRF_FREQ         = 12
+//Process time (days since 1950 UTC)
+public let XA_OTRF_PROCTIME     = 13
+//Signal to noise ratio
+public let XA_OTRF_SNR          = 14
+//Flag for dianostic use
+public let XA_OTRF_FLG          = 15
+//FDOA rate for diagnostics
+public let XA_OTRF_FDOADOT      = 16
+//Reserved
+public let XA_OTRF_RESVD        = 17
+
 
 public let XA_OT_SIZE         = 64
 

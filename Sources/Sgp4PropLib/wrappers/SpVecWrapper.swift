@@ -596,7 +596,7 @@ public let XA_SPVEC_BTERM    =   4
 public let XA_SPVEC_AGOM     =   5
 //Outgassing parameter (km/s^2)
 public let XA_SPVEC_OGPARM   =   6
-//Inpute coordinate systemm; see SPVEC_INPCOORD_? for available options
+//Inpute coordinate systemm, see SPVEC_INPCOORD_? for available options
 public let XA_SPVEC_INPCOORD =   7
 
 //X component of satellite's position (km)
@@ -632,7 +632,7 @@ public let XA_SPVEC_F10AVG   =  77
 public let XA_SPVEC_AP       =  78
 //Geopotential truncation order/degree/zonals
 public let XA_SPVEC_TRUNC    =  79
-//Corrector step convergence criterion; exponent of 1/10; default = 10
+//Corrector step convergence criterion, exponent of 1/10, default = 10
 public let XA_SPVEC_CONVERG  =  80
 //Outgassing pertubations flag
 public let XA_SPVEC_OGFLG    =  81

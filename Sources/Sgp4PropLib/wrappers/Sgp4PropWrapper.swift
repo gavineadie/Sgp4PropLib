@@ -36,6 +36,7 @@ public func Sgp4GetInfo( _ infoStr: UnsafeMutablePointer<CChar> ) {
 }
 
 // Loads SGP4-related parameters (prediction controls, JPL settings) and SGP4 elsets from a text file
+// Not available for Web Assembly.
 public func Sgp4LoadFileAll( _ sgp4InputFile: UnsafeMutablePointer<CChar> ) -> Int32 {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Int32
@@ -47,6 +48,7 @@ public func Sgp4LoadFileAll( _ sgp4InputFile: UnsafeMutablePointer<CChar> ) -> I
 
 // Saves currently loaded SGP4-related parameters (SGP4 application controls, prediction controls, integration controls) to a file
 // The purpose of this function is to save the current SGP4-related settings, usually used in GUI applications, for future use.
+// Not available for Web Assembly.
 public func Sgp4SaveFile( _ sgp4File: UnsafeMutablePointer<CChar>,
                           _ saveMode: Int32,
                           _ saveForm: Int32 ) -> Int32 {
@@ -377,8 +379,9 @@ public func Sgp4ReepochCsv( _ satKey: Int64,
     return function(satKey, reEpochDs50UTC, csvLine)
 }
 
-// Sets path to the Sgp4 Open License file if the license file
-// Note: This function has been revised since v9.6. It's only needed if the "SGP4_Open_License.txt" isn't located in current folder or those folders specified in PATH/LD_LIBRARY_PATH environment
+// Sets DIRECTORY/FOLDER path to the Sgp4 Open License file if the license file doesn't exist in the current folder or those specified in PATH/LD_LIBRARY_PATH environment
+// Note: This function has been revised since v9.6. It's only needed if the "SGP4_Open_License.txt" isn't located in current folder or those folders specified in PATH/LD_LIBRARY_PATH environment.
+//       Also, this requires a directory/folder, not a file
 public func Sgp4SetLicFilePath( _ licFilePath: UnsafeMutablePointer<CChar> ) {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Void

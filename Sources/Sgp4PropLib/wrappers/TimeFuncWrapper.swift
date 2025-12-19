@@ -218,17 +218,47 @@ public func UTCToDTG15( _ ds50UTC: Double, _ dtg15: UnsafeMutablePointer<CChar> 
     function(ds50UTC, dtg15)
 }
 
+// Converts an internal time in ds50UTC to the specified DTG format - dtgFmt 
+// The input ds50UTC must be greater than 2192.0, which corresponds to a time later than 1st Jan 1956. Any input value less than or equal to 2192.0 will yield "1956/001 0000 00.000".
+public func UTCToDTG( _ ds50UTC: Double,
+                      _ dtgFmt: Int32,
+                      _ outDtg: UnsafeMutablePointer<CChar> ) {
+
+    typealias FunctionSignature = @convention(c) ( Double,
+                                                   Int32,
+                                                   UnsafeMutablePointer<CChar> ) -> Void
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "UTCToDTG"), to: FunctionSignature.self)
+
+    function(ds50UTC, dtgFmt, outDtg)
+}
+
 // Converts a time in one of the DTG formats to a time in ds50UTC. DTG15, DTG17, DTG19, and DTG20 formats are accepted.
 // See "UTCToDTG20" for an example.
 // During the conversion, this function processes only numbers and the '.' character. This means that you can format dtgStr in a format that makes sense. You can use spaces and the '/' character for example if you wish.
 // 
-// The function can process dates from 1950 to 2049. Any input outside this range will yield "0.0".
+// The function can process dates from 1950 to 2049. Any input outside this range will yield "0d0".
 // This function supports DTG19 inputs in both "YY DDD HH MM SS.SSS" and "YYYYMonDDHHMMSS.SSS" formats.
 public func DTGToUTC( _ dtg: UnsafeMutablePointer<CChar> ) -> Double {
 
     typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Double
 
     let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "DTGToUTC"), to: FunctionSignature.self)
+
+    return function(dtg)
+}
+
+// An extension to DTGToUTC to support newer time formats (up to 32-character long)
+// DD Mon YYYY HH:MM:SS.SSS
+// YYYY/mm/DD HH:MM:SS.SSS or YYYY-mm-DDTHH:MM:SS.SSS
+// YYYY/mm/DD HH:MM:SS.SSSSSS or YYYY-mm-DDTHH:MM:SS.SSSSSS
+// YYYY ddd (DD Mon) HH:MM:SS.SSS
+// YYYY-DDDTHH:MM:SS.SSSZ or YYYY ddd HH MM SS.SSS
+public func DTGToUTCExt( _ dtg: UnsafeMutablePointer<CChar> ) -> Double {
+
+    typealias FunctionSignature = @convention(c) ( UnsafeMutablePointer<CChar> ) -> Double
+
+    let function = unsafeFunctionSignatureCast(getFunctionPointer(libHandle, "DTGToUTCExt"), to: FunctionSignature.self)
 
     return function(dtg)
 }
@@ -515,4 +545,27 @@ public func TConTimeSpan( _ numOfRecs: UnsafeMutablePointer<Int32>,
 
     function(numOfRecs, frTimeDs50UTC, toTimeDs50UTC)
 }
+
+// Available output date time group (DTG) formats
+//YYDDDHHMMSS.SSS              (DTG15)
+public let DTGFMT_DTG15  =  1
+//YYYY/DDD.DDDDDDDD            (DTG17)
+public let DTGFMT_DTG17  =  2
+//YYYYMonDDHHMMSS.SSS          (DTG19)
+public let DTGFMT_DTG19  =  3
+//YYYY/DDD HHMM SS.SSS         (DTG20)
+public let DTGFMT_DTG20  =  4
+//YYYY ddd HH MM SS.SSS        (DTG21)
+public let DTGFMT_DTG21  =  5
+//YYYY-DDDTHH:MM:SS.SSSZ       (DTG22)
+public let DTGFMT_DTG22  =  6
+//DD Mon YYYY HH:MM:SS.SSS     (DTG24)
+public let DTGFMT_DTG24  =  7
+//YYYY/mm/DD HH:MM:SS.SSSSSS   (DTG25A)
+public let DTGFMT_DTG25A =  8
+//YYYY-mm-DD HH:MM:SS.SSSSSS   (DTG25B)
+public let DTGFMT_DTG25B =  9
+//YYYY ddd (DD Mon) HH:MM:SS.SSS  (DTG30)
+public let DTGFMT_DTG30  = 10
+
 // ========================= End of auto generated code ==========================

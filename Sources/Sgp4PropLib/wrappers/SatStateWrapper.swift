@@ -614,6 +614,10 @@ public let XA_GOBS_ABARZ     =  9
 public let XA_GOBS_AGOM      = 10
 //Trough/Drift Flag, 0 - 75 deg trough, 1 - 255 deg trough, 2 - both troughs, 3 - unstable point, 4 - East drift, 5 - West drift
 public let XA_GOBS_TROUGH    = 11
+//Total Energy of sat (-mu/(2*a))
+public let XA_GOBS_TOTENERGY = 12
+//Inclination of sat
+public let XA_GOBS_INCL      = 13
 
 public let XA_GOBS_SIZE      = 32
 
@@ -637,6 +641,8 @@ public let XA_GOBS_LIM_LONGMAX     =  6
 public let XA_GOBS_LIM_AGOMMIN     =  7
 //Max Agom of sat
 public let XA_GOBS_LIM_AGOMMAX     =  8
+//Max Inclination of sat
+public let XA_GOBS_LIM_INCLMAX     =  9
 
 public let XA_GOBS_LIM_SIZE        = 16
 
@@ -666,12 +672,14 @@ public let XA_GOBS_DELTA_TROUGH       =  9
 public let XA_GOBS_DELTA_PLANE        = 10
 //0|1    Shape Match Flag
 public let XA_GOBS_DELTA_SHAPE        = 11
-//0|1    Energy Match Flag
+//0|1    Relative Energy Match Flag
 public let XA_GOBS_DELTA_ENERGY       = 12
 //0|1|2  Longitude Match Flag (2 is fuzzy match)
 public let XA_GOBS_DELTA_LONG         = 13
 //0|1    Agom Match Flag
 public let XA_GOBS_DELTA_AGOM         = 14
+//0|1    Incl Match Flag
+public let XA_GOBS_DELTA_INCL         = 15
 
 public let XA_GOBS_DELTA_SIZE         = 16
 

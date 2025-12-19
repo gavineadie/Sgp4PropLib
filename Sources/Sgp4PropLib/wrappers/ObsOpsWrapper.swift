@@ -640,7 +640,7 @@ public let XF_IP_RUNDC      = 6
 public let XF_IP_RUNROTAS   = 7
 
 // Indexes of TRI configuration parameters
-//I - Flag to specify whether or not to use triangulation's default parameters: =[1]: use them and ignore the rest; =0: not to use them
+//I - Flag to specify whether or not to use triangulation's default parameters: =[1]: use them and ignore the rest, =0: not to use them
 public let XA_TRI_USEDEFAULT       =  0
 //I - Output obs type (valid values are 0, 2, 3, 4, 6, 8 and 9)
 public let XA_TRI_OBSTYPEOUT       =  1
