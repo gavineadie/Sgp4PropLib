@@ -350,6 +350,15 @@ final class TleTests: XCTestCase {
 
 }
 
+/// Get the epoch of the referenced satellite in days since 1950-00-00 UTC
+/// - Parameter satKey: The satellite's unique key.
+/// - Returns: satellite epoch in days since 1950-00-00 UTC (0.0 if failure)
+public func tleGetEpochUTC(_ satKey: SatKey) -> Double {
+
+    dtgToUTC(tleGetField(satKey, XF_TLE_EPOCH) ?? "50000")
+
+}
+
 //                        1         2         3         4         5         6         7
 //               1234567890123456789012345678901234567890123456789012345678901234567890
 let testLine1 = "1 90021U RELEAS14 00051.47568104 +.00000184 +00000+0 +00000-4 0 0814 "

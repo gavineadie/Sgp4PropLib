@@ -65,6 +65,16 @@ public func getLastErrMsg() -> String {
 
 }
 
+// Retrieves error message associated with the input errCode.
+// As a common practice, this function is called to retrieve the error message when an error occurs.
+public func getErrMsg(_ errCode: Int32) -> String {
+
+    var messageString = emptyCcharArray(size: LOGMSGLEN)
+    GetErrMsg(errCode, &messageString)
+    return String(fromCcharArray: messageString, size: LOGMSGLEN)
+
+}
+
 /// Returns a character string describing the last informational message that was recorded.
 ///
 /// This function is usually called right after space objects (TLEs, VCMs, sensors,
@@ -80,7 +90,7 @@ public func getLastErrMsg() -> String {
 /// dynamic libraries have been loaded and initialized correctly. Improper initialization of the
 /// libraries is one of the most common causes of program crashes.)
 /// - Returns: A string that stores the last logged informational message.
-public func GetLastInfoMsg() -> String {
+public func getLastInfoMsg() -> String {
 
     var messageString = emptyCcharArray(size: LOGMSGLEN)
     GetLastInfoMsg(&messageString)

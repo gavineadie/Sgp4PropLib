@@ -106,6 +106,18 @@ public func dtgToUTC(_ DTG19: String) -> Double {
 
 }
 
+// An extension to DTGToUTC to support newer time formats (up to 32-character long)
+// DD Mon YYYY HH:MM:SS.SSS
+// YYYY/mm/DD HH:MM:SS.SSS or YYYY-mm-DDTHH:MM:SS.SSS
+// YYYY/mm/DD HH:MM:SS.SSSSSS or YYYY-mm-DDTHH:MM:SS.SSSSSS
+// YYYY ddd (DD Mon) HH:MM:SS.SSS
+// YYYY-DDDTHH:MM:SS.SSSZ or YYYY ddd HH MM SS.SSS
+public func dtgToUTCExt(_ DTG: String) -> Double {
+
+    DTGToUTCExt(DTG.cString)
+
+}
+
 /// Converts a time in ds50UTC to a time in ds50TAI using timing constants records in memory.
 ///
 /// If no timing constants records were loaded, ds50UTC and ds50TAI are the same.

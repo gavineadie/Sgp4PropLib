@@ -36,6 +36,14 @@ final class DllTests: XCTestCase {
 
     }
 
+    func testGetErrMsg() throws {
+
+        XCTAssertEqual(getErrMsg(0), "Invalid errCode")
+        XCTAssertEqual(getErrMsg(1), "Bad FK model (FK5 must be selected).")
+        XCTAssertEqual(getErrMsg(2), "")
+
+    }
+
     func testLastErrMsg() throws {
 
         XCTAssertEqual(getLastErrMsg(), "")
@@ -44,7 +52,7 @@ final class DllTests: XCTestCase {
 
     func testGetLastInfoMsg() throws {
 
-        XCTAssertEqual(GetLastInfoMsg(), "")
+        XCTAssertEqual(getLastInfoMsg(), "")
 
     }
 

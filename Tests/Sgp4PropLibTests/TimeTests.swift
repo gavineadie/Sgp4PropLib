@@ -51,6 +51,9 @@ final class TimeTests: XCTestCase {
 
         XCTAssertEqual(dtgToUTC(utcToDTG19(0.0)), 2192.0, accuracy: 0.0000001)
 
+        XCTAssertEqual(dtgToUTCExt("1977May18000000.000"), 10000.0)
+        XCTAssertEqual(dtgToUTCExt("1977-05-18T00:00:00.000"), 10000.0)
+
     }
 
     func testUTCToTimeComps() throws {

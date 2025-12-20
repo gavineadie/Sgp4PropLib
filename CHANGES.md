@@ -1,8 +1,12 @@
 # Change Note Summary
 
-### 2025 Jul 03 : v0.2.6 • _6th public release (corresponds to Space-Track v9.6)_
+### 2025 Dec 19 : v9.7.0 • _7th public release (corresponds to Space-Track v9.7)_
 
-### 2025 Feb 12 : v0.2.6 • _5th public release (corresponds to Space-Track v9.5)_
+- Driver: some typos corrected and new functions added
+
+### 2025 Jul 03 : v9.6.0 • _6th public release (corresponds to Space-Track v9.6)_
+
+### 2025 Feb 12 : v9.5.0 • _5th public release (corresponds to Space-Track v9.5)_
 
 ### 2024 May 25 : v0.2.6 • _4th public release (corresponds to Space-Track v9.4)_
 

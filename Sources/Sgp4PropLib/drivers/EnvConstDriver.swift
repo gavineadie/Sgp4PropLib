@@ -105,12 +105,12 @@ public func envGetGeoStr() -> String {
 ///
 ///     'WGS-84', 'WGS84', '84' -> WGS-84
 ///     'EGM-96', 'EGM96', '96' -> EGM-96
-///     'EGM-08', 'EGM08', '8' -> EGM-08
+///     'EGM-08', 'EGM08',  '8' -> EGM-08
 ///     'WGS-72', 'WGS72', '72' -> WGS-72 (default)
-///     'JGM-2, 'JGM2', '2' -> JGM-2
-///     'SEM68R', '68' -> STEM68R, SEM68R
-///     'GEM5', '5' -> GEM5
-///     'GEM9', '9' -> GEM9
+///     'JGM-2',  'JGM2',   '2' -> JGM-2
+///     'SEM68R',          '68' -> STEM68R, SEM68R
+///     'GEM5',             '5' -> GEM5
+///     'GEM9',             '9' -> GEM9
 ///
 /// The GEO model must be set to WGS-72 to use the SGP4 propagator.
 /// - Parameter geoStr: The GEO model to use, expressed as a string.
